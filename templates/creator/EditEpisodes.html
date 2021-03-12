@@ -1,0 +1,186 @@
+{% extends 'creator/base.html' %}
+{% load static %}
+{% block title %}Edit Episode{% endblock %}
+
+{% block content %}
+
+<link href="{% static './creator/libs/bootstrap-datepicker/css/bootstrap-datepicker.min.css' %}" rel="stylesheet">
+<!-- dropzone css -->
+<link href="{% static './creator/libs/dropzone/min/dropzone.min.css' %}" rel="stylesheet" type="text/css" />
+
+<!-- start page title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <h4 class="mb-sm-0 font-size-18">Edit Episode</h4>
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title mb-4">Edit Episode</h4>
+                <div><span id="message" style="color: red;"></span></div>
+                <form>
+                    
+                    <div class="row mb-4">
+                        
+                        <label for="episodeName" class="col-form-label col-lg-2">Episode Name</label>
+                        <div class="col-lg-10">
+                            <input id="episodeName" name="episodeName" value="{{episode.episode_name}}" type="text" class="form-control"
+                                placeholder="Enter Episode Name">
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <label for="episodedescription" class="col-form-label col-lg-2">Episode Description</label>
+                        <div class="col-lg-10">
+                            <textarea class="form-control" id="description" rows="3"
+                                placeholder="Enter Project Description">{{episode.description}}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <label for="episodeart" class="col-form-label col-lg-2">Episode Art</label>
+                        <div class="col-lg-10">
+                            <input type="file" accept="image/*" name="episodeart" id="episodeart"
+                            class="form-control" />
+                        </div>
+                    </div>
+
+
+                    <div class="row mb-4">
+                        <label for="episodeaudio" class="col-form-label col-lg-2">Episode Audio</label>
+                        <div class="col-lg-10">
+                            <input type="file" accept="audio/*" name="audio" id="audio"
+                            class="form-control" />
+                        </div>
+                    </div>
+ 
+                    <div class="row mb-4">
+                        <label for="showdescription" class="col-form-label col-lg-2">Show</label>
+                        <div class="col-lg-10">
+                            <select class="form-control" name="show" id="show">
+                                <option value="{{episode.show.id}}">{{episode.show.show_name}}</option>
+                                
+                                {% for show in shows %}
+                                <option value="{{show.id}}">{{show.show_name}}"</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- <div class="row mb-4">
+                        <label class="col-form-label col-lg-2">Project Date</label>
+                        <div class="col-lg-10">
+                            <div class="input-daterange input-group" id="project-date-inputgroup"
+                                data-provide="datepicker" data-date-format="dd M, yyyy"
+                                data-date-container='#project-date-inputgroup' data-date-autoclose="true">
+                                <input type="text" class="form-control" placeholder="Start Date" name="start" />
+                                <input type="text" class="form-control" placeholder="End Date" name="end" />
+                            </div>
+                        </div>
+                    </div> -->
+
+
+                    <div class="form-group" style=" display: none;" id="progress_div">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0"
+                                aria-valuemin="0" aria-valuemax="100" id="progress_bar">0%</div>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <p id="progress_text"></p>
+                    </div>
+                    
+                </form>
+
+
+                <div class="row justify-content-end">
+                    <div class="col-lg-10">
+                        <button type="button" id="episodeBtn" class="btn btn-primary">Create Episode</button>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end row -->
+
+<script>
+    id = '{{episode.id}}'
+    $('#episodeBtn').click(function () {
+        var id = document.getElementById('show').value
+        var formData = new FormData();
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        formData.append("episodeName", document.getElementById("episodeName").value);
+        formData.append("episodeart", document.getElementById("episodeart").files[0]);
+        formData.append("audio", document.getElementById("audio").files[0]);
+        formData.append("description", document.getElementById("description").value);
+        formData.append("show", document.getElementById("show").value);
+        // restrict other Filetypes
+        // image
+        var ext_art = episodeart.value.split(".")
+        ext_art = ext_art[ext_art.length - 1].toLowerCase();
+        console.log(ext_art,'extreaarrrtt')
+        var artExtensions = ["jpg","png","svg","jpeg"];
+        // audio
+        var ext = audio.value.split(".")
+        ext = ext[ext.length - 1].toLowerCase();
+        console.log('extt',ext)
+        var arrayExtensions = ["mp3"];
+        // END RESTRRICT FILE TYPE
+
+        if (episodeName.value == '') {
+            $('#message').html('Enter Episode Name')
+        } else if (episodeart.value == '') {
+            $('#message').html('Upload Episode Art')
+        }else if(artExtensions.lastIndexOf(ext_art) == -1){
+            $('#message').html('it is not an Image file')
+        }
+         else if (audio.value == '') {
+            $('#message').html('Upload Episode')
+        }
+        else if (arrayExtensions.lastIndexOf(ext) == -1){
+            $('#message').html('it is not an audio file')
+        }
+        else if (description.value == '') {
+            $('#message').html('Enter Description')
+        } else if (show.value == 'Choose An Show') {
+            $('#message').html('Select An Show')
+        } else {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/creator/edit-episode/', true);
+            xhr.upload.addEventListener("progress", function (ev) {
+                if (ev.lengthComputable) {
+                    var percentage = (ev.loaded / ev.total * 100 | 0)
+                    console.log(percentage, 'www')
+                    document.getElementById("progress_div").style["display"] = "block";
+                    document.getElementById("progress_bar").style["width"] = "" + percentage + "%";
+                    document.getElementById("progress_bar").innerHTML = "" + percentage + "%";
+                    document.getElementById("progress_text").innerHTML = "Uploaded :" + parseInt(ev.total / 1000000) + "/" + parseInt(ev.total / 1000000) + "MB";
+                }
+            });
+
+            xhr.send(formData);
+            xhr.onload = () => location.replace('/creator/manage-episodes/'+id+'/')
+        }
+    })
+
+</script>
+{% endblock content %}
+
+{% block scripts %}
+<!-- bootstrap datepicker -->
+<script src="{% static './creator/libs/bootstrap-datepicker/js/bootstrap-datepicker.min.js' %}"></script>
+
+<!-- dropzone plugin -->
+<script src="{% static './creator/libs/dropzone/min/dropzone.min.js' %}"></script>
+{% endblock %}

@@ -12,7 +12,6 @@
 </div>
 <!-- end page title -->
 
-
 <div class="row">
     <div class="col-12">
         <div class="card">
@@ -39,8 +38,8 @@
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label for="productdesc">Product Description</label>
-                                <textarea class="form-control" id="productdesc" rows="5"></textarea>
+                                <label for="productdesc">Show Description</label>
+                                <textarea class="form-control" id="showdescription" rows="5"></textarea>
                             </div>
                         </div>
 
@@ -69,7 +68,9 @@
         formData.append("podcastName", document.getElementById("podcastName").value);
         formData.append("thumbnail", document.getElementById("thumbnail").files[0]);
         formData.append("category", document.getElementById("category").value);
+        formData.append("showdescription", document.getElementById("showdescription").value);
         formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        
 
         // restrict other Filetypes
         var ext = thumbnail.value.split(".")
@@ -85,7 +86,9 @@
             $('#message').html('it is not an Image File')
         } else if (category.value == 'Choose An Category') {
             $('#message').html('Choose An Category')
-        } else {
+        } else if(showdescription.value == ''){
+            $('#message').html('Enter An Description')
+        }else {
             $.ajax({
                 url: '/creator/create-podcast/',
                 type: 'POST',

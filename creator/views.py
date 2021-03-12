@@ -128,7 +128,8 @@ def create_podcast(request):
             podcast_name = request.POST['podcastName']
             category_id = request.POST['category']
             thumbnail = request.FILES.get('thumbnail')
-            Show.objects.create(show_name=podcast_name,category_id=category_id,user=request.user,thumbnail=thumbnail)
+            show_description = request.POST['showdescription']
+            Show.objects.create(show_name=podcast_name,category_id=category_id,user=request.user,thumbnail=thumbnail,description=show_description)
             return JsonResponse('podcastcreated',safe=False)
         else:
             context = {'categories':categories}
@@ -145,6 +146,7 @@ def edit_podcast(request,id):
             podcast_show.category_id = request.POST['category']
             podcast_show.thumbnail = request.FILES.get('thumbnail')
             podcast_show.save()
+            return JsonResponse('podcast_edited',safe=False)
         else:
             context = {'podcast_show':podcast_show}
             return render(request, './creator/EditPodcasts.html',context)
@@ -185,6 +187,23 @@ def create_episode(request):
     else:
         return redirect(creator_login)
     
+def edit_episode(request,id):
+    if request.user.is_authenticated and request.user.is_staff == True:
+        episode = Contents.objects.get(id=id)
+        if request.method == 'POST':
+            episode.episode_name = request.POST['episodeName']
+            episode.episode_art = request.FILES.get('episodeart')
+            episode.episode_description = request.POST['description']
+            episode.show_id = request.POST['show']
+            episode.podcast_data = request.FILES.get('audio')
+            episode.save()
+        else:
+            context = {'episode':episode}
+            return render(request, './creator/EditEpisodes.html',context)
+    else:
+        return redirect(creator_login)
+
+
 def delete_episode(request,id):
     if request.user.is_authenticated and request.user.is_staff == True:
         episode = Contents.objects.get(id=id)

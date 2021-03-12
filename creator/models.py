@@ -26,7 +26,7 @@ class Show(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     show_name = models.CharField(max_length=200,null=True,blank=True)
-    description = models.CharField(max_length=200,null=True,blank=True)
+    description = models.CharField(max_length=20000,null=True,blank=True)
     total_episodes = models.IntegerField(default=0,null=True,blank=True)
     thumbnail = models.FileField(upload_to='showthumbnail/')
 
@@ -47,7 +47,7 @@ class Contents(models.Model):
     artist = models.CharField(max_length=255,null=True,blank=True)
     show = models.ForeignKey(Show, on_delete=models.CASCADE,null=True)
     episode_name = models.CharField(max_length=255,null=True,blank=True)
-    description = models.CharField(max_length=2000,null=True,blank=True)
+    description = models.CharField(max_length=20000,null=True,blank=True)
     date_of_published = models.DateField(auto_now_add=True)
     podcast = models.FileField(upload_to='podcasts/')
     thumbnail = models.FileField(upload_to='thumbnail/')
