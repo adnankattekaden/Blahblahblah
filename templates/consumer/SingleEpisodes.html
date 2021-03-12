@@ -19,8 +19,8 @@
                            <p class="mb-0">389382k Views</p>
                            <p>Song · 45 Plays</p>
                            <div class="d-flex align-items-center">
-                              <button class="btn btn-primary iq-play mr-2"
-                                 onclick="currentTrack('{{episode.id}}')">Play music</button>
+                              <button class="btn btn-primary iq-play mr-2" onclick="currentTrack('{{episode.id}}')">Play
+                                 music</button>
                            </div>
                         </div>
                         <div class="music-right">
@@ -30,7 +30,7 @@
                               <div class="iq-circle mr-2"><a type="button" id="likeSong"><i
                                        class="ri-heart-fill  text-primary" type="button" id="likeSong"></i></a></div>
                               <div class="iq-circle">
-                                 <a type="button"><i class="las la-cloud-upload-alt text-primary" data-toggle="modal"
+                                 <a type="button"><i class="las la-file-audio text-primary" data-toggle="modal"
                                        data-target="#exampleModal" id="addPlaylist"></i></a>
                               </div>
                            </div>
@@ -46,58 +46,61 @@
 </div>
 
 
-<!-- Modal -->
+<!-- PlayList Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
    aria-hidden="true">
    <div class="modal-dialog" role="document">
       <div class="modal-content">
          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Add Playlist</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Playlist</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                <span aria-hidden="true">&times;</span>
             </button>
          </div>
+
+
          <div class="modal-body">
-            <table>
-               <thead>
-                  <tr>
-                     <th>Playlist Name</th>
-                  </tr>
-               </thead>
-               <tbody class="updatedplaylist">
+            <div class="table-responsive">
+               {% if playlists  %}
+               <table class="table align-middle table-nowrap">
+                  <thead>
+                     <tr>
+                        <th scope="col">Playlists</th>
+                     </tr>
+                  </thead>
 
-               {% if not playlists == '' %}
-               <div class="row">
-                  <div class="empty-cart-area pb-100px pt-100px" style="padding: 100px;">
-                     <div class="container">
-                        <div class="row">
-                              <div class="col-md-12">
-                                 <div class="empty-text-contant text-center">
-                                    <h3>There are no more Playlists</h3>
-                                 </div>
-                              </div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
+                  <tbody class="updatedplaylist">
+                     {% for playlist in playlists %}
+                     <tr>
+                        <td>
+                           <div>
+                              <!-- <h5 class="text-truncate font-size-14">Wireless Headphone (Black)</h5> -->
+                              <button class="btn btn-primary" data-dismiss="modal" onclick="playlistname('{{playlist.id}}')">{{playlist.playlist_name}}</button>
+                           </div>
+                        </td>
+                     </tr>
+                     {% endfor %}
+                  </tbody>
+               </table>
+               {% else %}
+               <table class="table align-middle table-nowrap">
+                  
+                  <tbody class="updatedplaylist">
+                     <tr>
+                        <h4 class="text-center">Currently There is No Playlists</h4>
+                     </tr>
+                  </tbody>
+               </table>
                {% endif %}
-
-               {% for playlist in playlists %}
-               <tr>
-                  <td><button data-dismiss="modal" onclick="playlistname('{{playlist.id}}')">{{playlist.playlist_name}}</button></td>
-               </tr>
-               {% endfor %}
-               </tbody>
-            </table>
+            </div>
          </div>
+
          <div class="modal-footer">
             <input type="text" id="playlistNames" name="playlistNames" class="form-control" placeholder="Playlist Name"
                value="" />
-            <button id="createPlaylist">Create</button>
+            <button id="createPlaylist" class="btn btn-primary">Create</button>
          </div>
-         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-         </div>
+
       </div>
    </div>
 </div>
@@ -135,7 +138,7 @@
          success: function (data) {
             data = JSON.parse(data.playlistcreated)
             console.log(data[0].pk)
-            var html_content = '<tr><td><button data-dismiss="modal" onclick="playlistname('+data[0].pk+')">'+data[0].fields.playlist_name+'</button></td></tr>'
+            var html_content = '<tr><td><button data-dismiss="modal" onclick="playlistname(' + data[0].pk + ')">' + data[0].fields.playlist_name + '</button></td></tr>'
             $('.updatedplaylist').append(html_content)
          }
 
@@ -155,7 +158,7 @@
          type: 'POST',
          data: SongInfo,
          // success:function(data){
-            
+
          // }
       })
 

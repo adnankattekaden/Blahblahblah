@@ -1,0 +1,48 @@
+{% extends 'owner/base.html' %}
+{% load static %}
+{% block title %}Manage Pricing{% endblock %}
+{% block content %}
+<div class="page-title-box">
+    <div class="row align-items-center">
+        <div class="col-sm-6">
+            <h4 class="page-title">Manage Pricing</h4>
+        </div>
+    </div> <!-- end row -->
+</div>
+<!-- end page-title -->
+
+
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card">
+            <div class="card-body">
+                <table id="datatable" class="table table-bordered dt-responsive nowrap"
+                style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                <thead>
+                    
+                    <tr>
+                        <th>Plans Name</th>
+                        <th>Plan Price</th>
+                        <th>Validity</th>
+                        <th>Action</th>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    {% for category in categories %}
+                    <tr>
+                        <td>{{category.category_name}}</td>
+                        <td><a href="{% url 'edit_category' category.id %}"><input type="button" class="btn btn-info"
+                            value="edit"></a>&nbsp;&nbsp;<a href="{% url 'delete_category' category.id %}"><input type="button"
+                            class="btn btn-primary" onclick="return confirm('Are You Sure Want To Delete')" value="Delete"></a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end row -->
+
+{% endblock %}

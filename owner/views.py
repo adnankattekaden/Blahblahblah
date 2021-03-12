@@ -29,7 +29,6 @@ def owner_logout(request):
 def owner_dashboard(request):
     return render(request, './owner/Dashboard.html')
 
-
 def manage_category(request):
     categories = Category.objects.all()
     context = {'categories':categories}
@@ -46,7 +45,6 @@ def create_category(request):
     else:
         return redirect(owner_login)
 
-
 def edit_category(request,id):
     if request.user.is_authenticated and request.user.is_superuser == True:
         category = Category.objects.get(id=id)
@@ -60,11 +58,25 @@ def edit_category(request,id):
     else:
         return redirect(owner_login)
 
-
 def delete_category(request,id):
     if request.user.is_authenticated and request.user.is_superuser == True:
         category = Category.objects.get(id=id)
         category.delete()
         return redirect(manage_category)
+    else:
+        return redirect(owner_login)
+
+def manage_plans(request):
+    if request.user.is_authenticated and request.user.is_superuser == True:
+        return render(request, './owner/ManagePlans.html')
+    else:
+        return redirect(owner_login)
+
+def create_plan(request):
+    if request.user.is_authenticated and request.user.is_superuser == True:
+        if request.method == 'POST':
+            pass
+        else:
+            return render(request, './owner/CreatePlans.html')
     else:
         return redirect(owner_login)

@@ -91,9 +91,13 @@ def consumer_profile_edit(request,id):
             return render(request, './consumer/EditProfile.html',context)
     else:
         return redirect(signin)
+
 def faq(request):
     return render(request, './consumer/faq.html')
 
+def pricing(request):
+    return render(request, './consumer/Pricing.html')
+    
 #core Part
 def homepage(request):
     shows = Show.objects.all()
@@ -237,6 +241,7 @@ def manage_playlist(request):
 def manage_playlist_content(request,id):
     playlists = Playlist.objects.get(id=id)
     playlist_contents = PlaylistContent.objects.filter(playlist=playlists)
+    print(playlist_contents)
     context = {'playlist_contents':playlist_contents,'playlists':playlists}
     return render(request, './consumer/PlaylistContents.html',context)
 

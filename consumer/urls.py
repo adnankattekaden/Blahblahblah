@@ -17,6 +17,7 @@ urlpatterns = [
     path('profile/', views.consumer_profile,name='consumer_profile'),
     path('edit-profile/<int:id>/',views.consumer_profile_edit,name='consumer_profile_edit'),
     path('faq/', views.faq,name='faq'),
+    path('pricing/', views.pricing,name='upgrade'),
     path('latest/', views.consumer_latest_feed,name='consumer_latest_feed'),
     path('artists/',views.artists_list,name='artists_list'),
     path('category-view/<int:id>/',views.category_view,name='category_view'),

@@ -1,0 +1,54 @@
+{% extends 'owner/base.html' %}
+{% load static %}
+{% block title %}Create Plans{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <!-- start page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <h4 class="mb-sm-0 font-size-18">Create Plans</h4>
+            </div>
+        </div>
+    </div>
+    <!-- end page title -->
+
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card">
+                <div class="card-body">
+                    <form>
+                        <div class="col-xl-6">
+                            <label for="create Category">Plan Name</label><br>
+                            <span style="color: red;" id="message"></span>
+                            <input type="text" class="form-control" placeholder="Enter Plan Name" id="plan_name">
+                        </div>
+
+                        <div class="col-xl-6 mt-3">
+                            <label for="create Category">Price</label>
+                            <input type="text" class="form-control" placeholder="Enter Price" id="plan_price">
+                        </div>
+
+                        <div class="col-xl-6 mt-3">
+                            <label>Plan Validity</label>
+                            <select class="form-control select2" id="validity" name="validity">
+                                <option value="1month">1 month</option>
+                                <option value="3month">3 month</option>
+                                <option value="6month">6 month</option>
+                                <option value="12month">12 month</option>
+                            </select>
+                        </div>
+
+
+                        <br>
+                        <button type="button" class="btn btn-primary" id="createPricing">Create</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end row -->
+
+</div> <!-- container-fluid -->
+
+{% endblock %}

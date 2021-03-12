@@ -203,7 +203,6 @@ def edit_episode(request,id):
     else:
         return redirect(creator_login)
 
-
 def delete_episode(request,id):
     if request.user.is_authenticated and request.user.is_staff == True:
         episode = Contents.objects.get(id=id)
