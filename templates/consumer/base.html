@@ -1,0 +1,474 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+   <!-- Required meta tags -->
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+   <title>Home|</title>
+   <!-- Favicon -->
+   <link rel="shortcut icon" href="{% static 'consumer/images/favicon.ico' %}" />
+   <!-- Bootstrap CSS -->
+   <link rel="stylesheet" href="{% static 'consumer/css/bootstrap.min.css' %}">
+   <!-- Typography CSS -->
+   <link rel="stylesheet" href="{% static 'consumer/css/typography.css' %}">
+   <!-- Style CSS -->
+   <link rel="stylesheet" href="{% static 'consumer/css/style.css' %}">
+   <!-- Responsive CSS -->
+   <link rel="stylesheet" href="{% static 'consumer/css/responsive.css' %}">
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body class="sidebar-main-active right-column-fixed">
+   <!-- Wrapper Start -->
+   <div class="wrapper">
+      <!-- Sidebar  -->
+      <div class="iq-sidebar">
+         <div class="iq-sidebar-logo d-flex justify-content-between">
+            <a href="{% url 'homepage' %}" class="header-logo">
+               <img src="{% static 'consumer/images/logo.png' %}" class="img-fluid rounded-normal" alt="">
+               <div class="logo-title">
+                  <span class="text-primary">Blah Blah
+                     <span class="text-primary text-center">Bler</span>
+                  </span>
+               </div>
+            </a>
+
+            <div class="iq-menu-bt-sidebar">
+               <div class="iq-menu-bt align-self-center">
+                  <div class="wrapper-menu">
+                     <div class="main-circle"><i class="las la-bars"></i></div>
+                  </div>
+               </div>
+            </div>
+            
+         </div>
+
+         <div id="sidebar-scrollbar">
+            <nav class="iq-sidebar-menu">
+               <ul id="iq-sidebar-toggle" class="iq-menu">
+                  <li>
+                  <li><a href="{% url 'homepage' %}"><i class="las la-house-damage"></i>Home</a></li>
+                  <li><a href="{% url 'consumer_latest_feed' %}"><i class="las la-headphones"></i>Latest</a></li>
+                  <li><a href="#"><i class="las la-headphones"></i>Your Library</a></li>
+                  <li><a href="{% url 'manage_playlist' %}"><i class="lar la-file-audio"></i>PlayList</a></li>
+                  </li>
+               </ul>
+            </nav>
+         </div>
+
+      </div>
+      <!-- TOP Nav Bar -->
+      <div class="iq-top-navbar">
+         <div class="iq-navbar-custom">
+            <nav class="navbar navbar-expand-lg navbar-light p-0">
+               <div class="iq-menu-bt d-flex align-items-center">
+                  <div class="wrapper-menu">
+                     <div class="main-circle"><i class="las la-bars"></i></div>
+                  </div>
+                  <div class="iq-navbar-logo d-flex justify-content-between">
+                     <a href="{% url 'homepage' %}" class="header-logo">
+                        <img src="images/logo.png" class="img-fluid rounded-normal" alt="">
+                        <div class="pt-2 pl-2 logo-title">
+                           <span class="text-primary text-uppercase">Muzik</span>
+                        </div>
+                     </a>
+                  </div>
+               </div>
+               <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                  aria-controls="navbarSupportedContent" aria-label="Toggle navigation">
+                  <i class="ri-menu-3-line"></i>
+               </button>
+               <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                  <ul class="list-unstyled iq-menu-top d-flex justify-content-between mb-0 p-0">
+                     <li><a href="{% url 'homepage' %}">Home</a></li>
+                     <li><a href="{% url 'artists_list' %}">Artists</a></li>
+                     <li><a href="{% url 'consumer_latest_feed' %}">Podcast</a></li>
+                  </ul>
+                  <ul class="navbar-nav ml-auto navbar-list">
+                     <li class="nav-item nav-icon">
+                        <div class="iq-search-bar">
+                           <form action="#" class="searchbox">
+                              <input type="text" class="text search-input" placeholder="Search Here..">
+                              <a class="search-link" href="#"><i class="ri-search-line text-black"></i></a>
+                              <a class="search-audio" href="#"><i class="las la-microphone text-black"></i></a>
+                           </form>
+                        </div>
+                     </li>
+
+                     <li class="nav-item nav-icon search-content">
+                        <a href="#" class="search-toggle iq-waves-effect text-gray rounded"><span
+                              class="ripple rippleEffect "></span>
+                           <i class="ri-search-line text-black"></i>
+                        </a>
+
+                        <form action="#" class="search-box p-0">
+                           <input type="text" class="text search-input" placeholder="Type here to search...">
+                           <a class="search-link" href="#"><i class="ri-search-line text-black"></i></a>
+                           <a class="search-audio" href="#"><i class="las la-microphone text-black"></i></a>
+                        </form>
+                     </li>
+
+                     <!-- <li class="nav-item nav-icon">
+                        <a href="#" class="search-toggle iq-waves-effect text-black rounded">
+                           <i class="las la-cog"></i>
+                           <span class=" dots"></span>
+                        </a>
+                     </li> -->
+
+                     {% if user.is_authenticated %}
+                     <li class="nav-item nav-icon">
+                        <a href="#" class="search-toggle iq-waves-effect text-black rounded">
+                           <i class="ri-notification-line block"></i>
+                           <span class="notice-icon dots badge badge-primary">+</span>
+                        </a>
+                        
+                        <div class="iq-sub-dropdown">
+                           <div class="iq-card shadow-none m-0">
+                              <div class="iq-card-body p-0">
+                                 <div class="bg-primary p-3">
+                                    <h5 class="mb-0 text-white">All Notifications<small
+                                          class="badge  badge-light float-right pt-1">4</small></h5>
+                                 </div>
+                                 <a href="#" class="iq-sub-card">
+                                    <div class="media align-items-center">
+                                       <div class="">
+                                          <img class="avatar-40 rounded img-fluid"
+                                             src="{% static 'consumer/images/user/01.jpg' %}" alt="">
+                                       </div>
+                                       <div class="media-body ml-3">
+                                          <h6 class="mb-0 ">Emma Watson Barry</h6>
+                                          <small class="float-right">Just Now</small>
+                                          <p class="mb-0">95 MB</p>
+                                       </div>
+                                    </div>
+                                 </a>
+                              </div>
+                           </div>
+                        </div>
+                        {% endif %}
+
+                     </li>
+                     {% if user.is_authenticated %}
+                     <li class="line-height pt-3">
+                        <a href="#" class="search-toggle iq-waves-effect d-flex align-items-center">
+                           <img src="{% static 'consumer/images/user/11.png' %}" class="img-fluid rounded-circle"
+                              alt="user">
+                              
+                        </a>
+                        <div class="iq-sub-dropdown iq-user-dropdown">
+                           <div class="iq-card shadow-none m-0">
+                              <div class="iq-card-body p-0 ">
+                                 <div class="bg-primary p-3">
+                                    <h5 class="mb-0 text-white line-height">Hello {{request.user}}</h5>
+                                    <span class="text-white font-size-12">Available</span>
+                                 </div>
+                                 <a href="{% url 'consumer_profile' %}" class="iq-sub-card iq-bg-primary-hover">
+                                    <div class="media align-items-center">
+                                       <div class="rounded iq-card-icon iq-bg-primary">
+                                          <i class="ri-file-user-line"></i>
+                                       </div>
+                                       <div class="media-body ml-3">
+                                          <h6 class="mb-0 ">My Profile</h6>
+                                          <p class="mb-0 font-size-12">View personal profile details.</p>
+                                       </div>
+                                    </div>
+                                 </a>
+                                 <div class="d-inline-block w-100 text-center p-3">
+                                    <a class="bg-primary iq-sign-btn" href="{% url 'signout' %}" role="button">Sign
+                                       out<i class="ri-login-box-line ml-2"></i></a>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </li>
+                     {% endif %}
+
+                     {% if not user.is_authenticated %}
+                     <div class="d-inline-block w-100 text-center p-3">
+                        <a class="bg-primary iq-sign-btn" href="{% url 'signin' %}" role="button">Sign In<i
+                              class="ri-login-box-line ml-2"></i></a>
+                     </div>
+                     {% endif %}
+
+                  </ul>
+               </div>
+            </nav>
+         </div>
+      </div>
+      <!-- TOP Nav Bar END -->
+
+      <!-- Page Content  -->
+      <div id="content-page" class="content-page">
+         <div class="container-fluid">
+            <div class="row">
+               {% block content %} {% endblock %}
+            </div>
+         </div>
+      </div>
+
+   </div>
+   <!-- Wrapper END -->
+   <!-- Footer -->
+   <footer class="iq-footer">
+      <div class="container-fluid">
+         <div class="row">
+            <div class="col-sm-12">
+               <div class="player row">
+                  <div class="details col-6 col-sm-4 col-md-4 col-lg-4">
+                     <div class="now-playing"></div>
+                     <div class="track-art"></div>
+                     <div>
+                        <div class="track-name">Pop Smoke </div>
+                        <div class="track-artist">Current artist</div>
+                     </div>
+                  </div>
+                  <div class="slider_container slider_music col-sm-5 col-md-4 col-lg-4">
+                     <div class="current-time">00:00</div>
+                     <input type="range" min="1" max="100" value="0" class="seek_slider" onchange="seekTo()">
+                     <div class="total-duration">00:00</div>
+                  </div>
+                  <div class="buttons col-6  col-sm-3 col-md-2  col-lg-2">
+                     <div class="prev-track" onclick="prevTrack()"><i class="fa fa-step-backward fa-2x"></i></div>
+
+                     <div class="playpause-track" onclick="playpauseTrack()"><i class="fa fa-play-circle fa-3x"></i>
+
+                     </div>
+                     <div class="next-track" onclick="nextTrack()"><i class="fa fa-step-forward fa-2x"></i></div>
+                  </div>
+                  <div class="slider_container sound col-sm-6 col-md-2  col-lg-2">
+                     <i class="fa fa-volume-down"></i>
+                     <input type="range" min="1" max="100" value="99" class="volume_slider" onchange="setVolume()">
+                     <i class="fa fa-volume-up"></i>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </footer>
+   <!-- Footer END -->
+
+   <!-- Optional JavaScript -->
+   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+   <script src="{% static 'consumer/js/jquery.min.js' %}"></script>
+   <script src="{% static 'consumer/js/popper.min.js' %}"></script>
+   <script src="{% static 'consumer/js/bootstrap.min.js' %}"></script>
+   <!-- Appear JavaScript -->
+   <script src="{% static 'consumer/js/jquery.appear.js' %}"></script>
+   <!-- Countdown JavaScript -->
+   <script src="{% static 'consumer/js/countdown.min.js' %}"></script>
+   <!-- Counterup JavaScript -->
+   <script src="{% static 'consumer/js/waypoints.min.js' %}"></script>
+   <script src="{% static 'consumer/js/jquery.counterup.min.js' %}"></script>
+   <!-- Wow JavaScript -->
+   <script src="{% static 'consumer/js/wow.min.js' %}"></script>
+   <!-- Apexcharts JavaScript -->
+   <script src="{% static 'consumer/js/apexcharts.js' %}"></script>
+   <!-- Slick JavaScript -->
+   <script src="{% static 'consumer/js/slick.min.js' %}"></script>
+   <!-- Select2 JavaScript -->
+   <script src="{% static 'consumer/js/select2.min.js' %}"></script>
+   <!-- Owl Carousel JavaScript -->
+   <script src="{% static 'consumer/js/owl.carousel.min.js' %}"></script>
+   <!-- Magnific Popup JavaScript -->
+   <script src="{% static 'consumer/js/jquery.magnific-popup.min.js' %}"></script>
+   <!-- Smooth Scrollbar JavaScript -->
+   <script src="{% static 'consumer/js/smooth-scrollbar.js' %}"></script>
+
+   <!-- am core JavaScript -->
+   <script src="{% static 'consumer/js/core.js' %}"></script>
+   <!-- am charts JavaScript -->
+   <script src="{% static 'consumer/js/charts.js' %}"></script>
+   <!-- am animated JavaScript -->
+   <script src="{% static 'consumer/js/animated.js' %}"></script>
+   <!-- am kelly JavaScript -->
+   <script src="{% static 'consumer/js/kelly.js' %}"></script>
+   <!-- am maps JavaScript -->
+   <script src="{% static 'consumer/js/maps.js' %}"></script>
+   <!-- am worldLow JavaScript -->
+   <script src="{% static 'consumer/js/worldLow.js' %}"></script>
+   <!-- Style Customizer -->
+   <!-- <script src="{% static 'consumer/js/style-customizer.js' %}"></script> -->
+   <script src="{% static 'consumer/js/chart-custom.js' %}"></script>
+   <!-- music js -->
+   <!-- <script src="{% static 'consumer/js/music-player.js' %}"></script> -->
+   <!-- music-player js -->
+   <!-- <script src="{% static 'consumer/js/music-player-dashboard.js' %}"></script> -->
+   <!-- Custom JavaScript -->
+   <script src="{% static 'consumer/js/custom.js' %}"></script>
+
+
+   <script>
+
+      var music;
+      let now_playing = document.querySelector(".now-playing");
+      let track_art = document.querySelector(".track-art");
+      let track_name = document.querySelector(".track-name");
+      let track_artist = document.querySelector(".track-artist");
+
+      let playpause_btn = document.querySelector(".playpause-track");
+      let next_btn = document.querySelector(".next-track");
+      let prev_btn = document.querySelector(".prev-track");
+
+      let seek_slider = document.querySelector(".seek_slider");
+      let volume_slider = document.querySelector(".volume_slider");
+      let curr_time = document.querySelector(".current-time");
+      let total_duration = document.querySelector(".total-duration");
+
+      let track_index = 0;
+      let isPlaying = false;
+      let updateTimer;
+      let currentId = 12;
+      var nowId = "{{consumer_data.id}}"
+      console.log('id', nowId)
+      // Create new audio element
+      let curr_track = document.createElement('audio');
+      console.log(curr_track);
+
+      // Define the tracks that have to be played
+
+
+      function random_bg_color() {
+
+         // Get a number between 64 to 256 (for getting lighter colors)
+         let red = Math.floor(Math.random() * 256) + 64;
+         let green = Math.floor(Math.random() * 256) + 64;
+         let blue = Math.floor(Math.random() * 256) + 64;
+
+         // Construct a color withe the given values
+         let bgColor = "rgb(" + red + "," + green + "," + blue + ")";
+
+      }
+
+      function loadTrack(music) {
+         clearInterval(updateTimer);
+         resetValues();
+         curr_track.src = "/media/" + music.fields.podcast;
+         curr_track.load();
+
+         track_art.style.backgroundImage = "url(" + "/media/" + music.fields.thumbnail + ")";
+         track_name.textContent = music.fields.episode_name;
+         track_artist.textContent = music.fields.artist;
+         // now_playing.textContent = "PLAYING " + (track_index + 1) + " OF " + track_list.length;
+
+         updateTimer = setInterval(seekUpdate, 1000);
+         curr_track.addEventListener("ended", nextTrack);
+         random_bg_color();
+      }
+
+      function resetValues() {
+         curr_time.textContent = "00:00";
+         total_duration.textContent = "00:00";
+         seek_slider.value = 0;
+      }
+
+      // Load the first track in the tracklist
+      loadTrack(music);
+
+      function playpauseTrack() {
+         if (!isPlaying)currentTrack(nowId),playTrack();
+         else pauseTrack();
+      }
+
+      function playTrack() {
+         curr_track.play();
+         isPlaying = true;
+         playpause_btn.innerHTML = '<i class="fa fa-pause-circle fa-3x"></i>';
+      }
+
+      function pauseTrack() {
+         curr_track.pause();
+         isPlaying = false
+         playpause_btn.innerHTML = '<i class="fa fa-play-circle fa-3x"></i>';
+      }
+
+      function nextTrack() {
+         $.ajax({
+            url: '/next/' + currentId,
+            type: 'GET',
+            success: function (data) {
+               music = JSON.parse(data.next_songs)[0]
+               console.log('next')
+               currentId = music.pk
+               console.log(currentId);
+               console.log(music.fields.thumbnail);
+               console.log('hey')
+               console.log(music)
+            }
+
+         })
+
+         loadTrack(music);
+         playTrack();
+      }
+
+      function prevTrack() {
+         $.ajax({
+            url: '/previous/' + currentId,
+            type: 'GET',
+            success: function (data) {
+               music = JSON.parse(data.previous_songs)[0]
+               console.log('previous')
+               currentId = music.pk
+               console.log(music.fields.podcast)
+               console.log(music.fields.thumbnail);
+            }
+
+         })
+         loadTrack(music);
+         playTrack();
+      }
+
+      function currentTrack(nowId) {
+         $.ajax({
+            url: '/current-music/' + nowId,
+            type: 'GET',
+            success: function (data) {
+               music = JSON.parse(data.current_song)[0]
+               currentId = music.pk
+               console.log(music.fields.podcast)
+               console.log(music.fields.thumbnail);
+            }
+
+         })
+         loadTrack(music);
+         playTrack();
+      }
+
+      function seekTo() {
+         seekto = curr_track.duration * (seek_slider.value / 100);
+         curr_track.currentTime = seekto;
+      }
+
+      function setVolume() {
+         curr_track.volume = volume_slider.value / 100;
+      }
+
+      function seekUpdate() {
+         let seekPosition = 0;
+
+         if (!isNaN(curr_track.duration)) {
+            seekPosition = curr_track.currentTime * (100 / curr_track.duration);
+
+            seek_slider.value = seekPosition;
+
+            let currentMinutes = Math.floor(curr_track.currentTime / 60);
+            let currentSeconds = Math.floor(curr_track.currentTime - currentMinutes * 60);
+            let durationMinutes = Math.floor(curr_track.duration / 60);
+            let durationSeconds = Math.floor(curr_track.duration - durationMinutes * 60);
+
+            if (currentSeconds < 10) { currentSeconds = "0" + currentSeconds; }
+            if (durationSeconds < 10) { durationSeconds = "0" + durationSeconds; }
+            if (currentMinutes < 10) { currentMinutes = "0" + currentMinutes; }
+            if (durationMinutes < 10) { durationMinutes = "0" + durationMinutes; }
+
+            curr_time.textContent = currentMinutes + ":" + currentSeconds;
+            total_duration.textContent = durationMinutes + ":" + durationSeconds;
+         }
+      }
+   </script>
+
+</body>
+
+</html>

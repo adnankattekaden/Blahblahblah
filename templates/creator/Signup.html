@@ -1,0 +1,178 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8" />
+    <title>Register |Creator Studio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
+    <meta content="Themesbrand" name="author" />
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="{% static './creator/images/favicon.ico' %}">
+
+    <!-- Bootstrap Css -->
+    <link href="{% static './creator/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+    <!-- Icons Css -->
+    <link href="{% static './creator/css/icons.min.css' %}" rel="stylesheet" type="text/css" />
+    <!-- App Css-->
+    <link href="{% static './creator/css/app.min.css' %}" rel="stylesheet" type="text/css" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+        integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+        crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+    <div class="account-pages my-5 pt-sm-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6 col-xl-5">
+                    <div class="card overflow-hidden">
+                        <div class="bg-primary bg-soft">
+                            <div class="row">
+                                <div class="col-7">
+                                    <div class="text-primary p-4">
+                                        <h5 class="text-primary">Free Register</h5>
+                                        <p>Get your free Creator Account now.</p>
+                                    </div>
+                                </div>
+                                <div class="col-5 align-self-end">
+                                    <img src="{% static './creator/images/profile-img.png' %}" alt="" class="img-fluid">
+                                </div>
+                                <span id="message" style="color: red;"></span>
+                            </div>
+                        </div>
+                        <div class="card-body pt-0">
+                            <div class="p-2">
+                                <form>
+                                    <div class="mb-3">
+                                        <label for="useremail" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="email"
+                                            placeholder="Enter email">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="username" class="form-label">Username</label>
+                                        <input type="text" class="form-control" id="username"
+                                            placeholder="Enter username">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="userpassword" class="form-label">Mobile Number</label>
+                                        <input type="password" class="form-control" id="mobile_number"
+                                            placeholder="Mobile Number">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="userpassword" class="form-label">Password</label>
+                                        <input type="password" class="form-control" id="password"
+                                            placeholder="Enter password">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="userpassword" class="form-label">Verify Password</label>
+                                        <input type="password" class="form-control" id="verifypassword"
+                                            placeholder="Verify Password">
+                                    </div>
+
+
+
+                                    <div class="mt-4 d-grid">
+                                        <button class="btn btn-primary waves-effect waves-light" type="button"
+                                            id="signup_Btn">Register</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="mt-5 text-center">
+                        <div>
+                            <p>Already have an account ? <a href="{% url 'creator_login' %}"
+                                    class="fw-medium text-primary">
+                                    Login</a> </p>
+                            <p>©
+                                <script>document.write(new Date().getFullYear())</script>
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        $('#signup_Btn').click(function () {
+            var userData = {
+                csrfmiddlewaretoken: '{{csrf_token}}',
+                email: $('#email').val(),
+                username: $('#username').val(),
+                password: $('#password').val(),
+                verifypassword: $('#verifypassword').val(),
+                mobile_number: $('#mobile_number').val(),
+            }
+            if (userData.email === '') {
+                $('#message').html('Enter Email Address')
+            }
+            else if (userData.username === '') {
+                $('#message').html('Enter Username')
+            }
+            else if (userData.mobile_number === '') {
+                $('#message').html('Enter Mobile Number')
+            }
+            else if (isNaN(userData.mobile_number) || userData.mobile_number.length != 10) {
+                $('#message').html('Enter A valid Number')
+            }
+            else if (userData.password === '') {
+                $('#message').html('Enter password')
+            }
+            else if (userData.verifypassword === '') {
+                $('#message').html('Verify Your Password')
+            }
+            else {
+                $.ajax({
+                    url: '/creator/signup/',
+                    type: 'POST',
+                    data: userData,
+                    dataType: 'JSON',
+                    success: function (data) {
+                        if (data == 'invalidpassword') {
+                            $('#message').html('Password Not Matching')
+                            $('#password').val('')
+                            $('#verifypassword').val('')
+                        }
+                        else if (data == 'emailtaken') {
+                            $('#message').html('Email Address Is Taken')
+                        }
+                        else if (data == 'usernametaken') {
+                            $('#message').html('UserName Is Taken')
+                        }
+                        else if (data == 'mobilenumbertaken') {
+                            $('#message').html('Mobile Number Is Taken')
+                        }
+                        else if (data == 'success') {
+                            window.location.replace('/creator/')
+                        }
+                    }
+                })
+            }
+        })
+    </script>
+
+    <!-- JAVASCRIPT -->
+    <script src="{% static './creator/libs/jquery/jquery.min.js' %}"></script>
+    <script src="{% static './creator/libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static './creator/libs/metismenu/metisMenu.min.js' %}"></script>
+    <script src="{% static './creator/libs/simplebar/simplebar.min.js' %}"></script>
+    <script src="{% static './creator/libs/node-waves/waves.min.js' %}"></script>
+
+    <script src="{% static './creator/js/app.js' %}"></script>
+</body>
+
+</html>

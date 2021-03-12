@@ -1,0 +1,44 @@
+{% extends 'consumer/base.html' %}
+{% load static %}
+{% block content %}
+<div class="col-lg-12">
+    <div class="iq-card">
+       <div class="iq-card-header d-flex justify-content-between">
+          <div class="iq-header-title">
+             <h4 class="card-title">{{category.category_name}}</h4>
+          </div>
+       </div>
+
+       <div class="iq-card-body">
+          <ul class="list-unstyled row  iq-box-hover mb-0">
+             {% for artist in artists %}
+             <li class="col-xl-2 col-lg-3 col-md-4 iq-music-box">
+                <div class="iq-card ">
+                   <div class="iq-card-body p-0">
+                      <a href="{% url 'single_artist' artist.id %}">
+                         <div class="iq-thumb">
+                            <div class="iq-music-overlay"></div>
+                            <a href="{% url 'single_artist' artist.id %}">
+                               <img src="{{artist.ImageURL}}" class="img-border-radius img-fluid w-100" alt="">
+                            </a>
+                            <div class="overlay-music-icon">
+                               <a type="button" onclick="currentTrack('{{content.id}}')">
+                                  <i class="las la-play-circle"></i>
+                               </a>
+                            </div>
+                         </div>
+                      </a>
+                      <div class="feature-list text-center">
+                         <h6 class="font-weight-600  mb-0">Followers 10</h6>
+                         <p class="mb-0">{{artist.user.username}}</p>
+                      </div>
+                   </div>
+                </div>
+             </li>
+             {% endfor %}
+          </ul>
+       </div>
+    </div>
+ </div>
+{% endblock content %}
+

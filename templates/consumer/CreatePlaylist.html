@@ -1,0 +1,42 @@
+{% extends 'consumer/base.html' %}
+{% load static %}
+{% block content %}
+
+    <div class="container-fluid mt--6">
+      <div class="row">
+        <div class="col-xl-12 order-xl-1">
+          <div class="card">
+            <div class="card-header">
+              <div class="row align-items-center">
+                <div class="col-8">
+                  <h3 class="mb-0">Create Playlist</h3>
+                </div>
+              </div>
+            </div>
+            <span id="message"></span>
+            <div class="card-body">
+              <form method="POST">
+                {% csrf_token %}
+                <span id="message" style="color: red"></span>
+                <div class="pl-lg-4">
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label class="form-control-label">Playlist Name</label>
+                        <input type="text" id="episode_name" name="playlistName" class="form-control"
+                          placeholder="Playlist name" value="" required />
+                      </div>
+                    </div>
+                  </div>  
+                  <div class="row">
+                    <button id="publishBtn" type="submit">Create</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+{% endblock content %}

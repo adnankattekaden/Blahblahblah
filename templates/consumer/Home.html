@@ -1,0 +1,166 @@
+{% extends 'consumer/base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="col-lg-12">
+   <div class="iq-card">
+      <div class="iq-card-header d-flex justify-content-between align-items-center">
+         <div class="iq-header-title">
+            <h4 class="card-title">Featured Shows</h4>
+         </div>
+         <div id="feature-album-slick-arrow" class="slick-aerrow-block"></div>
+      </div>
+      <div class="iq-card-body">
+         <ul class="list-unstyled row  feature-album iq-box-hover mb-0">
+            {% for content in shows %}
+            <li class="col-lg-2  iq-music-box">
+               <div class="iq-card mb-0">
+                  <a href="{% url 'single_podcast' content.id %}">
+                     <div class="iq-card-body p-0">
+                        <div class="iq-thumb">
+                           <div class="iq-music-overlay"></div>
+                           <a href="{% url 'single_podcast' content.id %}">
+                              <img src="{{content.ImageURL}}" class="img-border-radius img-fluid w-100" alt="">
+                           </a>
+                           <div class="overlay-music-icon">
+                              <a type="button" onclick="currentTrack('{{content.id}}')">
+                                 <i class="las la-play-circle"></i>
+                              </a>
+                           </div>
+                        </div>
+                        <div class="feature-list text-center">
+                           <h6 class="font-weight-600 mb-0">{{content.episode_name}}</h6>
+                           <p class="mb-0">Annie Lennox</p>
+                        </div>
+                     </div>
+                  </a>
+               </div>
+            </li>
+            {% endfor %}
+         </ul>
+      </div>
+   </div>
+</div>
+
+<div class="col-lg-12">
+   <div class="iq-card">
+      <div class="iq-card-header d-flex justify-content-between align-items-center">
+         <div class="iq-header-title">
+            <h4 class="card-title">Podcasters</h4>
+         </div>
+         <div id="feature-album-artist-slick-arrow" class="slick-aerrow-block"></div>
+      </div>
+      <div class="iq-card-body">
+         <ul class="list-unstyled row feature-album-artist mb-0">
+
+            {% for artist in artists %}
+            <li class="col-lg-2  iq-music-box">
+               <a href="{% url 'single_artist' artist.id %}">
+                  <div class="iq-thumb-artist">
+                     <div class="iq-music-overlay"></div>
+                     <a href="{% url 'single_artist' artist.id %}">
+                        <img src="{{artist.ImageURL}}" class="w-100 img-fluid" alt="">
+                     </a>
+                     <div class="overlay-music-icon">
+                        <a href="{% url 'single_artist' artist.id %}">
+                           <i class="las la-play-circle"></i>
+                        </a>
+                     </div>
+                  </div>
+               </a>
+               <div class="feature-list text-center">
+                  <h6 class="font-weight-600  mb-0">{{artist.user.username}}</h6>
+               </div>
+            </li>
+            {% endfor %}
+         </ul>
+      </div>
+   </div>
+</div>
+
+<div class="col-lg-12">
+   <div class="iq-card">
+      <div class="iq-card-header d-flex justify-content-between">
+         <div class="iq-header-title">
+            <h4 class="card-title">Trending Podcasts</h4>
+         </div>
+         <div class="d-flex align-items-center iq-view">
+            <b class="mb-0 text-primary"><a href="albums.html">View More <i class="las la-angle-right"></i></a></b>
+         </div>
+      </div>
+      <div class="iq-card-body">
+         <ul class="list-unstyled row iq-box-hover mb-0">
+            {% for content in shows %}
+            <li class="col-xl-2 col-lg-3 col-md-4 iq-music-box">
+               <div class="iq-card">
+                  <a href="{% url 'single_podcast' content.id %}">
+                     <div class="iq-card-body p-0">
+                        <div class="iq-thumb">
+                           <div class="iq-music-overlay"></div>
+                           <a href="{% url 'single_podcast' content.id %}">
+                              <img src="{{content.ImageURL}}" class="img-border-radius img-fluid w-100" alt="">
+                           </a>
+                           <div class="overlay-music-icon">
+                              <a type="button" onclick="currentTrack('{{content.id}}')">
+                                 <i class="las la-play-circle"></i>
+                              </a>
+                           </div>
+                        </div>
+                        <div class="feature-list text-center">
+                           <h6 class="font-weight-600  mb-0">{{content.episode_name}}</h6>
+                           <p class="mb-0">{{content.show_name}}</p>
+                        </div>
+                     </div>
+                  </a>
+               </div>
+            </li>
+            {% endfor %}
+         </ul>
+      </div>
+   </div>
+</div>
+
+<div class="col-lg-12">
+   <div class="iq-card">
+      <div class="iq-card-header d-flex justify-content-between">
+         <div class="iq-header-title">
+            <h4 class="card-title">Popular Podcasts</h4>
+         </div>
+         <div class="d-flex align-items-center iq-view">
+            <b class="mb-0 text-primary"><a href="albums.html">View More <i class="las la-angle-right"></i></a></b>
+         </div>
+      </div>
+      <div class="iq-card-body">
+         <ul class="list-unstyled row  iq-box-hover mb-0">
+            {% for content in shows %}
+            <li class="col-xl-2 col-lg-3 col-md-4 iq-music-box">
+               <div class="iq-card ">
+                  <div class="iq-card-body p-0">
+                     <a href="{% url 'single_podcast' content.id %}">
+                        <div class="iq-thumb">
+                           <div class="iq-music-overlay"></div>
+                           <a href="{% url 'single_podcast' content.id %}">
+                              <img src="{{content.ImageURL}}" class="img-border-radius img-fluid w-100" alt="">
+                           </a>
+                           <div class="overlay-music-icon">
+                              <a type="button" onclick="currentTrack('{{content.id}}')">
+                                 <i class="las la-play-circle"></i>
+                              </a>
+                           </div>
+                        </div>
+                     </a>
+                     <div class="feature-list text-center">
+                        <h6 class="font-weight-600  mb-0">{{content.episode_name}}</h6>
+                        <p class="mb-0">{{content.show_name}} </p>
+                     </div>
+                  </div>
+               </div>
+            </li>
+            {% endfor %}
+         </ul>
+      </div>
+   </div>
+</div>
+
+
+{% endblock content %}

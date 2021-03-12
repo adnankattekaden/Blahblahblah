@@ -1,0 +1,205 @@
+{% extends 'creator/base.html' %}
+{% load static %}
+{% block title %}Title here{% endblock %}
+{% block content %}
+<!-- start page title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <h4 class="mb-sm-0 font-size-18">Profile</h4>
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+{% if creator_details.about_me is none %}
+
+<div class="col-lg-12">
+    <div class="card m-b-30">
+        <div class="card-body">
+            <h4 class="mt-0 header-title">Fill Details</h4>
+            <br>
+
+            <form>
+                <span style="color: red;" id="message"></span><br>
+                <!-- <div class="cover-container text-center">
+                       <img src="{% static './consumer/images/user/1.jpg' %}" alt="profile-bg" class="rounded-circle img-fluid">
+                    </div> -->
+                <label>Profile</label><br>
+                <input type="file" id="profile_image" accept="image/*" name="profile_image">
+
+                <br>
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <label>First Name</label>
+                        <input type="text" id="first_name" name="first_name" class="form-control" required parsley-type="text"
+                            placeholder="Enter First Name" required/>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <label>Last Name</label>
+                        <input type="text" id="last_name" name="last_name" class="form-control" required parsley-type="text"
+                            placeholder="Enter Last Name" required/>
+                    </div>
+                </div>
+                <br>
+  
+                <div class="form-group">
+                    <label>About Me</label>
+                    <div>
+                        <textarea required class="form-control" rows="5" id="about_me" name="about_me"></textarea>
+                    </div>
+                </div>
+                <br>
+                <div class="form-group">
+                    <div>
+                        <button type="button" class="btn btn-primary waves-effect waves-light" id="updateBtn">
+                            Submit
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+$('#updateBtn').click(function(){
+    var formData = new FormData()
+    formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+    formData.append("profile_image", document.getElementById("profile_image").files[0]);
+    formData.append("first_name", document.getElementById("first_name").value);
+    formData.append("last_name", document.getElementById("last_name").value);
+    formData.append("about_me", document.getElementById("about_me").value);
+    if(profile_image.value == ''){
+        $('#message').html('Upload User Profile')
+    }else if(first_name.value == ''){
+        $('#message').html('Enter First Name')
+    }else if(last_name.value == ''){
+        $('#message').html('Enter Last Name')
+    }else if(about_me.value == ''){
+        $('#message').html('Fill About Me')
+    }else{
+        $.ajax({
+                url: '/creator/profile/',
+                type: 'POST',
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                dataType: 'JSON',
+                success: function (data) {
+                    if (data == 'profile_created') {
+                        window.location.reload()
+                    }
+                }
+            })
+    }
+    
+})
+</script>
+
+{% else %}
+<div class="col-lg-12">
+    <div class="card m-b-30">
+        <div class="card-body">
+            <div class="row profile-content">
+                <div class="col-12 col-md-12 col-lg-12">
+                    <div class="col-xl-12">
+                        <div class="bg-primary bg-soft">
+                            <div class="row">
+                                <div class="col-7">
+                                    <div class="text-primary p-3">
+                                        <h5 class="text-primary">Welcome Back !</h5>
+                                        <p>{{request.user}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body pt-2">
+                            <div class="row">
+                                <div class="col-sm-4">
+
+                                    <div class="avatar-md profile-user-wid mb-4">
+                                        <img src="{{creator_details.ImageURL}}" alt="" class="img-thumbnail rounded-circle">
+                                    </div>
+
+                                    <h5 class="font-size-15 text-truncate">{{request.user.first_name}} {{request.user.last_name}}</h5>
+                                    <p class="text-muted mb-0 text-truncate">{{creator_details.role}}</p>
+
+                                </div>
+            
+                                <div class="col-sm-8">
+                                    <div class="pt-4">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <h5 class="font-size-15">12</h5>
+                                                <p class="text-muted mb-0">Shows</p>
+                                            </div>
+                                            <div class="col-6">
+                                                <h5 class="font-size-15">1K</h5>
+                                                <p class="text-muted mb-0">Followers</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-4 mt-4">
+                                            <label>About Me</label>
+                                            <p >{{creator_details.about_me}}</p>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="iq-card">
+                        <div class="iq-card-header d-flex justify-content-between align-items-center mb-0">
+                            <div class="iq-header-title">
+                                <h4 class="card-title mb-0">Personal Details</h4>
+                            </div>
+                            <div class="iq-header-title">
+                                <a href="{% url 'edit_profile' request.user.id %}">
+                                    <h4 class="card-title mb-0">Edit Profile</h4>
+                                </a>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="iq-card-body">
+                            <ul class="list-inline p-0 mb-0">
+                                <li>
+                                    <div class="d-flex align-items-center justify-content-between mb-3">
+                                        <h6>Birthday</h6>
+                                        <p class="mb-0">3rd March</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="d-flex align-items-center justify-content-between mb-3">
+                                        <h6>Phone</h6>
+                                        <p class="mb-0">{{creator_details.mobile_number}}</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="d-flex align-items-center justify-content-between mb-3">
+                                        <h6>Email</h6>
+                                        <p class="mb-0">{{creator_details.user.email}}</a>
+                                        </p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>  
+{% endif %}
+
+{% endblock content %}
+
+
+{% block scripts %}
+
+{% endblock %}

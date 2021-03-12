@@ -1,0 +1,115 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <title>Login | Admin Panel </title>
+    <meta content="Responsive admin theme build on top of Bootstrap 4" name="description" />
+    <meta content="Themesdesign" name="author" />
+    <link rel="shortcut icon" href="{% static './creator/images/favicon.ico' %}">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+        integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+        crossorigin="anonymous">
+    </script>
+
+    <link href="{% static './owner/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static './owner/css/metismenu.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static './owner/css/icons.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static './owner/css/style.css' %}" rel="stylesheet" type="text/css">
+
+</head>
+
+<body>
+
+    <!-- Begin page -->
+    <div class="accountbg"></div>
+
+    <div class="wrapper-page">
+        <div class="card card-pages shadow-none">
+
+            <div class="card-body">
+                <h5 class="font-18 text-center">Sign in to continue to Admin Panel.</h5>
+                <form class="form-horizontal m-t-30">
+                    <span style="color: red;" id="message"></span>
+                    <div class="form-group">
+                        <div class="col-12">
+                            <label>Username</label>
+                            <input class="form-control" type="text" id="username" placeholder="Username">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-12">
+                            <label>Password</label>
+                            <input class="form-control" type="password" id="password" placeholder="Password">
+                        </div>
+                    </div>
+
+                    <div class="form-group text-center m-t-20">
+                        <div class="col-12">
+                            <button class="btn btn-primary btn-block btn-lg waves-effect waves-light" id="signin_Btn"
+                                type="button">Log In</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- END wrapper -->
+
+
+
+    <script>
+        $('#signin_Btn').click(function () {
+            var userData = {
+                csrfmiddlewaretoken: '{{csrf_token}}',
+                username: $('#username').val(),
+                password: $('#password').val(),
+            }
+            if (userData.username == '') {
+                $('#message').html('Enter Username')
+            }
+            else if (userData.password == '') {
+                $('#message').html('Enter Password')
+            }
+            else {
+                $.ajax({
+                    url: '/owner/',
+                    type: 'POST',
+                    data: userData,
+                    dataType: 'JSON',
+                    success: function (data) {
+                        if (data == 'success') {
+                            window.location.replace('/owner/dashboard/')
+                        }
+                        else if (data == 'loginfailed') {
+                            $('#message').html('Invalid Credentials')
+                        }
+                    }
+                })
+            }
+        })
+    </script>
+
+
+    <!-- jQuery  -->
+    <script src="{% static './owner/js/jquery.min.js' %}"></script>
+    <script src="{% static './owner/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static './owner/js/metismenu.min.js' %}"></script>
+    <script src="{% static './owner/js/jquery.slimscroll.js' %}"></script>
+    <script src="{% static './owner/js/waves.min.js' %}"></script>
+
+    <!-- App js -->
+    <script src="{% static './owner/js/app.js' %}"></script>
+
+
+</body>
+
+
+
+</html>

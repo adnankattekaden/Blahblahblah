@@ -1,0 +1,221 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <title>{% block title %} {% endblock %} | Admin Panel</title>
+    <meta content="Responsive admin theme build on top of Bootstrap 4" name="description" />
+    <meta content="Themesdesign" name="author" />
+    <link rel="shortcut icon" href="{% static './owner/images/favicon.ico' %}">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+        integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+        crossorigin="anonymous"></script>
+
+    <link href="{% static './owner/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static './owner/css/metismenu.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static './owner/css/icons.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static './owner/css/style.css' %}" rel="stylesheet" type="text/css">
+
+</head>
+
+<body>
+
+    <!-- Begin page -->
+    <div id="wrapper">
+
+        <!-- Top Bar Start -->
+        <div class="topbar">
+
+            <!-- LOGO -->
+            <div class="topbar-left">
+                <a href="{% url 'owner_dashboard' %}" class="logo">
+                    <span class="logo-light">
+                        <i class="mdi mdi-camera-control"></i> Admin Panel
+                    </span>
+                    <span class="logo-sm">
+                        <i class="mdi mdi-camera-control"></i>
+                    </span>
+                </a>
+            </div>
+
+            <nav class="navbar-custom">
+                <ul class="navbar-right list-inline float-right mb-0">
+
+                    <!-- notification -->
+                    <li class="dropdown notification-list list-inline-item">
+                        <a class="nav-link dropdown-toggle arrow-none waves-effect" data-toggle="dropdown" href="#"
+                            role="button" aria-haspopup="false" aria-expanded="false">
+                            <i class="mdi mdi-bell-outline noti-icon"></i>
+                            <span class="badge badge-pill badge-danger noti-icon-badge">3</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated dropdown-menu-lg px-1">
+                            <!-- item-->
+                            <h6 class="dropdown-item-text">
+                                Notifications
+                            </h6>
+                            <div class="slimscroll notification-item-list">
+                                <!-- item-->
+                                <a href="javascript:void(0);" class="dropdown-item notify-item active">
+                                    <div class="notify-icon bg-success"><i class="mdi mdi-cart-outline"></i></div>
+                                    <p class="notify-details"><b>Your order is placed</b><span class="text-muted">Dummy
+                                            text of the printing and typesetting industry.</span></p>
+                                </a>
+
+                                <!-- item-->
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <div class="notify-icon bg-danger"><i class="mdi mdi-message-text-outline"></i>
+                                    </div>
+                                    <p class="notify-details"><b>New Message received</b><span class="text-muted">You
+                                            have 87 unread messages</span></p>
+                                </a>
+
+                                <!-- item-->
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <div class="notify-icon bg-info"><i class="mdi mdi-filter-outline"></i></div>
+                                    <p class="notify-details"><b>Your item is shipped</b><span class="text-muted">It is
+                                            a long established fact that a reader will</span></p>
+                                </a>
+
+                                <!-- item-->
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <div class="notify-icon bg-success"><i class="mdi mdi-message-text-outline"></i>
+                                    </div>
+                                    <p class="notify-details"><b>New Message received</b><span class="text-muted">You
+                                            have 87 unread messages</span></p>
+                                </a>
+
+                                <!-- item-->
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <div class="notify-icon bg-warning"><i class="mdi mdi-cart-outline"></i></div>
+                                    <p class="notify-details"><b>Your order is placed</b><span class="text-muted">Dummy
+                                            text of the printing and typesetting industry.</span></p>
+                                </a>
+
+                            </div>
+                            <!-- All-->
+                            <a href="javascript:void(0);" class="dropdown-item text-center notify-all text-primary">
+                                View all <i class="fi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </li>
+
+                    <li class="dropdown notification-list list-inline-item">
+                        <div class="dropdown notification-list nav-pro-img">
+                            <a class="dropdown-toggle nav-link arrow-none nav-user" data-toggle="dropdown" href="#"
+                                role="button" aria-haspopup="false" aria-expanded="false">
+                                <img src="{% static './owner/images/users/user-4.jpg' %}" alt="user"
+                                    class="rounded-circle">
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right profile-dropdown ">
+                                <a class="dropdown-item text-danger" href="{% url 'owner_logout' %}"><i class="mdi mdi-power text-danger"></i>
+                                    Logout</a>
+                            </div>
+                        </div>
+                    </li>
+
+                </ul>
+
+                <ul class="list-inline menu-left mb-0">
+                    <li class="float-left">
+                        <button class="button-menu-mobile open-left waves-effect">
+                            <i class="mdi mdi-menu"></i>
+                        </button>
+                    </li>
+                </ul>
+
+            </nav>
+
+        </div>
+        <!-- Top Bar End -->
+
+        <!-- ========== Left Sidebar Start ========== -->
+        <div class="left side-menu">
+            <div class="slimscroll-menu" id="remove-scroll">
+
+                <!--- Sidemenu -->
+                <div id="sidebar-menu">
+                    <!-- Left Menu Start -->
+                    <ul class="metismenu" id="side-menu">
+                        <li class="menu-title">Menu</li>
+                        <li>
+                            <a href="{% url 'owner_dashboard' %}" class="waves-effect">
+                                <i class="icon-accelerator"></i><span
+                                    class="badge badge-success badge-pill float-right">9+</span> <span> Dashboard
+                                </span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="javascript:void(0);" class="waves-effect"><i class="icon-mail-open"></i><span>
+                                    Manage Category <span class="float-right menu-arrow"><i
+                                            class="mdi mdi-chevron-right"></i></span> </span></a>
+                            <ul class="submenu">
+                                <li><a href="{% url 'create_category' %}">Create Category</a></li>
+                                <li><a href="{% url 'manage_category' %}">Manage Category</a></li>
+                            </ul>
+                        </li>
+
+
+                    </ul>
+
+                </div>
+                <!-- Sidebar -->
+                <div class="clearfix"></div>
+
+            </div>
+            <!-- Sidebar -left -->
+
+        </div>
+        <!-- Left Sidebar End -->
+
+        <!-- ============================================================== -->
+        <!-- Start right Content here -->
+        <!-- ============================================================== -->
+        <div class="content-page">
+            <!-- Start content -->
+            <div class="content">
+                <div class="container-fluid">
+                    {% block content %}
+
+                    {% endblock %}
+                </div>
+                <!-- container-fluid -->
+
+            </div>
+            <!-- content -->
+
+            <footer class="footer">
+                © 2019 - 2020 Stexo <span class="d-none d-sm-inline-block"> - Crafted with <i
+                        class="mdi mdi-heart text-danger"></i> by Themesdesign</span>.
+            </footer>
+
+        </div>
+        <!-- ============================================================== -->
+        <!-- End Right content here -->
+        <!-- ============================================================== -->
+
+    </div>
+    <!-- END wrapper -->
+
+    <!-- jQuery  -->
+    <script src="{% static './owner/js/jquery.min.js' %}"></script>
+    <script src="{% static './owner/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static './owner/js/metismenu.min.js' %}"></script>
+    <script src="{% static './owner/js/jquery.slimscroll.js' %}"></script>
+    <script src="{% static './owner/js/waves.min.js' %}"></script>
+
+
+
+    <script src="{% static './owner/pages/dashboard.init.js' %}"></script>
+
+
+    <!-- App js -->
+    <script src="{% static './owner/js/app.js' %}"></script>
+
+</body>
+
+</html>

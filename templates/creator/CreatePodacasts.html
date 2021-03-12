@@ -1,0 +1,110 @@
+{% extends 'creator/base.html' %}
+{% load static %}
+{% block title %}Create Podcasts{% endblock %}
+{% block content %}
+<!-- start page title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <h4 class="mb-sm-0 font-size-18">Create Podcasts</h4>
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+
+                <h4 class="card-title">Show Information</h4>
+                <p class="card-title-desc">Fill all information below</p>
+                <span id="message" style="color: red; text-align: center;"></span>
+
+                <form>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                                <label for="podcastName">Show Name</label>
+                                <input id="podcastName" name="podcastName" type="text" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label class="control-label">Category</label>
+                                <select class="form-control select2" id="category" name="category">
+                                    <option>Choose An Category</option>
+                                    {% for category in categories %}
+                                    <option value="{{category.id}}">{{category.category_name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="productdesc">Product Description</label>
+                                <textarea class="form-control" id="productdesc" rows="5"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                                <label for="thumbnail">Show Art</label><br>
+                                <input type="file" name="thumbnail" id="thumbnail" accept="image/*">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-2">
+                        <button type="button" id="createBtn" class="btn btn-primary waves-effect waves-light">Create
+                            Show</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#createBtn').click(function () {
+        var formData = new FormData();
+        formData.append("podcastName", document.getElementById("podcastName").value);
+        formData.append("thumbnail", document.getElementById("thumbnail").files[0]);
+        formData.append("category", document.getElementById("category").value);
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+        // restrict other Filetypes
+        var ext = thumbnail.value.split(".")
+        ext = ext[ext.length - 1].toLowerCase();
+        var arrayExtensions = ["jpg","png","svg","jpeg"];
+        // END RESTRRICT FILE TYPE
+
+        if (podcastName.value == '') {
+            $('#message').html('Enter Podcast Name')
+        } else if (thumbnail.value == '') {
+            $('#message').html('Upload Thumbnail')
+        } else if (arrayExtensions.lastIndexOf(ext) == -1){
+            $('#message').html('it is not an Image File')
+        } else if (category.value == 'Choose An Category') {
+            $('#message').html('Choose An Category')
+        } else {
+            $.ajax({
+                url: '/creator/create-podcast/',
+                type: 'POST',
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                dataType: 'JSON',
+                success: function (data) {
+                    if (data == 'podcastcreated') {
+                        $("#showCreated").click();
+                        window.location.replace('/creator/manage-podcasts/')
+                    }
+                }
+            })
+
+        }
+    })
+
+</script>
+
+{% endblock content %}

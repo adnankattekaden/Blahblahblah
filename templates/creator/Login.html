@@ -1,0 +1,152 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Login|Creator Studio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
+    <meta content="Themesbrand" name="author" />
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="{% static './creator/images/favicon.ico' %}">
+
+    <!-- Bootstrap Css -->
+    <link href="{% static './creator/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+    <!-- Icons Css -->
+    <link href="{% static './creator/css/icons.min.css' %}" rel="stylesheet" type="text/css" />
+    <!-- App Css-->
+    <link href="{% static './creator/css/app.min.css' %}" rel="stylesheet" type="text/css" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+    integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+    crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+    <div class="account-pages my-5 pt-sm-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6 col-xl-5">
+                    <div class="card overflow-hidden">
+                        <div class="bg-primary bg-soft">
+                            <div class="row">
+                                <div class="col-7">
+                                    <div class="text-primary p-4">
+                                        <h5 class="text-primary">Welcome Back !</h5>
+                                        <p>Sign in back to continue to Publish Podcasts.</p>
+                                    </div>
+                                </div>
+                                <div class="col-5 align-self-end">
+                                    <img src="{% static './creator/images/profile-img.png' %}" alt="" class="img-fluid">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body pt-0">
+                            <div class="auth-logo">
+                                <a href="index.html" class="auth-logo-light">
+                                    <div class="avatar-md profile-user-wid mb-4">
+                                        <span class="avatar-title rounded-circle bg-light">
+                                            <img src="{% static './creator/images/logo-light.svg' %}" alt="" class="rounded-circle"
+                                                height="34">
+                                        </span>
+                                    </div>
+                                </a>
+                                <span id="message" style="color: red; text-align: center;"></span>
+                            </div>
+
+                            <div class="p-2">
+                                <form class="form-horizontal">
+
+                                    <div class="mb-3">
+                                        <label for="username" class="form-label">Username</label>
+                                        <input type="text" class="form-control" id="username"
+                                            placeholder="Enter username">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Password</label>
+                                        <div class="input-group auth-pass-inputgroup">
+                                            <input type="password" id="password" class="form-control" placeholder="Enter password">
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-3 d-grid">
+                                        <button class="btn btn-primary waves-effect waves-light" id="login_Btn" type="button">Log
+                                            In</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-5 text-center">
+
+                        <div>
+                            <p>Don't have an account ? <a href="{% url 'creator_signup' %}" class="fw-medium text-primary">
+                                    Signup now </a> </p>
+                            <p>©
+                                <script>document.write(new Date().getFullYear())</script>
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end account-pages -->
+
+    <!-- JAVASCRIPT -->
+    <script src="{% static './creator/libs/jquery/jquery.min.js' %}"></script>
+    <script src="{% static './creator/libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static './creator/libs/metismenu/metisMenu.min.js' %}"></script>
+    <script src="{% static './creator/libs/simplebar/simplebar.min.js' %}"></script>
+    <script src="{% static './creator/libs/node-waves/waves.min.js' %}"></script>
+
+    <script src="{% static './creator/js/app.js' %}"></script>
+
+    <script>
+        $('#login_Btn').click(function () {
+            var userData = {
+                csrfmiddlewaretoken: '{{csrf_token}}',
+                username: $('#username').val(),
+                password: $('#password').val(),
+            }
+            console.log('button cliked')
+
+            if (userData.username == '') {
+                $('#message').html('Enter Username')
+            }
+            else if (userData.password == '') {
+                $('#message').html('Enter Password')
+            }
+            else {
+                $.ajax({
+                    url: '/creator/',
+                    type: 'POST',
+                    data: userData,
+                    dataType: 'JSON',
+                    success: function (data) {
+                        if (data == 'loginsucess') {
+                            window.location.replace('/creator/dashboard/')
+                        }
+                        else if (data == 'loginfail') {
+                            $('#message').html('Invalid Credentials')
+                            $('#password').val('')
+                        }
+                        else if (data == 'youarenotcreator') {
+                            $('#message').html('You are Not An Creator')
+
+                        }
+                    }
+                })
+            }
+        })
+
+    </script>
+
+</body>
+
+</html>

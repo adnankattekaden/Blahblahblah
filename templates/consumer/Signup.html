@@ -1,0 +1,187 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+   <!-- Required meta tags -->
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+   <title>Signup</title>
+   <!-- Favicon -->
+   <link rel="shortcut icon" href="{% static './consumer/images/favicon.ico' %}" />
+   <!-- Bootstrap CSS -->
+   <link rel="stylesheet" href="{% static './consumer/css/bootstrap.min.css' %}">
+   <!-- Typography CSS -->
+   <link rel="stylesheet" href="{% static './consumer/css/typography.css' %}">
+   <!-- Style CSS -->
+   <link rel="stylesheet" href="{% static './consumer/css/style.css' %}">
+   <!-- Responsive CSS -->
+   <link rel="stylesheet" href="{% static './consumer/css/responsive.css' %}">
+
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+      integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+      crossorigin="anonymous"></script>
+</head>
+
+<body>
+   <!-- Sign in Start -->
+   <section class="sign-in-page">
+      <div class="container">
+         <div class="row justify-content-center align-items-center height-self-center">
+            <div class="col-md-6 col-sm-12 col-12 align-self-center">
+               <div class="sign-user_card ">
+                  <div class="sign-in-page-data">
+                     <div class="sign-in-from w-100 m-auto pt-5">
+                        <h1 class="mb-3 text-center">Sign Up</h1>
+                        <div class="text-center text-muted mb-4">
+                           <span style="color: red;" id="message"></span><br>
+                        </div>
+                        <form class="mt-4">
+                           <div class="form-group">
+                              <label for="exampleInputEmail2">First Name</label>
+                              <input type="text" id="first_name" class="form-control mb-0" placeholder="First Name">
+                           </div>
+                           <div class="form-group">
+                              <label for="exampleInputEmail2">Last Name</label>
+                              <input type="text" id="last_name" class="form-control mb-0" placeholder="Last Name">
+                           </div>
+                           <div class="form-group">
+                              <label for="exampleInputEmail2">Username</label>
+                              <input type="text" id="username" class="form-control mb-0" placeholder="Username">
+                           </div>
+                           <div class="form-group">
+                              <label for="exampleInputEmail3">Email address</label>
+                              <input type="email" id="email" class="form-control mb-0" placeholder="Enter email">
+                           </div>
+                           <div class="form-group">
+                              <label for="exampleInputEmail3">Mobile Number</label>
+                              <input type="number" id="mobilenumber" class="form-control mb-0"
+                                 placeholder="Enter MobileNumber">
+                           </div>
+                           <div class="form-group">
+                              <label for="exampleInputPassword2">Password</label>
+                              <input type="password" id="password" class="form-control mb-0" placeholder="Password">
+                           </div>
+
+                           <div class="form-group">
+                              <label for="exampleInputPassword2">Verify Password</label>
+                              <input type="password" id="verifypassword" class="form-control mb-0"
+                                 placeholder="Verify Password">
+                           </div>
+                           <div class="sign-info mt-3">
+                              <button type="button" id="signup_Btn" class="btn btn-primary mb-2">Sign Up</button>
+                              <span class="d-block line-height-2">Already Have Account ? <a
+                                    href="{% url 'signin' %}">Log In</a></span>
+                           </div>
+                        </form>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </section>
+
+   <!-- Sign in END -->
+   <!-- Optional JavaScript -->
+   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+   <script src="{% static './consumer/js/jquery.min.js' %}"></script>
+
+   <script src="{% static './consumer/js/popper.min.js' %}"></script>
+   <script src="{% static './consumer/js/bootstrap.min.js' %}"></script>
+   <!-- Appear JavaScript -->
+   <script src="{% static './consumer/js/jquery.appear.js' %}"></script>
+   <!-- Countdown JavaScript -->
+   <script src="{% static './consumer/js/countdown.min.js' %}"></script>
+   <!-- Counterup JavaScript -->
+   <script src="{% static './consumer/js/waypoints.min.js' %}"></script>
+   <script src="{% static './consumer/js/jquery.counterup.min.js' %}"></script>
+   <!-- Wow JavaScript -->
+   <script src="{% static './consumer/js/wow.min.js' %}"></script>
+
+   <!-- Apexcharts JavaScript -->
+   <script src="{% static './consumer/js/apexcharts.js' %}"></script>
+   <!-- Slick JavaScript -->
+   <script src="{% static './consumer/js/slick.min.js' %}"></script>
+   <!-- Select2 JavaScript -->
+   <script src="{% static './consumer/js/select2.min.js' %}"></script>
+   <!-- Owl Carousel JavaScript -->
+   <script src="{% static './consumer/js/owl.carousel.min.js' %}"></script>
+   <!-- Magnific Popup JavaScript -->
+   <script src="{% static './consumer/js/jquery.magnific-popup.min.js' %}"></script>
+   <!-- Smooth Scrollbar JavaScript -->
+   <script src="{% static './consumer/js/smooth-scrollbar.js' %}"></script>
+   <!-- Style Customizer -->
+   <script src="{% static './consumer/js/style-customizer.js' %}"></script>
+   <!-- Chart Custom JavaScript -->
+   <script src="{% static './consumer/js/chart-custom.js' %}"></script>
+   <!-- Custom JavaScript -->
+   <script src="{% static './consumer/js/custom.js' %}"></script>
+
+
+   <script>
+      $('#signup_Btn').click(function () {
+         var userData = {
+            csrfmiddlewaretoken: '{{csrf_token}}',
+            first_name: $('#first_name').val(),
+            last_name: $('#last_name').val(),
+            username: $('#username').val(),
+            email: $('#email').val(),
+            mobile_number: $('#mobilenumber').val(),
+            password: $('#password').val(),
+            verify_password: $('#verifypassword').val(),
+         }
+         if (userData.first_name === '') {
+            $('#message').html('Enter FirstName')
+         }
+         else if (userData.last_name === '') {
+            $('#message').html('Enter LastName')
+         }
+         else if (userData.username === '') {
+            $('#message').html('Enter Username')
+         }
+         else if (userData.email === '') {
+            $('#message').html('Enter Email')
+         }
+         else if (userData.mobile_number === '') {
+            $('#message').html('Enter Mobile Number')
+         }
+         else if (isNaN(userData.mobile_number) || userData.mobile_number.length != 10) {
+            $('#message').html('Enter A valid Number')
+         }
+         else if (userData.password === '') {
+            $('#message').html('Enter Password')
+         }
+         else if (userData.verify_password === '') {
+            $('#message').html('Enter Verify Password')
+         }
+         else {
+            $.ajax({
+               url: '/signup/',
+               type: 'POST',
+               data: userData,
+               dataType: 'JSON',
+               success: function (data) {
+                  if (data == 'success') {
+                     window.location.replace('/signin/')
+                  }
+                  if (data == 'invalidpassword') {
+                     $('#message').html('Password Not Matching')
+                     $('#password').val('')
+                     $('#verifypassword').val('')
+                  }
+                  else if (data == 'emailtaken') {
+                     $('#message').html('Email Address Is Taken')
+                  }
+                  else if (data == 'mobilenumberexists') {
+                     $('#message').html('Mobile Number is Taken')
+                  }
+               }
+            })
+         }
+      })
+   </script>
+
+</body>
+
+</html>

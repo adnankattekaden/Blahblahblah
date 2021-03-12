@@ -1,0 +1,162 @@
+{% extends 'consumer/base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container-fluid">
+   <div class="row">
+      <div class="col-lg-12">
+         <div class="iq-card">
+            <div class="iq-card-body p-0">
+               <div class="iq-edit-list">
+                  <ul class="iq-edit-profile d-flex nav nav-pills">
+                     <li class="col-md-3 col-lg-6 p-0">
+                        <a class="nav-link active" data-toggle="pill" href="#personal-information">
+                           Personal Information
+                        </a>
+                     </li>
+                     <li class="col-md-3 col-lg-6 p-0">
+                        <a class="nav-link" data-toggle="pill" href="#chang-pwd">
+                           Change Password
+                        </a>
+                     </li>
+                  </ul>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="col-lg-12">
+         <div class="iq-edit-list-data">
+            <div class="tab-content">
+               <div class="tab-pane fade active show" id="personal-information" role="tabpanel">
+                  <div class="iq-card">
+                     <div class="iq-card-header d-flex justify-content-between">
+                        <div class="iq-header-title">
+                           <h4 class="card-title">Personal Information</h4>
+                        </div>
+                     </div>
+                     <div class="iq-card-body">
+                        <form>
+                           <span style="color: red;" id="message"></span>
+                           <div class="form-group row align-items-center">
+                              <div class="col-md-12">
+                                 <div class="profile-img-edit">
+                                    {% if user_details.ImageURL == "" %}
+                                    <img class="profile-pic" src="{% static './consumer/images/user/11.png' %}"
+                                       alt="profile-pic">
+                                       {% else %}
+                                    <img class="profile-pic" src="{{user_details.ImageURL}}"
+                                       alt="profile-pic">
+                                    {% endif %}
+                                    <div class="p-image">
+                                       <i class="ri-pencil-line upload-button"></i>
+                                       <input class="file-upload" id="profile_image" type="file" accept="image/*" />
+                                    </div>
+                                 </div>
+                                 
+                              </div>
+                           </div>
+
+                           <div class=" row align-items-center">
+                              <div class="form-group col-sm-6">
+                                 <label for="fname">First Name:</label>
+                                 <input type="text" class="form-control" id="first_name"
+                                    value="{{user_details.user.first_name}}">
+                              </div>
+                              <div class="form-group col-sm-6">
+                                 <label for="lname">Last Name:</label>
+                                 <input type="text" class="form-control" id="last_name"
+                                    value="{{user_details.user.last_name}}">
+                              </div>
+                              <div class="form-group col-sm-6">
+                                 <label for="lname">Email:</label>
+                                 <input type="email" class="form-control" id="email"
+                                    value="{{user_details.user.email}}">
+                              </div>
+                              <div class="form-group col-sm-6">
+                                 <label for="uname">Phone Number:</label>
+                                 <input type="number" class="form-control" id="mobile_number"
+                                    value="{{user_details.mobile_number}}">
+                              </div>
+                           </div>
+                           <button type="button" id="profileUpdateBtn" class="btn btn-primary mr-2">Submit</button>
+                        </form>
+                     </div>
+                  </div>
+               </div>
+
+               <div class="tab-pane fade" id="chang-pwd" role="tabpanel">
+                  <div class="iq-card">
+                     <div class="iq-card-header d-flex justify-content-between">
+                        <div class="iq-header-title">
+                           <h4 class="card-title">Change Password</h4>
+                        </div>
+                     </div>
+                     <div class="iq-card-body">
+                        <form>
+                           <div class="form-group">
+                              <label for="cpass">Current Password:</label>
+                              <a href="javascripe:void();" class="float-right">Forgot Password</a>
+                              <input type="Password" class="form-control" id="cpass" value="">
+                           </div>
+                           <div class="form-group">
+                              <label for="npass">New Password:</label>
+                              <input type="Password" class="form-control" id="npass" value="">
+                           </div>
+                           <div class="form-group">
+                              <label for="vpass">Verify Password:</label>
+                              <input type="Password" class="form-control" id="vpass" value="">
+                           </div>
+                           <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                        </form>
+                     </div>
+                  </div>
+               </div>
+
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
+
+<script>
+   $('#profileUpdateBtn').click(function () {
+      var formData = new FormData()
+      formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+      formData.append("profile_image", document.getElementById("profile_image").files[0]);
+      formData.append("first_name", document.getElementById("first_name").value);
+      formData.append("last_name", document.getElementById("last_name").value);
+      formData.append("email", document.getElementById("email").value);
+      formData.append("mobile_number", document.getElementById("mobile_number").value);
+
+      if (profile_image.value == ''){
+         $('#message').html('Upload Profile Picture')
+      }else if(first_name.value == ''){
+         $('#message').html('Enter First Name')
+      }else if (last_name.value == ''){
+         $('#message').html('Enter Last Name')
+      }else if(email.value == ''){
+         $('#message').html('Enter Email Address')
+      }else if(mobile_number.value == ''){
+         $('#message').html('Enter Mobile Number')
+      }
+      else{
+         var id = '{{request.user.id}}'
+         $.ajax({
+                url: '/edit-profile/'+id+'/',
+                type: 'POST',
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                dataType: 'JSON',
+                success: function (data) {
+                    if (data == 'profileupdated') {
+                        window.location.reload()
+                    }
+                }
+            })
+      }
+   })
+</script>
+{% endblock content %}

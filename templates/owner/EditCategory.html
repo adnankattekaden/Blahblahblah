@@ -1,0 +1,37 @@
+
+{% extends 'owner/base.html' %}
+{% load static %}
+{% block title %}Manage Category{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <!-- start page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <h4 class="mb-sm-0 font-size-18">Edit Category</h4>
+            </div>
+        </div>
+    </div>
+    <!-- end page title -->
+
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card">
+                <div class="card-body">
+                    <form>
+                        <div class="col-xl-6">
+                            <label for="create Category">Edit Category</label><br>
+                            <span style="color: red;" id="message"></span>
+                            <input type="text" class="form-control" id="category" value="{{category.category_name}}">
+                        </div>
+                        <br>
+                        <button type="button" class="btn btn-primary" id="createCategory">Create</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end row -->
+
+</div> <!-- container-fluid -->
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends 'owner/base.html' %}
+{% load static %}
+{% block title %}Create Category{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <!-- start page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <h4 class="mb-sm-0 font-size-18">Create Category</h4>
+            </div>
+        </div>
+    </div>
+    <!-- end page title -->
+
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card">
+                <div class="card-body">
+                    <form>
+                        <div class="col-xl-6">
+                            <label for="create Category">Create Category</label><br>
+                            <span style="color: red;" id="message"></span>
+                            <input type="text" class="form-control" placeholder="Enter Category Name" id="category">
+                        </div>
+                        <br>
+                        <button type="button" class="btn btn-primary" id="createCategory">Create</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end row -->
+
+</div> <!-- container-fluid -->
+
+<script>
+$('#createCategory').click(function(){
+    var categoryData = {
+        csrfmiddlewaretoken: '{{csrf_token}}',
+        category: $('#category').val(),
+    }
+
+    if (categoryData.category == ''){
+        $('#message').html('Enter Category Name')
+    }else{
+        $.ajax({
+            url:'/owner/create-category/',
+            type: 'POST',
+            data:categoryData,
+            dataType:'JSON',
+            success:function(data){
+                if (data == 'category_created'){
+                    window.location.replace('/owner/dashboard/')
+                }
+            }
+        })
+    }
+})
+</script>
+{% endblock %}
