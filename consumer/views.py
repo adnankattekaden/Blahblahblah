@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.models import User,auth
 from . models import UserDetails,Playlist,PlaylistContent
-from creator.models import Contents,Show,CreatorDeatails,Follows
+from creator.models import Contents,Show,CreatorDeatails,Follows,FollowShows
 from owner.models import Category
 import json
 from django.http import JsonResponse
@@ -103,6 +103,7 @@ def homepage(request):
     shows = Show.objects.all()
     artists = CreatorDeatails.objects.all()
     results = []
+    latest_feeds = []
     try:
         followed_creators = Follows.objects.filter(followed=request.user,follow_type=True)
         for creators in followed_creators:
@@ -112,9 +113,15 @@ def homepage(request):
             creator_art = CreatorDeatails.objects.filter(user=creators.creators.id)     
             for i in show_notifications:
                 results.append(i)
+
+        for feed_show in FollowShows.objects.filter(followed=request.user,follow_type=True):
+            feeds = Show.objects.filter(user_id=feed_show.show.user.id)
+            for j in feeds:
+                latest_feeds.append(j)
+
     except:
         followed_creators = []
-    context = {'shows':shows,'artists':artists,'results':results}
+    context = {'shows':shows,'artists':artists,'results':results,'latest_feeds':latest_feeds}
     return render(request, './consumer/Home.html',context)
 
 def consumer_latest_feed(request):
@@ -186,16 +193,16 @@ def follow_show(request,id):
         show = Show.objects.get(id=id)
 
         if followType == 'followpodcast':
-            if Follows.objects.filter(followed=request.user.id,follow_type=True,show=show).exists():
-                Follows.objects.get(followed=request.user.id,follow_type=True,show=show).delete()
-                Follows.objects.create(show=show,followed=request.user,follow_type=False)
+            if FollowShows.objects.filter(followed=request.user.id,follow_type=True,show=show).exists():
+                FollowShows.objects.get(followed=request.user.id,follow_type=True,show=show).delete()
+                FollowShows.objects.create(show=show,followed=request.user,follow_type=False)
                 return JsonResponse('unfollowed_show', safe=False)
             else:
-                if Follows.objects.filter(followed=request.user.id,follow_type=False,show=show).exists():
-                    Follows.objects.get(followed=request.user.id,follow_type=False,show=show).delete()
-                    Follows.objects.create(show=show,followed=request.user,follow_type=True)
+                if FollowShows.objects.filter(followed=request.user.id,follow_type=False,show=show).exists():
+                    FollowShows.objects.get(followed=request.user.id,follow_type=False,show=show).delete()
+                    FollowShows.objects.create(show=show,followed=request.user,follow_type=True)
                 else:
-                    follows = Follows.objects.create(show=show,followed=request.user,follow_type=True)
+                    follows = FollowShows.objects.create(show=show,followed=request.user,follow_type=True)
                 return JsonResponse('followed_show', safe=False)
         else:
             pass

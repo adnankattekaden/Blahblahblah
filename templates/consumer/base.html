@@ -119,8 +119,6 @@
 
 
                      {% if user.is_authenticated %}
-
-
                      <li class="nav-item nav-icon">    
 
                         <a href="#" class="search-toggle iq-waves-effect text-black rounded">
@@ -136,21 +134,22 @@
                                     <h5 class="mb-0 text-white">All Notifications<small
                                           class="badge  badge-light float-right pt-1">4</small></h5>
                                  </div>
+
                                  {% for result in results %}
-                                 <a href="{% url 'single_podcast' result.id %}" class="iq-sub-card">
+                                 <a href="#" class="iq-sub-card">
                                     <div class="media align-items-center">
 
                                        <div class="">
                                           <img class="avatar-40 rounded img-fluid"
-                                             src="{{artist}}" alt="">
+                                             src="{{episode.ImageURL}}" alt="">
                                        </div>
-                                       
 
                                        <div class="media-body ml-3">
                                           <h6 class="mb-0 ">{{result.show_name}}</h6>
                                           <small class="float-right">Just Now</small>
-                                          <p class="mb-0">{{result.host}}</p>
+                                          <p class="mb-0">{{episode.artist}}</p>
                                        </div>
+                                       
                                     </div>
                                  </a>
                                  {% endfor %}

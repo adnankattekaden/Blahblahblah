@@ -82,6 +82,14 @@ class Contents(models.Model):
 class Follows(models.Model):
     creators = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True,related_name='follow_follower')
     followed = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True,related_name='follow_followed')
+    date = models.DateField(auto_now_add=True,null=True,blank=True)
+    time = models.TimeField(auto_now_add=True,null=True,blank=True)
+    follow_type = models.BooleanField(null=True,blank=True)
+
+
+class FollowShows(models.Model):
+    creators = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True,related_name='follow_shows')
+    followed = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True,related_name='followed_shows')
     show = models.ForeignKey(Show, on_delete=models.CASCADE,null=True,blank=True)
     date = models.DateField(auto_now_add=True,null=True,blank=True)
     time = models.TimeField(auto_now_add=True,null=True,blank=True)
