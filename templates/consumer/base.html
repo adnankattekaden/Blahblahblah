@@ -136,19 +136,24 @@
                                     <h5 class="mb-0 text-white">All Notifications<small
                                           class="badge  badge-light float-right pt-1">4</small></h5>
                                  </div>
-                                 <a href="#" class="iq-sub-card">
+                                 {% for result in results %}
+                                 <a href="{% url 'single_podcast' result.id %}" class="iq-sub-card">
                                     <div class="media align-items-center">
+
                                        <div class="">
                                           <img class="avatar-40 rounded img-fluid"
-                                             src="{% static 'consumer/images/user/01.jpg' %}" alt="">
+                                             src="{{artist}}" alt="">
                                        </div>
+                                       
+
                                        <div class="media-body ml-3">
-                                          <h6 class="mb-0 ">Emma Watson Barry</h6>
+                                          <h6 class="mb-0 ">{{result.show_name}}</h6>
                                           <small class="float-right">Just Now</small>
-                                          <p class="mb-0">95 MB</p>
+                                          <p class="mb-0">{{result.host}}</p>
                                        </div>
                                     </div>
                                  </a>
+                                 {% endfor %}
                               </div>
                            </div>
                         </div>

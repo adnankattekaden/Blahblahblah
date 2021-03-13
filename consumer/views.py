@@ -102,7 +102,19 @@ def pricing(request):
 def homepage(request):
     shows = Show.objects.all()
     artists = CreatorDeatails.objects.all()
-    context = {'shows':shows,'artists':artists}
+    results = []
+    try:
+        followed_creators = Follows.objects.filter(followed=request.user,follow_type=True)
+        for creators in followed_creators:
+            followed_date = creators.date
+            followed_time = creators.time
+            show_notifications = Show.objects.filter(user=creators.creators.id).filter(date_of_published=followed_date) 
+            creator_art = CreatorDeatails.objects.filter(user=creators.creators.id)     
+            for i in show_notifications:
+                results.append(i)
+    except:
+        followed_creators = []
+    context = {'shows':shows,'artists':artists,'results':results}
     return render(request, './consumer/Home.html',context)
 
 def consumer_latest_feed(request):
@@ -141,35 +153,52 @@ def artists_list(request):
 def single_artist(request,id):
     artists = CreatorDeatails.objects.get(id=id)
     podcasts = Show.objects.filter(user=artists.user_id)
-    context = {'artists':artists,'podcasts':podcasts}
+    followers = Follows.objects.filter(creators=artists.user_id,follow_type=True).count()
+    context = {'artists':artists,'podcasts':podcasts,'creator_followers':followers}
     return render(request, './consumer/SingleArtistView.html',context)
 
 def follow_podcaster(request,id):
     if request.method == 'POST':
         followType = request.POST['followType']
-        total_followers,total_unfollowers = 10,2
         artists = CreatorDeatails.objects.get(id=id)
-        follower = User.objects.get(id=artists.user_id)
+        creator_id = User.objects.get(id=artists.user_id)
 
-        if followType == 'following':
-            followers = Follows.objects.create(follower=follower,followed=request.user,follow_type=followType)
-
-            if Follows.objects.filter(followed=request.user).exists():
-                followers_list = Follows.objects.filter(followed=request.user)
-                for i in followers_list:
-                    total_followers += i.follows
-                    total_unfollowers += i.unfollows
-                print(total_unfollowers)
-                total_followers = total_followers-total_unfollowers
-                followers.total_followers = total_followers
-                followers.save()
+        if followType == 'follow':
+            if Follows.objects.filter(followed=request.user.id,follow_type=True,creators=creator_id).exists():
+                Follows.objects.get(followed=request.user.id,follow_type=True,creators=creator_id).delete()
+                Follows.objects.create(creators=creator_id,followed=request.user,follow_type=False)
+                return JsonResponse('unfollowed', safe=False)
+            else:
+                if Follows.objects.filter(followed=request.user.id,follow_type=False,creators=creator_id).exists():
+                    Follows.objects.get(followed=request.user.id,follow_type=False,creators=creator_id).delete()
+                    Follows.objects.create(creators=creator_id,followed=request.user,follow_type=True)
+                else:
+                    follows = Follows.objects.create(creators=creator_id,followed=request.user,follow_type=True)
                 return JsonResponse('followed', safe=False)
         else:
-            print('else')
-            followers = Follows.objects.create(follower=follower,followed=request.user,follow_type=followType)
-            return JsonResponse('unfollow', safe=False)
+            pass
     else:
         pass
+
+def follow_show(request,id):
+    if request.method == 'POST':
+        followType = request.POST['followType']
+        show = Show.objects.get(id=id)
+
+        if followType == 'followpodcast':
+            if Follows.objects.filter(followed=request.user.id,follow_type=True,show=show).exists():
+                Follows.objects.get(followed=request.user.id,follow_type=True,show=show).delete()
+                Follows.objects.create(show=show,followed=request.user,follow_type=False)
+                return JsonResponse('unfollowed_show', safe=False)
+            else:
+                if Follows.objects.filter(followed=request.user.id,follow_type=False,show=show).exists():
+                    Follows.objects.get(followed=request.user.id,follow_type=False,show=show).delete()
+                    Follows.objects.create(show=show,followed=request.user,follow_type=True)
+                else:
+                    follows = Follows.objects.create(show=show,followed=request.user,follow_type=True)
+                return JsonResponse('followed_show', safe=False)
+        else:
+            pass
 
 def next_music_data(request,id):
     print(id)

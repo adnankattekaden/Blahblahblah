@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.models import User,auth
 import json
 from django.http import JsonResponse
-from .models import Contents,CreatorDeatails,Show
+from .models import Contents,CreatorDeatails,Show,Follows
 from owner.models import Category
 from django.views.decorators.csrf import csrf_exempt
 import base64
@@ -67,6 +67,7 @@ def creator_profile(request):
     if request.user.is_authenticated and request.user.is_staff == True:
         creator = CreatorDeatails.objects.get(user=request.user)
         user = User.objects.get(id=request.user.id)
+        followers = Follows.objects.filter(creators=request.user,follow_type=True).count()
         if request.method == 'POST':
             first_name = request.POST['first_name']
             last_name = request.POST['last_name']
@@ -81,7 +82,7 @@ def creator_profile(request):
             user.save()
             return JsonResponse('profile_created',safe=False)
         else:
-            context = {'creator_details':creator}
+            context = {'creator_details':creator,'creator_followers':followers}
             return render(request, './creator/Profile.html',context)
     else:
         return redirect(creator_login)
@@ -129,7 +130,7 @@ def create_podcast(request):
             category_id = request.POST['category']
             thumbnail = request.FILES.get('thumbnail')
             show_description = request.POST['showdescription']
-            Show.objects.create(show_name=podcast_name,category_id=category_id,user=request.user,thumbnail=thumbnail,description=show_description)
+            Show.objects.create(show_name=podcast_name,category_id=category_id,user=request.user,thumbnail=thumbnail,description=show_description,host=request.user)
             return JsonResponse('podcastcreated',safe=False)
         else:
             context = {'categories':categories}
