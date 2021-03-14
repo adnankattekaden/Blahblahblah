@@ -20,7 +20,12 @@
                            <p>Total Episodes: 45 </p>
                            <div class="d-flex align-items-center">
                               <button class="btn btn-primary iq-play mr-2">Play</button>
-                                 <button class="btn btn-primary iq-play mr-2" id="followShowBtn">Follow</button>
+
+                              {% if follow_status == "follow" %}
+                              <button class="btn btn-primary iq-play mr-2 follows" id="followShowBtn">UnFollow</button>
+                              {%else%}
+                              <button class="btn btn-primary iq-play mr-2 follows" id="followShowBtn">Follow</button>
+                              {% endif %}
                            </div>
                         </div>
                         <div class="music-right">
@@ -83,7 +88,11 @@
          data:followData,
          dataType:'JSON',
          success:function(data){
-            console.log(data)
+            if (data == 'unfollowed_show'){
+               $('.follows').text('Follow'); 
+            }else{
+               $('.follows').text('Unfollow'); 
+            }
          }
       })
    })

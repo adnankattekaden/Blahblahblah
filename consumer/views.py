@@ -6,6 +6,7 @@ from owner.models import Category
 import json
 from django.http import JsonResponse
 from django.core import serializers
+from datetime import date 
 
 # Create your views here.
 
@@ -39,7 +40,7 @@ def signup(request):
         return render(request, './consumer/Signup.html')
 
 def signin(request):
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.is_staff == False:
         return redirect(homepage)
 
 
@@ -102,7 +103,7 @@ def pricing(request):
     return render(request, './consumer/Pricing.html')
 
 def followed_podcast_list(request):
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.is_staff == False:
         shows = FollowShows.objects.filter(followed=request.user,follow_type=True)
         followed_shows = []
         for i in shows:
@@ -113,7 +114,7 @@ def followed_podcast_list(request):
         return redirect(signin)
 
 def followed_artists_list(request):
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.is_staff == False:
         artists = Follows.objects.filter(followed=request.user,follow_type=True)
         followed_artists = []
         followed_creator_details = []
@@ -135,109 +136,155 @@ def homepage(request):
     shows = Show.objects.all()
     artists = CreatorDeatails.objects.all()
     results = []
-    latest_feeds = []
     try:
         followed_creators = Follows.objects.filter(followed=request.user,follow_type=True)
         for creators in followed_creators:
             followed_date = creators.date
             followed_time = creators.time
-            show_notifications = Show.objects.filter(user=creators.creators.id).filter(date_of_published=followed_date) 
-            creator_art = CreatorDeatails.objects.filter(user=creators.creators.id)     
+            print(followed_date)
+            show_notifications = Show.objects.filter(user=creators.creators.id,date_of_published__gte=creators.date)
+            print(show_notifications)  
             for i in show_notifications:
                 results.append(i)
-
-        for feed_show in FollowShows.objects.filter(followed=request.user,follow_type=True):
-            feeds = Show.objects.filter(user_id=feed_show.show.user.id)
-            for j in feeds:
-                latest_feeds.append(j)
-
     except:
         followed_creators = []
-    context = {'shows':shows,'artists':artists,'results':results,'latest_feeds':latest_feeds}
+    context = {'shows':shows,'artists':artists,'results':results}
     return render(request, './consumer/Home.html',context)
 
-def consumer_latest_feed(request):
-    data = {}
-    category = Category.objects.all()
-    for i in category:
-        data[i.category_name] = Show.objects.filter(category=i)
-    context = {'datas':data}
-    return render(request, './consumer/Latest.html',context)
+def latest_feeds(request):
+    if request.user.is_authenticated and request.user.is_staff == False:
+        latest_feeds = []
+        for feed_show in FollowShows.objects.filter(followed=request.user,follow_type=True):
+            feeds = Show.objects.filter(user_id=feed_show.show.user.id)
+            followed_shows = []
+            for j in feeds:
+                followed_shows.append(j)
+            
+            for show in followed_shows:
+                latest_feeds.append(show)
+                
+        #main starts here
+
+        data = {}
+        for i in Show.objects.all():
+            data[i.show_name] = Contents.objects.filter(show=i.id)
+        context = {'followed_shows':latest_feeds,'datas':data}
+        return render(request, './consumer/Latest.html',context)
+    else:
+        return redirect(signin)
+
+def category_feed(request):
+    if request.user.is_authenticated and request.user.is_staff == False:
+        data = {}
+        category = Category.objects.all()
+        for i in category:
+            data[i.category_name] = Show.objects.filter(category=i)
+        
+        context = {'datas':data}
+        return render(request, './consumer/CategoryFeeds.html',context)
+    else:
+        return redirect(signin)
 
 def category_view(request,id):
-    shows = Show.objects.filter(category=id)
-    category = Category.objects.get(id=id)
-    context = {'shows':shows,'category':category}
-    return render(request, './consumer/CategoryView.html',context)
+    if request.user.is_authenticated and request.user.is_staff == False:
+        shows = Show.objects.filter(category=id)
+        category = Category.objects.get(id=id)
+        context = {'shows':shows,'category':category}
+        return render(request, './consumer/CategoryView.html',context)
+    else:
+        return redirect(signin)
 
 def single_podcast(request,id):
-    shows = Show.objects.get(id=id)
-    episodes = Contents.objects.filter(show=shows)
-    playlists = Playlist.objects.all()
-    context = {'shows':shows,'episodes':episodes,'playlists':playlists}
-    return render(request, './consumer/SinglePodcastShows.html',context)
+    if request.user.is_authenticated and request.user.is_staff == False:
+        shows = Show.objects.get(id=id)
+        episodes = Contents.objects.filter(show=shows)
+        playlists = Playlist.objects.all()
+
+        follow_status = FollowShows.objects.get(show=shows.id).follow_status
+        print(follow_status)
+
+        context = {'shows':shows,'episodes':episodes,'playlists':playlists,'follow_status':follow_status}
+        return render(request, './consumer/SinglePodcastShows.html',context)
+    else:
+        return redirect(signin)
 
 def single_episode(request,id):
-    episode = Contents.objects.get(id=id)
-    playlists = Playlist.objects.filter(user=request.user)
-    print(playlists)
-    context = {'episode':episode,'playlists':playlists}
-    return render(request, './consumer/SingleEpisodes.html',context)
+    if request.user.is_authenticated and request.user.is_staff == False:
+        episode = Contents.objects.get(id=id)
+        playlists = Playlist.objects.filter(user=request.user)
+        print(playlists)
+        context = {'episode':episode,'playlists':playlists}
+        return render(request, './consumer/SingleEpisodes.html',context)
+    else:
+        return redirect(signin)
 
 def artists_list(request):
-    artists = CreatorDeatails.objects.all()
-    context = {'artists':artists}
-    return render(request,'./consumer/ArtistsList.html',context)
+    if request.user.is_authenticated and request.user.is_staff == False:
+        artists = CreatorDeatails.objects.all()
+        context = {'artists':artists}
+        return render(request,'./consumer/ArtistsList.html',context)
+    else:
+        return redirect(signin)
 
 def single_artist(request,id):
-    artists = CreatorDeatails.objects.get(id=id)
-    podcasts = Show.objects.filter(user=artists.user_id)
-    followers = Follows.objects.filter(creators=artists.user_id,follow_type=True).count()
-    context = {'artists':artists,'podcasts':podcasts,'creator_followers':followers}
-    return render(request, './consumer/SingleArtistView.html',context)
+    if request.user.is_authenticated and request.user.is_staff == False:
+        artists = CreatorDeatails.objects.get(id=id)
+        podcasts = Show.objects.filter(user=artists.user_id)
+        followers_count = Follows.objects.filter(creators=artists.user_id,follow_type=True).count()
+        follow_status = Follows.objects.get(creators=artists.user.id).follow_status
+        context = {'artists':artists,'podcasts':podcasts,'creator_followers_count':followers_count,'follow_status':follow_status}
+        return render(request, './consumer/SingleArtistView.html',context)
+    else:
+        return redirect(signin)
 
 def follow_podcaster(request,id):
-    if request.method == 'POST':
-        followType = request.POST['followType']
-        artists = CreatorDeatails.objects.get(id=id)
-        creator_id = User.objects.get(id=artists.user_id)
+    if request.user.is_authenticated and request.user.is_staff == False:
+        if request.method == 'POST':
+            followType = request.POST['followType']
+            artists = CreatorDeatails.objects.get(id=id)
+            creator_id = User.objects.get(id=artists.user_id)
 
-        if followType == 'follow':
-            if Follows.objects.filter(followed=request.user.id,follow_type=True,creators=creator_id).exists():
-                Follows.objects.get(followed=request.user.id,follow_type=True,creators=creator_id).delete()
-                Follows.objects.create(creators=creator_id,followed=request.user,follow_type=False)
-                return JsonResponse('unfollowed', safe=False)
-            else:
-                if Follows.objects.filter(followed=request.user.id,follow_type=False,creators=creator_id).exists():
-                    Follows.objects.get(followed=request.user.id,follow_type=False,creators=creator_id).delete()
-                    Follows.objects.create(creators=creator_id,followed=request.user,follow_type=True)
+            if followType == 'follow':
+                if Follows.objects.filter(followed=request.user.id,follow_type=True,creators=creator_id,follow_status='follow').exists():
+                    Follows.objects.get(followed=request.user.id,follow_type=True,creators=creator_id,follow_status='follow').delete()
+                    Follows.objects.create(creators=creator_id,followed=request.user,follow_type=False,follow_status='unfollow')
+                    return JsonResponse('unfollowed', safe=False)
                 else:
-                    follows = Follows.objects.create(creators=creator_id,followed=request.user,follow_type=True)
-                return JsonResponse('followed', safe=False)
+                    if Follows.objects.filter(followed=request.user.id,follow_type=False,creators=creator_id,follow_status='unfollow').exists():
+                        Follows.objects.get(followed=request.user.id,follow_type=False,creators=creator_id,follow_status='unfollow').delete()
+                        Follows.objects.create(creators=creator_id,followed=request.user,follow_type=True,follow_status='follow')
+                    else:
+                        follows = Follows.objects.create(creators=creator_id,followed=request.user,follow_type=True,follow_status='follow')
+                    return JsonResponse('followed', safe=False)
+            else:
+                pass
         else:
             pass
     else:
-        pass
+        return redirect(signin)
 
 def follow_show(request,id):
-    if request.method == 'POST':
-        followType = request.POST['followType']
-        show = Show.objects.get(id=id)
+    if request.user.is_authenticated and request.user.is_staff == False:
+        if request.method == 'POST':
+            followType = request.POST['followType']
+            show = Show.objects.get(id=id)
 
-        if followType == 'followpodcast':
-            if FollowShows.objects.filter(followed=request.user.id,follow_type=True,show=show).exists():
-                FollowShows.objects.get(followed=request.user.id,follow_type=True,show=show).delete()
-                FollowShows.objects.create(show=show,followed=request.user,follow_type=False)
-                return JsonResponse('unfollowed_show', safe=False)
-            else:
-                if FollowShows.objects.filter(followed=request.user.id,follow_type=False,show=show).exists():
-                    FollowShows.objects.get(followed=request.user.id,follow_type=False,show=show).delete()
-                    FollowShows.objects.create(show=show,followed=request.user,follow_type=True)
+            if followType == 'followpodcast':
+                if FollowShows.objects.filter(followed=request.user.id,follow_type=True,show=show,follow_status='follow').exists():
+                    FollowShows.objects.get(followed=request.user.id,follow_type=True,show=show,follow_status='follow').delete()
+                    FollowShows.objects.create(show=show,followed=request.user,follow_type=False,follow_status='unfollow')
+                    return JsonResponse('unfollowed_show', safe=False)
                 else:
-                    follows = FollowShows.objects.create(show=show,followed=request.user,follow_type=True)
-                return JsonResponse('followed_show', safe=False)
-        else:
-            pass
+                    if FollowShows.objects.filter(followed=request.user.id,follow_type=False,show=show,follow_status='unfollow').exists():
+                        FollowShows.objects.get(followed=request.user.id,follow_type=False,show=show,follow_status='unfollow').delete()
+                        FollowShows.objects.create(show=show,followed=request.user,follow_type=True,follow_status='follow')
+                    else:
+                        follows = FollowShows.objects.create(show=show,followed=request.user,follow_type=True,follow_status='follow')
+                    return JsonResponse('followed_show', safe=False)
+            else:
+                pass
+    else:
+        return redirect(signin)
 
 def next_music_data(request,id):
     print(id)

@@ -2,9 +2,9 @@
 {% load static %}
 {% block content %}
 <style>
-.hidden {
-   display: none !important;
-}
+   .hidden {
+      display: none !important;
+   }
 </style>
 
 <div class="container-fluid">
@@ -21,13 +21,20 @@
                      <div class="d-flex align-items-top justify-content-between iq-music-play-detail">
                         <div class="music-detail">
                            <h3>{{artists.user.username}}</h3>
-                           <p>Followers:<span> {{creator_followers}}</span></p>
+                           <p>Followers:<span> {{creator_followers_count}}</span></p>
                            <span>{{artists.about_me}}</span>
                            <p>Total Shows : <span> 10 </span> </p>
-                        
+
                            <div class="d-flex align-items-center">
-                              <button class="btn btn-primary iq-play mr-2 follow"
-                                 id="followBtn">Follow</button>
+                              {% if follow_status == "follow" %}
+
+                              <button class="btn btn-primary iq-play mr-2 follows" id="followBtn">UnFollow</button>
+
+                              {%else%}
+
+                              <button class="btn btn-primary iq-play mr-2 follows" id="followBtn">Follow</button>
+                              {% endif %}
+
                            </div>
 
                         </div>
@@ -79,7 +86,7 @@
 
 
 <script>
-   $('#followBtn').click(function () {
+   $('#followBtn').click(function () {     
       var artistid = '{{artists.id}}'
       var follow_Type = 'follow'
       var followData = {
@@ -94,8 +101,10 @@
          dataType: 'JSON',
          success: function (data) {
             if (data == 'followed') {
+               $('.follows').text('Unfollow'); 
                console.log('followed')
             } else if (data == 'unfollowed') {
+               $('.follows').text('Follow'); 
                console.log('unfollowed')
             }
          }

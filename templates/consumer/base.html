@@ -50,7 +50,7 @@
                <ul id="iq-sidebar-toggle" class="iq-menu">
                   <li>
                   <li><a href="{% url 'homepage' %}"><i class="las la-house-damage"></i>Home</a></li>
-                  <li><a href="{% url 'consumer_latest_feed' %}"><i class="las la-headphones"></i>Latest</a></li>
+                  <li><a href="{% url 'latest_feeds' %}"><i class="las la-headphones"></i>Latest</a></li>
                   <li><a href="#"><i class="las la-headphones"></i>Your Library</a></li>
                   <li><a href="{% url 'manage_playlist' %}"><i class="lar la-file-audio"></i>PlayList</a></li>
                   </li>
@@ -84,7 +84,7 @@
                   <ul class="list-unstyled iq-menu-top d-flex justify-content-between mb-0 p-0">
                      <li><a href="{% url 'homepage' %}">Home</a></li>
                      <li><a href="{% url 'artists_list' %}">Artists</a></li>
-                     <li><a href="{% url 'consumer_latest_feed' %}">Podcast</a></li>
+                     <li><a href="{% url 'category_feed' %}">Category</a></li>
                   </ul>
                   <ul class="navbar-nav ml-auto navbar-list">
                      <li class="nav-item nav-icon">
@@ -141,7 +141,7 @@
 
                                        <div class="">
                                           <img class="avatar-40 rounded img-fluid"
-                                             src="{{episode.ImageURL}}" alt="">
+                                             src="{{result.ImageURL}}" alt="">
                                        </div>
 
                                        <div class="media-body ml-3">

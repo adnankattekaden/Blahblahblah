@@ -85,6 +85,7 @@ class Follows(models.Model):
     date = models.DateField(auto_now_add=True,null=True,blank=True)
     time = models.TimeField(auto_now_add=True,null=True,blank=True)
     follow_type = models.BooleanField(null=True,blank=True)
+    follow_status = models.CharField(null=True,blank=True,max_length=40)
 
 
 class FollowShows(models.Model):
@@ -94,3 +95,4 @@ class FollowShows(models.Model):
     date = models.DateField(auto_now_add=True,null=True,blank=True)
     time = models.TimeField(auto_now_add=True,null=True,blank=True)
     follow_type = models.BooleanField(null=True,blank=True)
+    follow_status = models.CharField(null=True,blank=True,max_length=40)
