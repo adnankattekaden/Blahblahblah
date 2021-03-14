@@ -38,5 +38,7 @@ urlpatterns = [
     path('remove-playlist-item/<int:id>/', views.remove_playlist_content,name='remove_playlist_content'),
     path('follow/<int:id>/', views.follow_podcaster,name='follow_podcaster'),
     path('follow-show/<int:id>/', views.follow_show,name='follow_show'),
+    path('followed-shows/', views.followed_podcast_list,name='followed_shows'),
+    path('followed-artists/', views.followed_artists_list,name='followed_artists'),
     
 ]

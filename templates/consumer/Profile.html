@@ -12,13 +12,23 @@
                          <div class="profile-detail mt-3">
                             <h3>{{request.user}}</h3>
                             <p class="text-primary">Student</p>
-                        
+                            <div class="d-flex justify-content-center">
+                               <div class="col-3">
+                                 <a href="{% url 'followed_shows' %}" class="text-dark">Followed Shows</a><br>
+                                 <span>{{followed_shows_count}}</span>
+                               </div>
+
+                               <div class="col-3">
+                                 <a href="{% url 'followed_artists' %}" class="text-dark">Followed Podcasters</a><br>
+                                 <span>{{followed_artists_count}}</span>
+                               </div>
+                              
+                            </div>
                          </div>
                       </div>
                    </div>
                 </div>
              </div>
-
              <div class="iq-card">
                 <div class="iq-card-header d-flex justify-content-between align-items-center mb-0">
                    <div class="iq-header-title">

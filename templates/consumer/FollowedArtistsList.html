@@ -1,0 +1,77 @@
+{% extends 'consumer/base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="col-sm-12">
+    <div class="iq-card">
+        <div class="iq-card-header d-flex justify-content-between">
+            <div class="iq-header-title">
+                <h4 class="card-title">Followed Podcasters</h4>
+            </div>
+        </div>
+
+        <div class="iq-card-body">
+            <div class="table-responsive">
+                <table class="data-tables table table-striped table-bordered" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%;">Profile</th>
+                            <th style="width: 10%;">Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for artist in followed_creator_details %}
+                        <tr>
+                            <td>
+                                <img src="{{artist.ImageURL}}" class="img-fluid avatar-50 rounded" alt="author-profile">
+                            </td>
+                            <td>
+                                <div class="flex align-items-center list-user-action">
+                                    <button class="btn btn-primary iq-play mr-2" id="followBtn"
+                                        onclick="fu('{{artist.id}}')">Unfollow</button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+    var id;
+    function fu(artistid) {
+        id = artistid
+    }
+
+    $('#followBtn').click(function () {
+        var artistid = id
+        var follow_Type = 'follow'
+        var followData = {
+            csrfmiddlewaretoken: '{{csrf_token}}',
+            id: artistid,
+            followType: follow_Type,
+        }
+        $.ajax({
+            url: '/follow/' + artistid + '/',
+            type: 'POST',
+            data: followData,
+            dataType: 'JSON',
+            success: function (data) {
+                if (data == 'followed') {
+                    console.log('followed')
+                } else if (data == 'unfollowed') {
+                    console.log('unfollowed')
+                    location.reload()
+                }
+            }
+        })
+    })
+</script>
+{% endblock content %}

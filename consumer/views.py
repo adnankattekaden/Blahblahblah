@@ -63,7 +63,10 @@ def signout(request):
 
 def consumer_profile(request):
     if request.user.is_authenticated and request.user.is_staff == False:
-        return render(request, './consumer/Profile.html')
+        followed_shows_count = FollowShows.objects.filter(followed=request.user,follow_type=True).count()
+        followed_artists_count = Follows.objects.filter(followed=request.user,follow_type=True).count()
+        context = {'followed_shows_count':followed_shows_count,'followed_artists_count':followed_artists_count}
+        return render(request, './consumer/Profile.html',context)
     else:
         return redirect(signin)
 
@@ -97,7 +100,36 @@ def faq(request):
 
 def pricing(request):
     return render(request, './consumer/Pricing.html')
-    
+
+def followed_podcast_list(request):
+    if request.user.is_authenticated:
+        shows = FollowShows.objects.filter(followed=request.user,follow_type=True)
+        followed_shows = []
+        for i in shows:
+            followed_shows.append(i.show)
+        context = {'followed_shows':followed_shows}
+        return render(request, './consumer/FollowedPodcastsList.html',context)
+    else:
+        return redirect(signin)
+
+def followed_artists_list(request):
+    if request.user.is_authenticated:
+        artists = Follows.objects.filter(followed=request.user,follow_type=True)
+        followed_artists = []
+        followed_creator_details = []
+        for i in artists:
+            followed_artists.append(i)
+
+        for j in followed_artists:
+            creator_detatils = CreatorDeatails.objects.filter(user=j.creators.id)
+            for k in creator_detatils:
+                followed_creator_details.append(k)
+
+        context = {'followed_creator_details':followed_creator_details}
+        return render(request, './consumer/FollowedArtistsList.html',context)
+    else:
+        return redirect(signin)
+
 #core Part
 def homepage(request):
     shows = Show.objects.all()
