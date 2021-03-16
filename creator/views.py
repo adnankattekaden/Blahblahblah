@@ -220,7 +220,10 @@ def episode_analytics(request,id):
         end_date = request.POST['end_date']
     else:
         current_date = date.today()
-        episode_analytics = EpisodeAnalytics.objects.get(episodes=episode.id,date=current_date)
+        try:
+            episode_analytics = EpisodeAnalytics.objects.get(episodes=episode.id,date=current_date)   
+        except:
+            episode_analytics = []
     #analytics data
     context = {'episode_analytics':episode_analytics}
     return render(request, './creator/EpisodeAnalytics.html',context)

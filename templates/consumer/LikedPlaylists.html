@@ -6,37 +6,42 @@
     <div class="iq-card iq-realease">
        <div class="iq-card-header d-flex justify-content-between border-0">
           <div class="iq-header-title">
-             <h4 class="card-title">PlayList Name Here</h4>
+             <h4 class="card-title">{{liked_songs.playlist_name}}</h4>
           </div>
        </div>
+       {% if playlist_contents %}
        <div class="iq-card-body  iq-realeses-back">
           <div class="row iq-card-body  iq-realeses-back">
              <div class="col-lg-12">
                 <ul class="list-unstyled iq-song-slide mb-0 realeases-banner">
-                   {% for songs in liked_songs %}
+                   {% for i in liked_contents %}
                    <li class="row">
                       <div class="d-flex justify-content-between align-items-center">
                          <div class="media align-items-center col-10 col-md-5">
                             <div class="iq-realese-song ">
-                               <a href ="music-player.html"><img src="{% static './consumer/images/dashboard/realease-song/01.png' %}" class="img-border-radius avatar-60 img-fluid" alt=""></a>
+                               <a href ="{% url 'single_episode' i.content.id %}"><img src="{{i.content.ImageURL}}" class="img-border-radius avatar-60 img-fluid" alt=""></a>
                             </div>
                             <div class="media-body text-white ml-3">
-                               <p class="mb-0 iq-music-title">{{songs.content.episode_name}}</p>
-                               <small>{{songs.content.artist}}</small>
+                               <p class="mb-0 iq-music-title">{{i.content.episode_name}}</p>
+                               <small>{{i.content.artist}}</small>
                             </div>
                          </div>
                          <p class="mb-0 col-md-2  iq-m-time">9:52</p>
                          <p class="mb-0 col-md-2 iq-m-icon"><i class="lar la-star font-size-20"></i></p>
-                         <p class="mb-0 col-2 col-md-2"><i class="las la-play-circle font-size-32"></i></p>
+                         <p class="mb-0 col-2 col-md-2" ><i class="las la-play-circle font-size-32" onclick="currentTrack('{{i.content.id}}')"></i></p>
                          <div class="iq-card-header-toolbar iq-music-drop d-flex align-items-center  col-md-1">
                             <div class="dropdown">
                                <span class="dropdown-toggle text-primary" id="dropdownMenuButton1" data-toggle="dropdown" aria-expanded="false" role="button">
                                   <i class="ri-more-2-fill text-primary"></i>
                                </span>
                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton1">
-                                  <a class="dropdown-item" href="#"><i class="ri-eye-fill mr-2"></i>View</a>
-                                  <a class="dropdown-item" href="#"><i class="ri-delete-bin-6-fill mr-2"></i>Delete</a>
-                                  <a class="dropdown-item" href="#"><i class="ri-file-download-fill mr-2"></i>Download</a>
+                                  <a class="dropdown-item" href="{% url 'single_episode' i.content.id %}"><i
+                                    class="ri-eye-fill mr-2"></i>View</a>
+                              <a class="dropdown-item" type="button" onclick="fuc('{{i.id}}')"
+                                 id="removeItem"><i class="ri-delete-bin-6-fill mr-2"></i>Remove</a>
+                              <a class="dropdown-item" href="#"><i class="ri-share-fill mr-2"></i>Share</a>
+                              <a class="dropdown-item" href="{{i.content.PodcastURL}}" download><i
+                                    class="ri-file-download-fill mr-2"></i>Download</a>
                                </div>
                             </div>
                          </div>
@@ -47,7 +52,9 @@
              </div>
           </div>
        </div>
-
+       {% else %}
+       <h1>no songs right now</h1>
+       {%endif%}
     </div>
  </div>
 {% endblock content %}

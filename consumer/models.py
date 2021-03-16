@@ -21,6 +21,7 @@ class UserDetails(models.Model):
         self.image.delete()
         super().delete(*args, **kwargs)
 
+
 class Playlist(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True)
     playlist_name = models.CharField(max_length=200,null=True,blank=True)

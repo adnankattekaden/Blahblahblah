@@ -173,6 +173,7 @@ def followed_artists_list(request):
 def homepage(request):
     shows = Show.objects.all()
     artists = CreatorDeatails.objects.all()
+    #notifcaion starts
     results = []
     try:
         user_details = UserDetails.objects.get(user=request.user)
@@ -180,19 +181,22 @@ def homepage(request):
         for creators in followed_creators:
             followed_date = creators.date
             followed_time = creators.time
-            show_notifications = Show.objects.filter(user=creators.creators.id,date_of_published__gte=creators.date)
+            show_notifications = Show.objects.filter(user=creators.creators.id,date_of_published__gte=creators.date,time_of_published__gte=followed_time)
             for i in show_notifications:
                 results.append(i)
     except:
         followed_creators = []
         user_details = []
+    #notification Ends
     context = {'shows':shows,'artists':artists,'results':results,'user_details':user_details}
     return render(request, './consumer/Home.html',context)
 
 def latest_feeds(request):
     if request.user.is_authenticated and request.user.is_staff == False:
+        
         user_details = UserDetails.objects.get(user=request.user)
         latest_feeds = []
+
         for feed_show in FollowShows.objects.filter(followed=request.user,follow_type=True):
             feeds = Show.objects.filter(user_id=feed_show.show.user.id)
             followed_shows = []
@@ -203,9 +207,9 @@ def latest_feeds(request):
                 latest_feeds.append(show)
                 
         #main starts here
-
+        print(latest_feeds)
         data = {}
-        for i in Show.objects.all():
+        for i in latest_feeds:
             data[i.show_name] = Contents.objects.filter(show=i.id)
         context = {'followed_shows':latest_feeds,'datas':data,'user_details':user_details}
         return render(request, './consumer/Latest.html',context)
@@ -214,20 +218,48 @@ def latest_feeds(request):
 
 def category_feed(request):
     if request.user.is_authenticated and request.user.is_staff == False:
-        user_details = UserDetails.objects.get(user=request.user)
+        #notification starts
+        results = []
+        try:
+            user_details = UserDetails.objects.get(user=request.user)
+            followed_creators = Follows.objects.filter(followed=request.user,follow_type=True)
+            for creators in followed_creators:
+                followed_date = creators.date
+                followed_time = creators.time
+                show_notifications = Show.objects.filter(user=creators.creators.id,date_of_published__gte=creators.date,time_of_published__gte=followed_time)
+                for i in show_notifications:
+                    results.append(i)
+        except:
+            followed_creators = []
+            user_details = []
+        #notification ends here
         data = {}
         category = Category.objects.all()
         for i in category:
             data[i.category_name] = Show.objects.filter(category=i)
         
-        context = {'datas':data}
+        context = {'datas':data,'results':results}
         return render(request, './consumer/CategoryFeeds.html',context)
     else:
         return redirect(signin)
 
 def category_view(request,id):
     if request.user.is_authenticated and request.user.is_staff == False:
-        user_details = UserDetails.objects.get(user=request.user)
+        #notification starts
+        results = []
+        try:
+            user_details = UserDetails.objects.get(user=request.user)
+            followed_creators = Follows.objects.filter(followed=request.user,follow_type=True)
+            for creators in followed_creators:
+                followed_date = creators.date
+                followed_time = creators.time
+                show_notifications = Show.objects.filter(user=creators.creators.id,date_of_published__gte=creators.date,time_of_published__gte=followed_time)
+                for i in show_notifications:
+                    results.append(i)
+        except:
+            followed_creators = []
+            user_details = []
+        #notification ends here
         shows = Show.objects.filter(category=id)
         category = Category.objects.get(id=id)
         context = {'shows':shows,'category':category,'user_details':user_details}
@@ -237,7 +269,21 @@ def category_view(request,id):
 
 def single_podcast(request,id):
     if request.user.is_authenticated and request.user.is_staff == False:
-        user_details = UserDetails.objects.get(user=request.user)
+        #notification starts
+        results = []
+        try:
+            user_details = UserDetails.objects.get(user=request.user)
+            followed_creators = Follows.objects.filter(followed=request.user,follow_type=True)
+            for creators in followed_creators:
+                followed_date = creators.date
+                followed_time = creators.time
+                show_notifications = Show.objects.filter(user=creators.creators.id,date_of_published__gte=creators.date,time_of_published__gte=followed_time)
+                for i in show_notifications:
+                    results.append(i)
+        except:
+            followed_creators = []
+            user_details = []
+        #notification ends here
         shows = Show.objects.get(id=id)
         episodes = Contents.objects.filter(show=shows)
         playlists = Playlist.objects.all()
@@ -254,7 +300,21 @@ def single_podcast(request,id):
 
 def single_episode(request,id):
     if request.user.is_authenticated and request.user.is_staff == False:
-        user_details = UserDetails.objects.get(user=request.user)
+        #notification starts
+        results = []
+        try:
+            user_details = UserDetails.objects.get(user=request.user)
+            followed_creators = Follows.objects.filter(followed=request.user,follow_type=True)
+            for creators in followed_creators:
+                followed_date = creators.date
+                followed_time = creators.time
+                show_notifications = Show.objects.filter(user=creators.creators.id,date_of_published__gte=creators.date,time_of_published__gte=followed_time)
+                for i in show_notifications:
+                    results.append(i)
+        except:
+            followed_creators = []
+            user_details = []
+        #notification ends here
         episode = Contents.objects.get(id=id)
         playlists = Playlist.objects.filter(user=request.user)
         user_details = UserDetails.objects.get(user=request.user)
@@ -266,7 +326,21 @@ def single_episode(request,id):
 
 def artists_list(request):
     if request.user.is_authenticated and request.user.is_staff == False:
-        user_details = UserDetails.objects.get(user=request.user)
+        #notification starts
+        results = []
+        try:
+            user_details = UserDetails.objects.get(user=request.user)
+            followed_creators = Follows.objects.filter(followed=request.user,follow_type=True)
+            for creators in followed_creators:
+                followed_date = creators.date
+                followed_time = creators.time
+                show_notifications = Show.objects.filter(user=creators.creators.id,date_of_published__gte=creators.date,time_of_published__gte=followed_time)
+                for i in show_notifications:
+                    results.append(i)
+        except:
+            followed_creators = []
+            user_details = []
+        #notification ends here
         artists = CreatorDeatails.objects.all()
         context = {'artists':artists,'user_details':user_details}
         return render(request,'./consumer/ArtistsList.html',context)
@@ -275,7 +349,21 @@ def artists_list(request):
 
 def single_artist(request,id):
     if request.user.is_authenticated and request.user.is_staff == False:
-        user_details = UserDetails.objects.get(user=request.user)
+        #notification starts
+        results = []
+        try:
+            user_details = UserDetails.objects.get(user=request.user)
+            followed_creators = Follows.objects.filter(followed=request.user,follow_type=True)
+            for creators in followed_creators:
+                followed_date = creators.date
+                followed_time = creators.time
+                show_notifications = Show.objects.filter(user=creators.creators.id,date_of_published__gte=creators.date,time_of_published__gte=followed_time)
+                for i in show_notifications:
+                    results.append(i)
+        except:
+            followed_creators = []
+            user_details = []
+        #notification ends here
         artists = CreatorDeatails.objects.get(id=id)
         podcasts = Show.objects.filter(user=artists.user_id)
         followers_count = Follows.objects.filter(creators=artists.user_id,follow_type=True).count()
@@ -379,7 +467,15 @@ def add_liked(request,id):
     consumer_data = Contents.objects.get(id=id)
     if request.method == 'POST':
         playlist_name = request.POST['playlistName']
-    PlayList.objects.create(user=request.user,content=consumer_data,playlist_name=playlist_name)
+
+    if Playlist.objects.filter(user=request.user,playlist_name='likedsong').exists():
+        like_songs = Playlist.objects.get(playlist_name='likedsong')
+        if PlaylistContent.objects.filter(playlist=like_songs,content=consumer_data).exists():
+            PlaylistContent.objects.get(playlist=like_songs,content=consumer_data).delete()
+        else:
+            PlaylistContent.objects.create(playlist=like_songs,content=consumer_data)
+    else:
+        Playlist.objects.create(user=request.user,playlist_name=playlist_name)
     return JsonResponse('addedliked', safe=False)
 
 def add_playlist(request,id):
@@ -393,7 +489,21 @@ def add_playlist(request,id):
 
 def create_playlist(request):
     if request.method == 'POST':
-        user_details = UserDetails.objects.get(user=request.user)
+        #notification starts
+        results = []
+        try:
+            user_details = UserDetails.objects.get(user=request.user)
+            followed_creators = Follows.objects.filter(followed=request.user,follow_type=True)
+            for creators in followed_creators:
+                followed_date = creators.date
+                followed_time = creators.time
+                show_notifications = Show.objects.filter(user=creators.creators.id,date_of_published__gte=creators.date,time_of_published__gte=followed_time)
+                for i in show_notifications:
+                    results.append(i)
+        except:
+            followed_creators = []
+            user_details = []
+        #notification ends here
         playlist_name = request.POST['playlistName']
         playlist = Playlist.objects.create(user=request.user,playlist_name=playlist_name)
         data = {'playlistcreated':serializers.serialize('json',[playlist])}
@@ -409,7 +519,21 @@ def delete_playlist(request,id):
 
 def manage_playlist(request):
     if request.user.is_authenticated and request.user.is_staff == False:
-        user_details = UserDetails.objects.get(user=request.user)
+        #notification starts
+        results = []
+        try:
+            user_details = UserDetails.objects.get(user=request.user)
+            followed_creators = Follows.objects.filter(followed=request.user,follow_type=True)
+            for creators in followed_creators:
+                followed_date = creators.date
+                followed_time = creators.time
+                show_notifications = Show.objects.filter(user=creators.creators.id,date_of_published__gte=creators.date,time_of_published__gte=followed_time)
+                for i in show_notifications:
+                    results.append(i)
+        except:
+            followed_creators = []
+            user_details = []
+        #notification ends here
         if Playlist.objects.filter(user=request.user).exists():
             playlists = Playlist.objects.filter(user=request.user)
             for playlist in playlists:
@@ -424,7 +548,21 @@ def manage_playlist(request):
         return redirect(signin)
 
 def manage_playlist_content(request,id):
-    user_details = UserDetails.objects.get(user=request.user)
+    #notification starts
+    results = []
+    try:
+        user_details = UserDetails.objects.get(user=request.user)
+        followed_creators = Follows.objects.filter(followed=request.user,follow_type=True)
+        for creators in followed_creators:
+            followed_date = creators.date
+            followed_time = creators.time
+            show_notifications = Show.objects.filter(user=creators.creators.id,date_of_published__gte=creators.date,time_of_published__gte=followed_time)
+            for i in show_notifications:
+                results.append(i)
+    except:
+        followed_creators = []
+        user_details = []
+    #notification ends here
     playlists = Playlist.objects.get(id=id)
     playlist_contents = PlaylistContent.objects.filter(playlist=playlists)
     context = {'playlist_contents':playlist_contents,'playlists':playlists,'user_details':user_details}
@@ -435,8 +573,9 @@ def remove_playlist_content(request,id):
     podcast.delete()
     return JsonResponse('itemremoved',safe=False)
 
-def consumer_playlist_data(request):
-    liked_songs = Playlist.objects.filter(user=request.user)
+def consumer_liked_data(request):
+    liked_songs = Playlist.objects.get(user=request.user,playlist_name='likedsong')
+    liked_contents = PlaylistContent.objects.filter(playlist=liked_songs)
     user_details = UserDetails.objects.get(user=request.user)
-    context = {'liked_songs':liked_songs,'user_details':user_details}
-    return render(request, './consumer/Playlists.html',context)
+    context = {'liked_songs':liked_songs,'user_details':user_details,'liked_contents':liked_contents}
+    return render(request, './consumer/LikedPlaylists.html',context)

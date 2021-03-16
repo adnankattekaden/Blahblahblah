@@ -29,7 +29,25 @@ def owner_logout(request):
     return redirect(owner_login)
 
 def owner_dashboard(request):
-    return render(request, './owner/Dashboard.html')
+    #total_counts 
+    total_creators_count = User.objects.filter(is_staff=True).count()
+    total_listners_count = User.objects.filter(is_staff=False).count()
+    #sales 
+    current_date = date.today()
+    subscribtions = Subscribtions.objects.filter(date=current_date)
+    dict = {}
+    sub_count = 0
+    for report in subscribtions:
+        sub_count = sub_count + 1
+        if not report.date in dict.keys():
+            dict[report.date] = report
+            dict[report.date].totalsubs = sub_count
+        else:
+            dict[report.date].totalsubs = sub_count
+
+    total_sales = sub_count
+    context = {'total_creators_count':total_creators_count,'total_listners_count':total_listners_count,'total_sales':total_sales}
+    return render(request, './owner/Dashboard.html',context)
 
 def manage_category(request):
     categories = Category.objects.all()

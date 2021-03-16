@@ -3,6 +3,7 @@
 {% block content %}
 
    <div class="container-fluid">
+      {% if datas %}
       {% for show_name,episodes in datas.items %}
       <div class="row">
          <div class="col-lg-12">
@@ -50,6 +51,36 @@
          </div>
       </div>
       {% endfor %}
+      {% else %}
+      <div class="wrapper">
+         <div class="iq-comingsoon pt-5">
+            <div class="container-fluid">
+               <div class="row justify-content-center">
+                  <div class="col-sm-6 text-center">
+                     <div class="iq-comingsoon-info">
+                        <a href="index.html">
+                        <img src="images/logo-full2.png" class="img-fluid w-25" alt="">
+                        </a>
+                        <h2 class="mt-4 mb-1">Currently No Shows Followed</h2>
+                        <p>Follow Some Shows</p>
+
+                        <ul class="countdown d-flex align-items-center list-inline row">
+                           <li class="col-md-6 col-lg-6 mt-4">
+                              <div class="iq-card">
+                                 <div class="iq-card-body">
+                                    <span><a href="{% url 'category_feed' %}">Follow</button></span>
+                                 </div>
+                              </div>
+                           </li>
+                        </ul>
+
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      {% endif %}
    </div>
 
 {% endblock content %}
