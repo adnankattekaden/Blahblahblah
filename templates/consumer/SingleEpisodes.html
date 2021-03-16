@@ -15,9 +15,9 @@
                      <div class="d-flex align-items-top justify-content-between iq-music-play-detail">
                         <div class="music-detail">
                            <h3>{{episode.episode_name}}</h3>
-                           <span>Edyta Gorniak</span>
-                           <p class="mb-0">389382k Views</p>
-                           <p>Song · 45 Plays</p>
+                           <span>{{episode.artist}}</span>
+                           <p class="mb-0">{{episode.listeners}} Views</p>
+                           <br>
                            <div class="d-flex align-items-center">
                               <button class="btn btn-primary iq-play mr-2" onclick="currentTrack('{{episode.id}}')">Play
                                  music</button>
@@ -43,6 +43,14 @@
       </div>
    </div>
 
+   {% if not user_details.premium == True %}
+   {% for ad in advertisment %}
+   <div class="row iq-card">
+      <img src="{{ad.ImageURL}}">
+   </div>
+   {% endfor %}
+   {% endif %}
+   
 </div>
 
 

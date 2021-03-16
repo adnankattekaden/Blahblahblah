@@ -1,0 +1,77 @@
+{% extends 'owner/base.html' %}
+{% load static %}
+{% block title %}Create ADs{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <!-- start page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <h4 class="mb-sm-0 font-size-18">Create Advertisement</h4>
+            </div>
+        </div>
+    </div>
+    <!-- end page title -->
+
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card">
+                <div class="card-body">
+                    <form>
+                        <div class="col-xl-6">
+                            <label for="create Category">AD Name</label><br>
+                            <span style="color: red;" id="message"></span>
+                            <input type="text" class="form-control" placeholder="Enter Advertisement Name"
+                                id="advertisement_name">
+                        </div>
+
+                        <div class="col-xl-6 mt-3">
+                            <label for="create Category">AD Images</label><br>
+                            <input type="file" class="form-control" placeholder="Enter Advertisement Name"
+                                id="advertisement_image">
+                        </div>
+
+                        <br>
+                        <button type="button" class="btn btn-primary" id="adBtn">Create AD</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end row -->
+
+</div> <!-- container-fluid -->
+
+<script>
+    $('#adBtn').click(function () {
+        var formData = new FormData();
+        formData.append("advertisement_name", document.getElementById("advertisement_name").value);
+        formData.append("advertisement_image", document.getElementById("advertisement_image").files[0]);
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+        if (advertisement_name == '') {
+            $('#message').html('Enter an AD Name')
+        } else if (advertisement_image.value == '') {
+            $('#message').html('Upload an Image')
+        } else {
+            $.ajax({
+                url: '/owner/create-ads/',
+                type: 'POST',
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                dataType: 'JSON',
+                success: function (data) {
+                    if (data == 'ad_created') {
+                        location.replace('/owner/manage-ads/')
+                    }
+                }
+            })
+        }
+    })
+
+
+
+</script>
+{% endblock %}

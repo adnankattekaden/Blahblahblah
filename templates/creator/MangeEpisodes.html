@@ -51,6 +51,9 @@
                                     <li><a type="button" class="dropdown-item"><i
                                                 class="mdi mdi-trash-can font-size-16 text-danger me-1" onclick="return confirm('Are You Sure Want To Delete')"></i> Delete</a>
                                     </li>
+                                    <li><a href="{% url 'episode_analytics' episode.id %}" class="dropdown-item"><i
+                                        class="mdi mdi-google-analytics font-size-16 text-success me-1"></i>Analytics</a>
+                            </li>
                                 </ul>
                             </div>
                         </td>

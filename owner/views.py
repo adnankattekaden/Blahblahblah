@@ -2,7 +2,9 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.models import User,auth
 import json
 from django.http import JsonResponse
-from owner.models import Category
+from owner.models import Category,Plans,Advertisement
+from consumer.models import Subscribtions
+from datetime import date
 
 # Create your views here.
 
@@ -68,15 +70,71 @@ def delete_category(request,id):
 
 def manage_plans(request):
     if request.user.is_authenticated and request.user.is_superuser == True:
-        return render(request, './owner/ManagePlans.html')
+        plans = Plans.objects.all()
+        context = {'plans':plans}
+        return render(request, './owner/ManagePlans.html',context)
     else:
         return redirect(owner_login)
 
 def create_plan(request):
     if request.user.is_authenticated and request.user.is_superuser == True:
         if request.method == 'POST':
-            pass
+            plan_name = request.POST['plan_name']
+            plan_price = request.POST['plan_price']
+            validity = request.POST['validity']
+            Plans.objects.create(plan_name=plan_name,price=plan_price,validity=validity)
+            return JsonResponse('plancreated', safe=False)
         else:
             return render(request, './owner/CreatePlans.html')
     else:
         return redirect(owner_login)
+
+def delete_plan(request,id):
+    if request.user.is_authenticated and request.user.is_superuser == True:
+        plan = Plans.objects.get(id=id)
+        plan.delete()
+        return JsonResponse('plan_deleted', safe=False)
+    else:
+        return redirect(owner_login)
+
+def manage_ads(request):
+    if request.user.is_authenticated and request.user.is_superuser == True:
+        ads = Advertisement.objects.all()
+        context = {'advertisements':ads}
+        return render(request, './owner/ManageAds.html',context)
+    else:
+        return redirect(owner_login)
+    
+def create_ads(request):
+    if request.user.is_authenticated and request.user.is_superuser == True:
+        if request.method == "POST":
+            ad_name = request.POST['advertisement_name']
+            ad_image = request.FILES.get('advertisement_image')
+            Advertisement.objects.create(ad_name=ad_name,ad_image=ad_image)
+            return JsonResponse('ad_created', safe=False)
+        else:
+            return render(request, './owner/CreateAds.html')
+    else:
+        return redirect(owner_login)
+
+def sales_report(request):
+    current_date = date.today()
+    subscribtions = Subscribtions.objects.filter(date=current_date)
+    dict = {}
+    count = 1
+    sub_count = 0
+    for report in subscribtions:
+        sub_count = sub_count + 1
+        if not report.date in dict.keys():
+            dict[report.date] = report
+            dict[report.date].price = report.price
+            dict[report.date].totalsubs = sub_count
+        else:
+            dict[report.date].price += report.price
+            dict[report.date].totalsubs = sub_count
+
+    context = {'subscribtions':subscribtions,'dict':dict}
+    return render(request, './owner/subsrcription_SalesReport.html',context)
+
+def cancelled_report(request):
+    return render(request, './owner/subscription_CancelledReport.html')

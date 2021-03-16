@@ -2,11 +2,12 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.models import User,auth
 import json
 from django.http import JsonResponse
-from .models import Contents,CreatorDeatails,Show,Follows
+from .models import Contents,CreatorDeatails,Show,Follows,EpisodeAnalytics
 from owner.models import Category
 from django.views.decorators.csrf import csrf_exempt
 import base64
 from django.core.files.base import ContentFile
+from datetime import date
 
 # Create your views here.
 
@@ -180,7 +181,7 @@ def create_episode(request):
             episode_description = request.POST['description']
             show_id = request.POST['show']
             podcast_data = request.FILES.get('audio')
-            Contents.objects.create(user=request.user,episode_name=episode_name,description=episode_description,show_id=show_id,podcast=podcast_data,thumbnail=episode_art)
+            Contents.objects.create(user=request.user,episode_name=episode_name,description=episode_description,show_id=show_id,podcast=podcast_data,thumbnail=episode_art,artist=request.user)
             return JsonResponse('episode_created',safe=False)
         else:
             context = {'shows':shows}
@@ -212,4 +213,14 @@ def delete_episode(request,id):
     else:
         return redirect(creator_login)
 
-
+def episode_analytics(request,id):
+    episode = Contents.objects.get(id=id)
+    if request.method == "POST":
+        start_date = request.POST['start_date']
+        end_date = request.POST['end_date']
+    else:
+        current_date = date.today()
+        episode_analytics = EpisodeAnalytics.objects.get(episodes=episode.id,date=current_date)
+    #analytics data
+    context = {'episode_analytics':episode_analytics}
+    return render(request, './creator/EpisodeAnalytics.html',context)

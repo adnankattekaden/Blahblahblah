@@ -21,7 +21,12 @@
                         <div class="col-xl-6">
                             <label for="create Category">Plan Name</label><br>
                             <span style="color: red;" id="message"></span>
-                            <input type="text" class="form-control" placeholder="Enter Plan Name" id="plan_name">
+                            <select class="form-control select2" id="plan_name" name="plan_name">
+                                <option value="basic">Basic</option>
+                                <option value="silver">Silver</option>
+                                <option value="gold">Gold</option>
+                                <option value="diamond">Diamond</option>
+                            </select>
                         </div>
 
                         <div class="col-xl-6 mt-3">
@@ -32,14 +37,12 @@
                         <div class="col-xl-6 mt-3">
                             <label>Plan Validity</label>
                             <select class="form-control select2" id="validity" name="validity">
-                                <option value="1month">1 month</option>
-                                <option value="3month">3 month</option>
-                                <option value="6month">6 month</option>
-                                <option value="12month">12 month</option>
+                                <option value="1">1 month</option>
+                                <option value="3">3 month</option>
+                                <option value="6">6 month</option>
+                                <option value="12">12 month</option>
                             </select>
                         </div>
-
-
                         <br>
                         <button type="button" class="btn btn-primary" id="createPricing">Create</button>
                     </form>
@@ -50,5 +53,34 @@
     <!-- end row -->
 
 </div> <!-- container-fluid -->
+
+<script>
+    $('#createPricing').click(function(){
+        var createPlan = {
+            csrfmiddlewaretoken: '{{csrf_token}}',
+            plan_name: $('#plan_name').val(),
+            plan_price: $('#plan_price').val(),
+            validity: $('#validity').val(),
+        }
+        if (plan_name == ''){
+            $('#message').html('Enter Plan Name')
+        }else if(plan_price == ''){
+            $('#message').html('Enter Plan Price')
+        }else if(validity == ''){
+            $('#message').html('Sekect Plan Validity')
+        }else{
+            $.ajax({
+                url : '/owner/create-plans/',
+                type: 'POST',
+                data: createPlan,
+                dataType:'JSON',
+                success:function(data){
+                    location.replace('/owner/manage-plans/')
+                }
+
+            })
+        }
+    })
+</script>
 
 {% endblock %}

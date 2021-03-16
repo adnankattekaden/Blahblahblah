@@ -14,6 +14,7 @@ urlpatterns = [
     path('create-episode/', views.create_episode,name='create_episode'),
     path('edit-episode/<int:id>/', views.edit_episode,name='edit_episode'),
     path('delete-episode/<int:id>/', views.delete_episode,name='delete_episode'),
+    path('episode-analytics/<int:id>/', views.episode_analytics,name='episode_analytics'),
     path('profile/', views.creator_profile,name='creator_profile'),
     path('edit-profiles/<int:id>', views.edit_profile,name='edit_profile'),
     path('edit/<int:id>/', views.edit_profiles,name='edit_profiles'),

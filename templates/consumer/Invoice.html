@@ -1,0 +1,82 @@
+{% extends 'consumer/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+           <div class="iq-card">
+              <div class="iq-card-body">
+                 <div class="row">
+                    <div class="col-lg-12 align-self-center">
+                       <h4 class="mb-0 float-right">Invoice</h4>
+                    </div>
+                    <div class="col-sm-12">
+                       <hr class="mt-3">
+                       <h5 class="mb-0">Hello, {{request.user}}</h5><br>
+                    </div>
+                 </div>
+                 <div class="row">
+                    <div class="col-lg-12">
+                       <div class="table-responsive-sm">
+                          <table class="table">
+                             <thead>
+                                <tr>
+                                   <th scope="col">Order Date</th>
+                                   <th scope="col">Order Status</th>
+                                   <th scope="col">Order ID</th>
+                                   <th scope="col">Billing Address</th>
+                                </tr>
+                             </thead>
+                             <tbody>
+                                <tr>
+                                   <td>{{invoice.date}}</td>
+                                   <td><span class="badge badge-success">paid</span></td>
+                                   <td>{{invoice.transaction_id}}</td>
+                                   <!-- <td>
+                                      <p class="mb-0">PO Box 16122 Collins Street West<br>Victoria 8007 Australia<br>
+                                         Phone: +123 456 7890<br>
+                                         Email: ad@mail.com<br>
+                                      </p>
+                                   </td> -->
+                                </tr>
+                             </tbody>
+                          </table>
+                       </div>
+                    </div>
+                 </div>
+                 <div class="row">
+                    <div class="col-sm-12">
+                       <h5>Order Summary</h5>
+                       <div class="table-responsive-sm">
+                          <table class="table table-striped">
+                             <thead>
+                                <tr>
+
+                                   <th scope="col">Plan Name</th>
+                                   <th class="text-center" scope="col">Validity</th>
+                                   <th class="text-center" scope="col">Price</th>
+                                   <th class="text-center" scope="col">Totals</th>
+                                </tr>
+                             </thead>
+                             <tbody>
+                                <tr>
+                                   <td>
+                                      <h6 class="mb-0">{{invoice.plan_name}}</h6>
+                                      <!-- <p class="mb-0">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p> -->
+                                   </td>
+                                   <td class="text-center">{{invoice.validity}} Months</td>
+                                   <td class="text-center">${{invoice.price}}</td>
+                                   <td class="text-center"><b>${{invoice.price}}</b></td>
+                                </tr>
+                             </tbody>
+                          </table>
+                       </div>
+                    </div>
+              </div>
+           </div>
+        </div>
+     </div>
+</div>
+
+
+ {% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'owner/base.html' %}
+{% load static %}
+{% block title %}Manage ADs{% endblock %}
+{% block content %}
+<div class="page-title-box">
+    <div class="row align-items-center">
+        <div class="col-sm-6">
+            <h4 class="page-title">Manage Advertisements</h4>
+        </div>
+    </div> <!-- end row -->
+</div>
+<!-- end page-title -->
+
+
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card">
+            <div class="card-body">
+                <table id="datatable" class="table table-bordered dt-responsive nowrap"
+                style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                <thead>
+                    
+                    <tr>
+                        <th>AD Name</th>
+                        <th>Action</th>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    
+                    {% for ad in advertisements %}
+                    <tr>
+                        <td>{{ad.ad_name}}</td>
+                        <td><a href="#"><input type="button" class="btn btn-info"
+                            value="edit"></a>&nbsp;&nbsp;<a href="#"><input type="button"
+                            class="btn btn-primary" onclick="return confirm('Are You Sure Want To Delete')" value="Delete"></a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end row -->
+
+{% endblock %}

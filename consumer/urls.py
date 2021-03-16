@@ -18,6 +18,11 @@ urlpatterns = [
     path('edit-profile/<int:id>/',views.consumer_profile_edit,name='consumer_profile_edit'),
     path('faq/', views.faq,name='faq'),
     path('pricing/', views.pricing,name='upgrade'),
+    path('checkout/',views.checkout,name='checkout'),
+    path('thankyou/',views.thankyou_note,name='thankyou_note'),
+    path('recipts/', views.recipts,name='recipts'),
+    path('invoice/<int:id>/',views.invoice,name='invoice'),
+
     path('category/', views.category_feed,name='category_feed'),
     path('feeds/', views.latest_feeds,name='latest_feeds'),
     path('artists/',views.artists_list,name='artists_list'),
@@ -41,5 +46,6 @@ urlpatterns = [
     path('follow-show/<int:id>/', views.follow_show,name='follow_show'),
     path('followed-shows/', views.followed_podcast_list,name='followed_shows'),
     path('followed-artists/', views.followed_artists_list,name='followed_artists'),
+    path('listner-update/<int:id>/',views.music_listen_update,name='music_listen_update'),
     
 ]

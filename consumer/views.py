@@ -1,12 +1,13 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.models import User,auth
-from . models import UserDetails,Playlist,PlaylistContent
-from creator.models import Contents,Show,CreatorDeatails,Follows,FollowShows
-from owner.models import Category
+from . models import UserDetails,Playlist,PlaylistContent,Subscribtions
+from creator.models import Contents,Show,CreatorDeatails,Follows,FollowShows,EpisodeAnalytics
+from owner.models import Category,Plans,Advertisement
 import json
 from django.http import JsonResponse
 from django.core import serializers
-from datetime import date 
+from datetime import date
+import uuid
 
 # Create your views here.
 
@@ -66,7 +67,8 @@ def consumer_profile(request):
     if request.user.is_authenticated and request.user.is_staff == False:
         followed_shows_count = FollowShows.objects.filter(followed=request.user,follow_type=True).count()
         followed_artists_count = Follows.objects.filter(followed=request.user,follow_type=True).count()
-        context = {'followed_shows_count':followed_shows_count,'followed_artists_count':followed_artists_count}
+        user_details = UserDetails.objects.get(user=request.user)
+        context = {'followed_shows_count':followed_shows_count,'followed_artists_count':followed_artists_count,'user_details':user_details}
         return render(request, './consumer/Profile.html',context)
     else:
         return redirect(signin)
@@ -100,21 +102,57 @@ def faq(request):
     return render(request, './consumer/faq.html')
 
 def pricing(request):
-    return render(request, './consumer/Pricing.html')
+    plans = Plans.objects.all()
+    context = {'plans':plans}
+    return render(request, './consumer/Pricing.html',context)
 
+
+def checkout(request):
+    if request.method == 'POST':
+        plan_name = request.POST['planName']
+        plan_price = request.POST['planPrice']
+        plan_validity = request.POST['planValidity']
+        myuuid = uuid.uuid4().hex[:8]
+        transaction_id = 'ORDER' + str(myuuid)
+        Subscribtions.objects.create(user=request.user,plan_name=plan_name,validity=plan_validity,price=plan_price,transaction_id=transaction_id,payment_status=True)
+        premium = UserDetails.objects.get(user=request.user.id)
+        print(premium)
+        premium.premium = True
+        premium.save()
+    return JsonResponse('upgraded', safe=False)
+
+
+def recipts(request):
+    recipts = Subscribtions.objects.filter(user=request.user)
+    user_details = UserDetails.objects.get(user=request.user)
+    context = {'recipts':recipts,'user_details':user_details}
+    return render(request, './consumer/ReciptsList.html',context)
+
+
+def invoice(request,id):
+    invoice= Subscribtions.objects.get(id=id)
+    user_details = UserDetails.objects.get(user=request.user)
+    context = {'invoice':invoice,'user_details':user_details}
+    return render(request, './consumer/Invoice.html',context)
+
+def thankyou_note(request):
+    return render(request, './consumer/upgrade.html')
+    
 def followed_podcast_list(request):
     if request.user.is_authenticated and request.user.is_staff == False:
+        user_details = UserDetails.objects.get(user=request.user)
         shows = FollowShows.objects.filter(followed=request.user,follow_type=True)
         followed_shows = []
         for i in shows:
             followed_shows.append(i.show)
-        context = {'followed_shows':followed_shows}
+        context = {'followed_shows':followed_shows,'user_details':user_details}
         return render(request, './consumer/FollowedPodcastsList.html',context)
     else:
         return redirect(signin)
 
 def followed_artists_list(request):
     if request.user.is_authenticated and request.user.is_staff == False:
+        user_details = UserDetails.objects.get(user=request.user)
         artists = Follows.objects.filter(followed=request.user,follow_type=True)
         followed_artists = []
         followed_creator_details = []
@@ -126,7 +164,7 @@ def followed_artists_list(request):
             for k in creator_detatils:
                 followed_creator_details.append(k)
 
-        context = {'followed_creator_details':followed_creator_details}
+        context = {'followed_creator_details':followed_creator_details,'user_details':user_details}
         return render(request, './consumer/FollowedArtistsList.html',context)
     else:
         return redirect(signin)
@@ -137,22 +175,23 @@ def homepage(request):
     artists = CreatorDeatails.objects.all()
     results = []
     try:
+        user_details = UserDetails.objects.get(user=request.user)
         followed_creators = Follows.objects.filter(followed=request.user,follow_type=True)
         for creators in followed_creators:
             followed_date = creators.date
             followed_time = creators.time
-            print(followed_date)
             show_notifications = Show.objects.filter(user=creators.creators.id,date_of_published__gte=creators.date)
-            print(show_notifications)  
             for i in show_notifications:
                 results.append(i)
     except:
         followed_creators = []
-    context = {'shows':shows,'artists':artists,'results':results}
+        user_details = []
+    context = {'shows':shows,'artists':artists,'results':results,'user_details':user_details}
     return render(request, './consumer/Home.html',context)
 
 def latest_feeds(request):
     if request.user.is_authenticated and request.user.is_staff == False:
+        user_details = UserDetails.objects.get(user=request.user)
         latest_feeds = []
         for feed_show in FollowShows.objects.filter(followed=request.user,follow_type=True):
             feeds = Show.objects.filter(user_id=feed_show.show.user.id)
@@ -168,13 +207,14 @@ def latest_feeds(request):
         data = {}
         for i in Show.objects.all():
             data[i.show_name] = Contents.objects.filter(show=i.id)
-        context = {'followed_shows':latest_feeds,'datas':data}
+        context = {'followed_shows':latest_feeds,'datas':data,'user_details':user_details}
         return render(request, './consumer/Latest.html',context)
     else:
         return redirect(signin)
 
 def category_feed(request):
     if request.user.is_authenticated and request.user.is_staff == False:
+        user_details = UserDetails.objects.get(user=request.user)
         data = {}
         category = Category.objects.all()
         for i in category:
@@ -187,52 +227,63 @@ def category_feed(request):
 
 def category_view(request,id):
     if request.user.is_authenticated and request.user.is_staff == False:
+        user_details = UserDetails.objects.get(user=request.user)
         shows = Show.objects.filter(category=id)
         category = Category.objects.get(id=id)
-        context = {'shows':shows,'category':category}
+        context = {'shows':shows,'category':category,'user_details':user_details}
         return render(request, './consumer/CategoryView.html',context)
     else:
         return redirect(signin)
 
 def single_podcast(request,id):
     if request.user.is_authenticated and request.user.is_staff == False:
+        user_details = UserDetails.objects.get(user=request.user)
         shows = Show.objects.get(id=id)
         episodes = Contents.objects.filter(show=shows)
         playlists = Playlist.objects.all()
 
-        follow_status = FollowShows.objects.get(show=shows.id).follow_status
-        print(follow_status)
+        try:
+            follow_status = FollowShows.objects.get(show=shows.id).follow_status
+        except:
+            follow_status = []
 
-        context = {'shows':shows,'episodes':episodes,'playlists':playlists,'follow_status':follow_status}
+        context = {'shows':shows,'episodes':episodes,'playlists':playlists,'follow_status':follow_status,'user_details':user_details}
         return render(request, './consumer/SinglePodcastShows.html',context)
     else:
         return redirect(signin)
 
 def single_episode(request,id):
     if request.user.is_authenticated and request.user.is_staff == False:
+        user_details = UserDetails.objects.get(user=request.user)
         episode = Contents.objects.get(id=id)
         playlists = Playlist.objects.filter(user=request.user)
-        print(playlists)
-        context = {'episode':episode,'playlists':playlists}
+        user_details = UserDetails.objects.get(user=request.user)
+        ads = Advertisement.objects.all()
+        context = {'episode':episode,'playlists':playlists,'advertisment':ads,'user_details':user_details}
         return render(request, './consumer/SingleEpisodes.html',context)
     else:
         return redirect(signin)
 
 def artists_list(request):
     if request.user.is_authenticated and request.user.is_staff == False:
+        user_details = UserDetails.objects.get(user=request.user)
         artists = CreatorDeatails.objects.all()
-        context = {'artists':artists}
+        context = {'artists':artists,'user_details':user_details}
         return render(request,'./consumer/ArtistsList.html',context)
     else:
         return redirect(signin)
 
 def single_artist(request,id):
     if request.user.is_authenticated and request.user.is_staff == False:
+        user_details = UserDetails.objects.get(user=request.user)
         artists = CreatorDeatails.objects.get(id=id)
         podcasts = Show.objects.filter(user=artists.user_id)
         followers_count = Follows.objects.filter(creators=artists.user_id,follow_type=True).count()
-        follow_status = Follows.objects.get(creators=artists.user.id).follow_status
-        context = {'artists':artists,'podcasts':podcasts,'creator_followers_count':followers_count,'follow_status':follow_status}
+        try:
+            follow_status = Follows.objects.get(creators=artists.user.id).follow_status
+        except:
+            follow_status = []
+        context = {'artists':artists,'podcasts':podcasts,'creator_followers_count':followers_count,'follow_status':follow_status,'user_details':user_details}
         return render(request, './consumer/SingleArtistView.html',context)
     else:
         return redirect(signin)
@@ -308,6 +359,22 @@ def current_music_data(request,id):
     data = {'current_song':serializers.serialize('json',[consumer_data])}
     return JsonResponse(data)
 
+def music_listen_update(request,id):
+    consumer_data = Contents.objects.get(id=id)
+    update_listners = consumer_data.listeners + 1
+    consumer_data.listeners = update_listners
+    consumer_data.save()
+    current_date = date.today()
+
+    if EpisodeAnalytics.objects.filter(episodes_id=consumer_data.id,date=current_date).exists():
+        user_listen_data = EpisodeAnalytics.objects.get(episodes=consumer_data,date=current_date)
+        user_listen_data.listners = update_listners
+        user_listen_data.save()
+    else:
+        print('heyyy')
+        EpisodeAnalytics.objects.create(episodes=consumer_data,listners=update_listners)
+    return JsonResponse('listner_updated', safe=False)
+
 def add_liked(request,id):
     consumer_data = Contents.objects.get(id=id)
     if request.method == 'POST':
@@ -326,12 +393,14 @@ def add_playlist(request,id):
 
 def create_playlist(request):
     if request.method == 'POST':
+        user_details = UserDetails.objects.get(user=request.user)
         playlist_name = request.POST['playlistName']
         playlist = Playlist.objects.create(user=request.user,playlist_name=playlist_name)
         data = {'playlistcreated':serializers.serialize('json',[playlist])}
         return JsonResponse(data)
     else:
-        return render(request, './consumer/CreatePlaylist.html')
+        context = {'user_details':user_details}
+        return render(request, './consumer/CreatePlaylist.html',context)
 
 def delete_playlist(request,id):
     playlist = Playlist.objects.filter(id=id,user=request.user)
@@ -340,6 +409,7 @@ def delete_playlist(request,id):
 
 def manage_playlist(request):
     if request.user.is_authenticated and request.user.is_staff == False:
+        user_details = UserDetails.objects.get(user=request.user)
         if Playlist.objects.filter(user=request.user).exists():
             playlists = Playlist.objects.filter(user=request.user)
             for playlist in playlists:
@@ -348,16 +418,16 @@ def manage_playlist(request):
         else:
             count_of_playlist_items = 0
             playlists = []
-        context = {'playlists':playlists,'count_of_playlist_items':count_of_playlist_items}
+        context = {'playlists':playlists,'count_of_playlist_items':count_of_playlist_items,'user_details':user_details}
         return render(request, './consumer/ManagePlaylist.html',context)
     else:
         return redirect(signin)
 
 def manage_playlist_content(request,id):
+    user_details = UserDetails.objects.get(user=request.user)
     playlists = Playlist.objects.get(id=id)
     playlist_contents = PlaylistContent.objects.filter(playlist=playlists)
-    print(playlist_contents)
-    context = {'playlist_contents':playlist_contents,'playlists':playlists}
+    context = {'playlist_contents':playlist_contents,'playlists':playlists,'user_details':user_details}
     return render(request, './consumer/PlaylistContents.html',context)
 
 def remove_playlist_content(request,id):
@@ -367,5 +437,6 @@ def remove_playlist_content(request,id):
 
 def consumer_playlist_data(request):
     liked_songs = Playlist.objects.filter(user=request.user)
-    context = {'liked_songs':liked_songs}
+    user_details = UserDetails.objects.get(user=request.user)
+    context = {'liked_songs':liked_songs,'user_details':user_details}
     return render(request, './consumer/Playlists.html',context)

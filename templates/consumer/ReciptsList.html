@@ -1,0 +1,47 @@
+{% extends 'consumer/base.html' %}
+{% load static %}
+{% block content %}
+
+
+    <div class="container-fluid">
+       <div class="row">
+          <div class="col-sm-12">
+             <div class="iq-card">
+                <div class="iq-card-header d-flex justify-content-between">
+                   <div class="iq-header-title">
+                      <h4 class="card-title">Recipts</h4>
+                   </div>
+                </div>
+                <div class="iq-card-body">
+                   <div class="table-responsive">
+                      <table class="data-tables table table-striped table-bordered" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th width="5%">No</th>
+                                <th>Date</th>
+                                <th width="10%">Action</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for recipt in recipts %}
+                            <tr>
+                                <td>{{recipt.id}}</td>
+                                <td>{{recipt.date}}</td>
+                                <td>
+                                   <div class="flex align-items-center list-user-action">
+                                     <a class="bg-primary" data-toggle="tooltip" data-placement="top" data-original-title="view" href="{% url 'invoice' recipt.id %}"><i class="ri-eye-line"></i></a>
+                                  </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                   </div>
+                </div>
+             </div>
+          </div>
+       </div>
+    </div>
+
+ {% endblock %}

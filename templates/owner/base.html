@@ -14,6 +14,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
         integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
         crossorigin="anonymous"></script>
+        
 
     <link href="{% static './owner/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static './owner/css/metismenu.min.css' %}" rel="stylesheet" type="text/css">
@@ -169,6 +170,25 @@
                             </ul>
                         </li>
 
+                        <li>
+                            <a href="javascript:void(0);" class="waves-effect"><i class="icon-pricetag"></i><span>
+                                     Manage ADS<span class="float-right menu-arrow"><i
+                                            class="mdi mdi-chevron-right"></i></span> </span></a>
+                            <ul class="submenu">
+                                <li><a href="{% url 'create_ads' %}">Create AD</a></li>
+                                <li><a href="{% url 'manage_ads' %}">Manage ADs</a></li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <a href="javascript:void(0);" class="waves-effect"><i class="icon-pricetag"></i><span>
+                                    Sales Report <span class="float-right menu-arrow"><i
+                                            class="mdi mdi-chevron-right"></i></span> </span></a>
+                            <ul class="submenu">
+                                <li><a href="{% url 'sales_report' %}">Subscribtion</a></li>
+                                <li><a href="{% url 'cancelled_report' %}">Cancelled</a></li>
+                            </ul>
+                        </li>
 
                     </ul>
 

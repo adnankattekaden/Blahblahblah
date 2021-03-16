@@ -1,0 +1,69 @@
+{% extends 'creator/base.html' %}
+{% load static %}
+{% block title %}Episode Analytics{% endblock %}
+
+
+{% block content %}
+<!-- start page title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <h4 class="mb-sm-0 font-size-18">Episode Analytics</h4>
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+
+<div>
+    <form method="post">
+        {% csrf_token %}
+        <h3>From</h3>
+        <input type="date" id="start_date" name="start_date" required><h3>TO</h3>
+        <input type="date" id="end_date" name="end_date" required>
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+<!-- import plugin script -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js'></script>
+
+<div class="page-content">
+    <div class="container-fluid">
+        {% if episode_analytics %}
+        <div>
+            <!-- bar chart canvas element -->
+            <canvas id="listners" width="600" height="400"></canvas>
+        </div>
+        {% else %}
+        <h1>Currenlty NO data avalable</h1>
+        {% endif %}
+    </div> <!-- container-fluid -->
+
+</div>
+
+
+<script>
+    var today = '{{episode_analytics.listners}}'
+    // bar chart data
+    var barData = {
+        labels: ["January", "February", "March", "April", "May", "June"],
+        datasets: [
+            {
+                fillColor: "#48A497",
+                strokeColor: "#48A4D1",
+                data: [today, 479, 324, 569, 702, 600]
+            }
+        ]
+    }
+    // get bar chart canvas
+    var income = document.getElementById("listners").getContext("2d");
+    // draw bar chart
+    new Chart(income).Bar(barData);
+</script>
+
+{% endblock content %}
+
+
+{% block scripts %}
+
+{% endblock %}

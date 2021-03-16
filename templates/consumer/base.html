@@ -97,11 +97,13 @@
                         </div>
                      </li>
 
+                     {% if not user_details.premium == True %}
                      <li class="nav-item nav-icon">
                         <div class="iq-search-bar">
                            <a href="{% url 'upgrade' %}" class="btn btn-secondary">Upgrade</a>
                         </div>
                      </li>
+                     {% endif %}
 
                      <li class="nav-item nav-icon search-content">
                         <a href="#" class="search-toggle iq-waves-effect text-gray rounded"><span
@@ -187,7 +189,7 @@
                                     </div>
                                  </a>
 
-                                 <a href="#" class="iq-sub-card iq-bg-primary-hover">
+                                 <a href="{% url 'recipts' %}" class="iq-sub-card iq-bg-primary-hover">
                                     <div class="media align-items-center">
                                        <div class="rounded iq-card-icon iq-bg-primary">
                                           <i class="ri-file-user-line"></i>
@@ -324,6 +326,10 @@
 
 
    <script>
+      
+   </script>
+
+   <script>
 
       var music;
       let now_playing = document.querySelector(".now-playing");
@@ -453,11 +459,20 @@
                currentId = music.pk
                console.log(music.fields.podcast)
                console.log(music.fields.thumbnail);
+               listnerUpdate(nowId)
             }
 
          })
          loadTrack(music);
          playTrack();
+      }
+
+      function listnerUpdate(nowId){
+         console.log(nowId)
+         $.ajax({
+            url: '/listner-update/'+nowId+'/',
+            type: 'GET',
+         })
       }
 
       function seekTo() {

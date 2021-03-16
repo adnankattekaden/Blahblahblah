@@ -1,0 +1,33 @@
+{% extends 'owner/base.html' %}
+{% load static %}
+{% block title %}Title here{% endblock %}
+{% block content %}
+<div class="page-title-box">
+    <div class="row align-items-center">
+        <div class="col-sm-6">
+            <h4 class="page-title">Subscription Report</h4>
+        </div>
+    </div> <!-- end row -->
+</div>
+<!-- end page-title -->
+  
+  <table class="table">
+    <thead class="thead-light">
+      <tr>
+        <th scope="col">Date</th>
+        <th scope="col">Total Subscriptions</th>
+        <th scope="col">Total Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for date,report in dict.items %}
+      <tr>
+        <th scope="row">{{date}}</th>
+        <td>{{report.totalsubs}}</td>
+        <td>{{report.price}}</t@fat</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+{% endblock %}

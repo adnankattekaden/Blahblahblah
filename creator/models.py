@@ -45,6 +45,9 @@ class Show(models.Model):
         self.thumbnail.delete()
         super().delete(*args, **kwargs)
 
+
+
+
 class Contents(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     artist = models.CharField(max_length=255,null=True,blank=True)
@@ -53,6 +56,7 @@ class Contents(models.Model):
     description = models.CharField(max_length=20000,null=True,blank=True)
     date_of_published = models.DateField(auto_now_add=True,null=True,blank=True)
     time_of_published = models.TimeField(auto_now_add=True,null=True,blank=True)
+    listeners = models.IntegerField(default=0)
     podcast = models.FileField(upload_to='podcasts/')
     thumbnail = models.FileField(upload_to='thumbnail/')
 
@@ -78,6 +82,14 @@ class Contents(models.Model):
         self.podcast.delete()
         self.thumbnail.delete()
         super().delete(*args, **kwargs)
+
+
+class EpisodeAnalytics(models.Model):
+    episodes = models.ForeignKey(Contents,on_delete=models.CASCADE)
+    date = models.DateField(auto_now_add=True,null=True,blank=True)
+    time = models.TimeField(auto_now_add=True,null=True,blank=True)
+    listners = models.IntegerField(default=0,null=True,blank=True)
+
 
 class Follows(models.Model):
     creators = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True,related_name='follow_follower')

@@ -29,13 +29,17 @@
 
                 </thead>
                 <tbody>
-                    {% for category in categories %}
+                    {% for plan in plans %}
+                    
                     <tr>
-                        <td>{{category.category_name}}</td>
-                        <td><a href="{% url 'edit_category' category.id %}"><input type="button" class="btn btn-info"
-                            value="edit"></a>&nbsp;&nbsp;<a href="{% url 'delete_category' category.id %}"><input type="button"
+                        <td>{{plan.plan_name}}</td>
+                        <td>{{plan.price}}</td>
+                        <td>{{plan.validity}} Month</td>
+                        <td><a href="#"><input type="button" class="btn btn-info"
+                            value="edit"></a>&nbsp;&nbsp;<a href="{% url 'delete_plan' plan.id %}"><input type="button"
                             class="btn btn-primary" onclick="return confirm('Are You Sure Want To Delete')" value="Delete"></a></td>
                     </tr>
+
                     {% endfor %}
                 </tbody>
             </table>

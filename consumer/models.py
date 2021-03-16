@@ -7,6 +7,7 @@ class UserDetails(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     mobile_number = models.BigIntegerField(null=True,blank=True)
     image = models.FileField(upload_to='usersprofile/')
+    premium = models.BooleanField(default=False)
 
     @property
     def ImageURL(self):
@@ -27,3 +28,13 @@ class Playlist(models.Model):
 class PlaylistContent(models.Model):
     playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE,null=True,blank=True)
     content = models.ForeignKey(Contents, on_delete=models.CASCADE,null=True,blank=True)
+
+class Subscribtions(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True)
+    plan_name = models.CharField(max_length=200)
+    validity = models.IntegerField()
+    price = models.FloatField()
+    transaction_id = models.CharField(max_length=200, null=True, blank=True)
+    payment_status = models.BooleanField(default=False)
+    date = models.DateField(auto_now_add=True)
+    time = models.TimeField(auto_now_add=True)
