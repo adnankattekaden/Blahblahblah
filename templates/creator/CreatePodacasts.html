@@ -46,7 +46,8 @@
                         <div class="col-sm-6">
                             <div class="mb-3">
                                 <label for="thumbnail">Show Art</label><br>
-                                <input type="file" name="thumbnail" id="thumbnail" accept="image/*">
+                                <img src="{% static './creator/defaultart.jpg' %}" onclick="openImage()" onchange="preview()" id="frame" style="height: 10rem; width: 10rem;">
+                                <input style="display: none;" type="file" name="thumbnail" id="thumbnail"  oninput="frame.src=window.URL.createObjectURL(this.files[0])" accept="image/*">
                             </div>
                         </div>
 
@@ -107,6 +108,10 @@
 
         }
     })
+
+    function openImage(){
+        $('#thumbnail').click()
+    }
 
 </script>
 

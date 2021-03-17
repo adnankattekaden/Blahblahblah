@@ -103,7 +103,7 @@
 
                 <div class="row justify-content-end">
                     <div class="col-lg-10">
-                        <button type="button" id="episodeBtn" class="btn btn-primary">Create Episode</button>
+                        <button type="button" id="episodeBtn" class="btn btn-primary">Save Changes</button>
                     </div>
                 </div>
 
@@ -115,9 +115,9 @@
 <!-- end row -->
 
 <script>
-    id = '{{episode.id}}'
+    var episodeId = '{{episode.id}}'
     $('#episodeBtn').click(function () {
-        var id = document.getElementById('show').value
+        var showId = document.getElementById('show').value
         var formData = new FormData();
         formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
         formData.append("episodeName", document.getElementById("episodeName").value);
@@ -125,39 +125,34 @@
         formData.append("audio", document.getElementById("audio").files[0]);
         formData.append("description", document.getElementById("description").value);
         formData.append("show", document.getElementById("show").value);
+        
         // restrict other Filetypes
         // image
         var ext_art = episodeart.value.split(".")
         ext_art = ext_art[ext_art.length - 1].toLowerCase();
-        console.log(ext_art,'extreaarrrtt')
-        var artExtensions = ["jpg","png","svg","jpeg"];
+        console.log(ext_art.split())
+        var artExtensions = ["jpg","png","svg","jpeg",""];
         // audio
         var ext = audio.value.split(".")
         ext = ext[ext.length - 1].toLowerCase();
-        console.log('extt',ext)
-        var arrayExtensions = ["mp3"];
+        console.log(typeof(ext))
+        var arrayExtensions = ["mp3",""];
         // END RESTRRICT FILE TYPE
-
+        
+        console.log(episodeart.value)
         if (episodeName.value == '') {
             $('#message').html('Enter Episode Name')
-        } else if (episodeart.value == '') {
-            $('#message').html('Upload Episode Art')
         }else if(artExtensions.lastIndexOf(ext_art) == -1){
             $('#message').html('it is not an Image file')
-        }
-         else if (audio.value == '') {
-            $('#message').html('Upload Episode')
-        }
-        else if (arrayExtensions.lastIndexOf(ext) == -1){
+        }else if(arrayExtensions.lastIndexOf(ext) == -1){
             $('#message').html('it is not an audio file')
-        }
-        else if (description.value == '') {
+        }else if (description.value == '') {
             $('#message').html('Enter Description')
         } else if (show.value == 'Choose An Show') {
             $('#message').html('Select An Show')
         } else {
             var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/creator/edit-episode/', true);
+            xhr.open('POST', '/creator/edit-episode/'+episodeId+'/', true);
             xhr.upload.addEventListener("progress", function (ev) {
                 if (ev.lengthComputable) {
                     var percentage = (ev.loaded / ev.total * 100 | 0)
@@ -170,7 +165,7 @@
             });
 
             xhr.send(formData);
-            xhr.onload = () => location.replace('/creator/manage-episodes/'+id+'/')
+            xhr.onload = () => location.replace('/creator/manage-episodes/'+showId+'/')
         }
     })
 

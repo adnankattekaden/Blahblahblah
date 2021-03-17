@@ -2,6 +2,77 @@
 {% load static %}
 {% block content %}
 
+<style>
+   /* Base setup */
+   @import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
+
+   /* Ratings widget */
+   .rate {
+      display: inline-block;
+      border: 0;
+   }
+
+   /* Hide radio */
+   .rate>input {
+      display: none;
+   }
+
+   /* Order correctly by floating highest to the right */
+   .rate>label {
+      float: right;
+   }
+
+   /* The star of the show */
+   .rate>label:before {
+      display: inline-block;
+      font-size: 1.1rem;
+      padding: .3rem .2rem;
+      margin: 0;
+      cursor: pointer;
+      font-family: FontAwesome;
+      content: "\f005 ";
+      /* full star */
+   }
+
+   /* Zero stars rating */
+   .rate>label:last-child:before {
+      content: "\f006 ";
+      /* empty star outline */
+   }
+
+   /* Half star trick */
+   .rate .half:before {
+      content: "\f089 ";
+      /* half star no outline */
+      position: absolute;
+      padding-right: 0;
+   }
+
+   /* Click + hover color */
+   input:checked~label,
+   /* color current and previous stars on checked */
+   label:hover,
+   label:hover~label {
+      color: #ffe600;
+   }
+
+   /* color previous stars on hover */
+
+   /* Hover highlights */
+   input:checked+label:hover,
+   input:checked~label:hover,
+   /* highlight current and previous stars */
+   input:checked~label:hover~label,
+   /* highlight previous selected stars for new rating */
+   label:hover~input:checked~label
+
+   /* highlight previous selected stars */
+      {
+      color: #ffe600;
+   }
+
+</style>
+
 <div class="container-fluid">
    <div class="row">
       <div class="col-lg-12">
@@ -16,23 +87,97 @@
                         <div class="music-detail">
                            <h3>{{episode.episode_name}}</h3>
                            <span>{{episode.artist}}</span>
+                           <form name="myForm" onchange="starrating()">
+
+                              <fieldset class="rate">
+   
+                                 <input type="radio" id="rating10" name="rating" value="5" {% if user_rating.rating == 5 %}  checked {% endif %}/>
+                                 <label for="rating10" title="5 stars"></label>
+                                 
+                                 <input type="radio" id="rating9" name="rating" value="4.5"{% if user_rating.rating == 4.5 %}  checked {% endif %}/>
+                                 <label class="half" for="rating9" title="4 1/2 stars"></label>
+
+                                 <input type="radio" id="rating8" name="rating" value="4"{% if user_rating.rating == 4.0 %}  checked {% endif %}/>
+                                 <label for="rating8"title="4 stars"></label>
+
+                                 <input type="radio" id="rating7" name="rating" value="3.5"{% if user_rating.rating == 3.5 %}  checked {% endif %}/>
+                                 <label class="half"for="rating7" title="3 1/2 stars"></label>
+
+                                 <input type="radio" id="rating6" name="rating" value="3" {% if user_rating.rating == 3.0 %}  checked {% endif %}/>
+                                 <label for="rating6" title="3 stars"></label>
+
+                                 <input type="radio" id="rating5" name="rating" value="2.5" {% if user_rating.rating == 2.5 %}  checked {% endif %}/>
+                                 <label class="half" for="rating5" title="2 1/2 stars"></label>
+
+                                 <input type="radio" id="rating4" name="rating" value="2" {% if user_rating.rating == 2.2 %}  checked {% endif %}/>
+                                 <label for="rating4"title="2 stars"></label>
+
+                                 <input type="radio" id="rating3" name="rating" value="1.5" {% if user_rating.rating == 1.5 %}  checked {% endif %}/>
+                                 <label class="half"for="rating3" title="1 1/2 stars"></label>
+
+                                 <input type="radio" id="rating2" name="rating" value="1" {% if user_rating.rating == 1.0 %}  checked {% endif %}/>
+                                 <label for="rating2" title="1 star"></label>
+
+                                 <input type="radio" id="rating1" name="rating" value="0.5" {% if user_rating.rating == 0.5 %}  checked {% endif %}/>
+                                 <label class="half" for="rating1" title="1/2 star"></label>
+                              
+                                 <div><span>Rating {{episode.rating}}</span></div>
+                                 
+                              </fieldset>
+                              
+                           </form>
+                           
+                           <span><h4>Description:</h4> <br>{{episode.description}}</span>
                            <p class="mb-0">{{episode.listeners}} Views</p>
-                           <br>
                            <div class="d-flex align-items-center">
                               <button class="btn btn-primary iq-play mr-2" onclick="currentTrack('{{episode.id}}')">Play
                                  music</button>
                            </div>
+
                         </div>
                         <div class="music-right">
                            <div class="d-flex align-items-center">
                               <div class="iq-circle mr-2 share"><a href="javascript:void();"><i
                                        class="las la-share-alt-square text-primary"></i></a></div>
-                              <div class="iq-circle mr-2"><a type="button" id="likeSong"><i
-                                       class="ri-heart-fill  text-primary" type="button" id="likeSong"></i></a></div>
-                              <div class="iq-circle">
+                                       
+                              {% if not episode.favorites == True %}
+                              <div class="iq-circle mr-2 like">
+                                 <a type="button" class="likeSong"><i class="fa fa-heart-o text-primary" type="button"
+                                    id="likeSong"></i></a>
+                              </div>
+                              {% else %}
+                              <div class="iq-circle mr-2 unlike">
+                                 <a type="button" class="likeSong"><i class="ri-heart-fill  text-primary unlike"  type="button" 
+                                       id="likeSong"></i></a>
+                              </div>
+                              {% endif %}
+
+
+                              
+                              <div class="iq-circle mr-2">
                                  <a type="button"><i class="las la-file-audio text-primary" data-toggle="modal"
                                        data-target="#exampleModal" id="addPlaylist"></i></a>
                               </div>
+
+                              {% if user_details.premium == True %}
+                              <div class="iq-circle">
+                                 <a href="{{episode.PodcastURL}}" download><i
+                                       class="las la-download text-primary text-primary"></i></a>
+                              </div>
+                              {% endif %}
+
+                              <br>
+                              <div>
+                                 <div class="iq-circle mr-2">
+                                    <a type="button" class="likeSong"><i class="fa fa-thumbs-up "  type="button"></i></a>
+                                 </div>
+   
+                                 <div class="iq-circle mr-2">
+                                    <a type="button"><i class="fa fa-thumbs-down  "  type="button"></i></a>
+                                 </div>
+                              </div>
+
+
                            </div>
                         </div>
                      </div>
@@ -50,7 +195,7 @@
    </div>
    {% endfor %}
    {% endif %}
-   
+
 </div>
 
 
@@ -69,7 +214,7 @@
 
          <div class="modal-body">
             <div class="table-responsive">
-               {% if playlists  %}
+               {% if playlists %}
                <table class="table align-middle table-nowrap">
                   <thead>
                      <tr>
@@ -83,7 +228,8 @@
                         <td>
                            <div>
                               <!-- <h5 class="text-truncate font-size-14">Wireless Headphone (Black)</h5> -->
-                              <button class="btn btn-primary" data-dismiss="modal" onclick="playlistname('{{playlist.id}}')">{{playlist.playlist_name}}</button>
+                              <button class="btn btn-primary" data-dismiss="modal"
+                                 onclick="playlistname('{{playlist.id}}')">{{playlist.playlist_name}}</button>
                            </div>
                         </td>
                      </tr>
@@ -92,7 +238,7 @@
                </table>
                {% else %}
                <table class="table align-middle table-nowrap">
-                  
+
                   <tbody class="updatedplaylist">
                      <tr>
                         <h4 class="text-center">Currently There is No Playlists</h4>
@@ -114,7 +260,7 @@
 </div>
 
 <script>
-   $("#likeSong").click(function () {
+   $(".likeSong").click(function () {
       var songId = '{{episode.id}}'
       var SongInfo = {
          csrfmiddlewaretoken: '{{csrf_token}}',
@@ -126,8 +272,8 @@
          dataType: 'json',
          data: SongInfo,
          success: function (data) {
-            if (data == 'playlistadded') {
-               console.log('success')
+            if (data == 'addedliked') {
+               console.log('addel')
             }
          }
 
@@ -175,5 +321,27 @@
 
 </script>
 
+
+<!-- rating -->
+<script>
+   var id = "{{episode.id}}"
+   function starrating(){
+   var selected = document.forms.myForm.rating.value;
+   var starRating = {
+            csrfmiddlewaretoken: '{{csrf_token}}',
+            rating:selected,
+         }
+   $.ajax({
+      url: '/rating/'+id+'/',
+      type: 'POST',
+      data:starRating,
+      success:function(data){
+         console.log('response')
+      }
+   })
+
+   }
+
+</script>
 
 {% endblock content %}

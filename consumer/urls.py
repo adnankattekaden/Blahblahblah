@@ -47,5 +47,6 @@ urlpatterns = [
     path('followed-shows/', views.followed_podcast_list,name='followed_shows'),
     path('followed-artists/', views.followed_artists_list,name='followed_artists'),
     path('listner-update/<int:id>/',views.music_listen_update,name='music_listen_update'),
+    path('rating/<int:id>/', views.rating,name='rating'),
     
 ]

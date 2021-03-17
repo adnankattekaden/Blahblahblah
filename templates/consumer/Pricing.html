@@ -15,7 +15,7 @@
                         <li>Validity - {{plan.validity}}</li>
                         <li>One Time Payment</li>
                     </ul>
-                    <a href="#" id="subscribtionBtn" onclick="getPlanDetails('{{plan.plan_name}}','{{plan.price}}','{{plan.validity}}')" class="btn btn-primary mt-5">Start Starter</a>
+                    <a href="#" class="subscribtionBtn" onclick="getPlanDetails('{{plan.plan_name}}','{{plan.price}}','{{plan.validity}}')" class="btn btn-primary mt-5">Start Starter</a>
                 </div>
             </div>
         </div>
@@ -34,7 +34,7 @@
         planValidity = planvalidity
     }
 
-    $('#subscribtionBtn').click(function () {
+    $('.subscribtionBtn').click(function () {
         var checkoutData ={
             csrfmiddlewaretoken: '{{csrf_token}}',
             planName:planName,

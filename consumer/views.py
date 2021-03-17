@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.models import User,auth
-from . models import UserDetails,Playlist,PlaylistContent,Subscribtions
+from . models import UserDetails,Playlist,PlaylistContent,Subscribtions,UserRating
 from creator.models import Contents,Show,CreatorDeatails,Follows,FollowShows,EpisodeAnalytics
 from owner.models import Category,Plans,Advertisement
 import json
@@ -109,14 +109,15 @@ def pricing(request):
 
 def checkout(request):
     if request.method == 'POST':
+        print(request)
         plan_name = request.POST['planName']
         plan_price = request.POST['planPrice']
         plan_validity = request.POST['planValidity']
         myuuid = uuid.uuid4().hex[:8]
         transaction_id = 'ORDER' + str(myuuid)
+
         Subscribtions.objects.create(user=request.user,plan_name=plan_name,validity=plan_validity,price=plan_price,transaction_id=transaction_id,payment_status=True)
         premium = UserDetails.objects.get(user=request.user.id)
-        print(premium)
         premium.premium = True
         premium.save()
     return JsonResponse('upgraded', safe=False)
@@ -187,8 +188,9 @@ def homepage(request):
     except:
         followed_creators = []
         user_details = []
+    notification_count = len(results)
     #notification Ends
-    context = {'shows':shows,'artists':artists,'results':results,'user_details':user_details}
+    context = {'shows':shows,'artists':artists,'results':results,'user_details':user_details,'notification_count':notification_count}
     return render(request, './consumer/Home.html',context)
 
 def latest_feeds(request):
@@ -207,10 +209,9 @@ def latest_feeds(request):
                 latest_feeds.append(show)
                 
         #main starts here
-        print(latest_feeds)
         data = {}
         for i in latest_feeds:
-            data[i.show_name] = Contents.objects.filter(show=i.id)
+            data[i] = Contents.objects.filter(show=i.id)
         context = {'followed_shows':latest_feeds,'datas':data,'user_details':user_details}
         return render(request, './consumer/Latest.html',context)
     else:
@@ -232,13 +233,14 @@ def category_feed(request):
         except:
             followed_creators = []
             user_details = []
+        notification_count = len(results)
         #notification ends here
         data = {}
         category = Category.objects.all()
         for i in category:
-            data[i.category_name] = Show.objects.filter(category=i)
+            data[i] = Show.objects.filter(category=i)
         
-        context = {'datas':data,'results':results}
+        context = {'datas':data,'results':results,'notification_count':notification_count}
         return render(request, './consumer/CategoryFeeds.html',context)
     else:
         return redirect(signin)
@@ -259,10 +261,11 @@ def category_view(request,id):
         except:
             followed_creators = []
             user_details = []
+        notification_count = len(results)
         #notification ends here
         shows = Show.objects.filter(category=id)
         category = Category.objects.get(id=id)
-        context = {'shows':shows,'category':category,'user_details':user_details}
+        context = {'shows':shows,'category':category,'user_details':user_details,'notification_count':notification_count}
         return render(request, './consumer/CategoryView.html',context)
     else:
         return redirect(signin)
@@ -283,6 +286,7 @@ def single_podcast(request,id):
         except:
             followed_creators = []
             user_details = []
+        notification_count = len(results)
         #notification ends here
         shows = Show.objects.get(id=id)
         episodes = Contents.objects.filter(show=shows)
@@ -293,7 +297,7 @@ def single_podcast(request,id):
         except:
             follow_status = []
 
-        context = {'shows':shows,'episodes':episodes,'playlists':playlists,'follow_status':follow_status,'user_details':user_details}
+        context = {'shows':shows,'episodes':episodes,'playlists':playlists,'follow_status':follow_status,'user_details':user_details,'notification_count':notification_count}
         return render(request, './consumer/SinglePodcastShows.html',context)
     else:
         return redirect(signin)
@@ -314,12 +318,22 @@ def single_episode(request,id):
         except:
             followed_creators = []
             user_details = []
+        notification_count = len(results)
         #notification ends here
+
         episode = Contents.objects.get(id=id)
         playlists = Playlist.objects.filter(user=request.user)
-        user_details = UserDetails.objects.get(user=request.user)
+
+        try:
+            user_rating = UserRating.objects.get(user=request.user,content=episode)
+        except:
+            user_rating = 0
+
         ads = Advertisement.objects.all()
-        context = {'episode':episode,'playlists':playlists,'advertisment':ads,'user_details':user_details}
+
+        context = {'episode':episode,'playlists':playlists,'advertisment':ads,
+        'user_details':user_details,'notification_count':notification_count,
+        'user_rating':user_rating}
         return render(request, './consumer/SingleEpisodes.html',context)
     else:
         return redirect(signin)
@@ -340,9 +354,10 @@ def artists_list(request):
         except:
             followed_creators = []
             user_details = []
+        notification_count = len(results)
         #notification ends here
         artists = CreatorDeatails.objects.all()
-        context = {'artists':artists,'user_details':user_details}
+        context = {'artists':artists,'user_details':user_details,'notification_count':notification_count}
         return render(request,'./consumer/ArtistsList.html',context)
     else:
         return redirect(signin)
@@ -363,6 +378,7 @@ def single_artist(request,id):
         except:
             followed_creators = []
             user_details = []
+        notification_count = len(results)
         #notification ends here
         artists = CreatorDeatails.objects.get(id=id)
         podcasts = Show.objects.filter(user=artists.user_id)
@@ -371,7 +387,7 @@ def single_artist(request,id):
             follow_status = Follows.objects.get(creators=artists.user.id).follow_status
         except:
             follow_status = []
-        context = {'artists':artists,'podcasts':podcasts,'creator_followers_count':followers_count,'follow_status':follow_status,'user_details':user_details}
+        context = {'artists':artists,'podcasts':podcasts,'creator_followers_count':followers_count,'follow_status':follow_status,'user_details':user_details,'notification_count':notification_count}
         return render(request, './consumer/SingleArtistView.html',context)
     else:
         return redirect(signin)
@@ -468,14 +484,24 @@ def add_liked(request,id):
     if request.method == 'POST':
         playlist_name = request.POST['playlistName']
 
+    like_songs = Playlist.objects.get(playlist_name='likedsong',user=request.user)
     if Playlist.objects.filter(user=request.user,playlist_name='likedsong').exists():
-        like_songs = Playlist.objects.get(playlist_name='likedsong')
-        if PlaylistContent.objects.filter(playlist=like_songs,content=consumer_data).exists():
-            PlaylistContent.objects.get(playlist=like_songs,content=consumer_data).delete()
+        # like_songs = Playlist.objects.get(playlist_name='likedsong',user=request.user)
+        if PlaylistContent.objects.filter(playlist=like_songs,content=consumer_data,user=request.user).exists():
+            PlaylistContent.objects.get(playlist=like_songs,content=consumer_data,user=request.user).delete()
+            consumer_data.favorites = False
+            consumer_data.save()
+            return JsonResponse('removeLiked',safe=False)
         else:
-            PlaylistContent.objects.create(playlist=like_songs,content=consumer_data)
+            PlaylistContent.objects.create(playlist=like_songs,content=consumer_data,user=request.user)
+            consumer_data.favorites = True
+            consumer_data.save()
     else:
         Playlist.objects.create(user=request.user,playlist_name=playlist_name)
+        PlaylistContent.objects.create(playlist=like_songs,content=consumer_data,user=request.user)
+        print('heyy')
+        consumer_data.favorites = True
+        consumer_data.save()
     return JsonResponse('addedliked', safe=False)
 
 def add_playlist(request,id):
@@ -503,6 +529,7 @@ def create_playlist(request):
         except:
             followed_creators = []
             user_details = []
+        notification_count = len(results)
         #notification ends here
         playlist_name = request.POST['playlistName']
         playlist = Playlist.objects.create(user=request.user,playlist_name=playlist_name)
@@ -533,16 +560,20 @@ def manage_playlist(request):
         except:
             followed_creators = []
             user_details = []
+        notification_count = len(results)
         #notification ends here
         if Playlist.objects.filter(user=request.user).exists():
-            playlists = Playlist.objects.filter(user=request.user)
+            playlists = Playlist.objects.filter(user=request.user).exclude(playlist_name='likedsong')
             for playlist in playlists:
                 playlist_contents = PlaylistContent.objects.filter(playlist=playlist.id)
-            count_of_playlist_items = playlist_contents.count()
+            try:
+                count_of_playlist_items = playlist_contents.count()
+            except:
+                count_of_playlist_items = 0
         else:
             count_of_playlist_items = 0
             playlists = []
-        context = {'playlists':playlists,'count_of_playlist_items':count_of_playlist_items,'user_details':user_details}
+        context = {'playlists':playlists,'count_of_playlist_items':count_of_playlist_items,'user_details':user_details,'notification_count':notification_count}
         return render(request, './consumer/ManagePlaylist.html',context)
     else:
         return redirect(signin)
@@ -562,10 +593,11 @@ def manage_playlist_content(request,id):
     except:
         followed_creators = []
         user_details = []
+    notification_count = len(results)
     #notification ends here
     playlists = Playlist.objects.get(id=id)
     playlist_contents = PlaylistContent.objects.filter(playlist=playlists)
-    context = {'playlist_contents':playlist_contents,'playlists':playlists,'user_details':user_details}
+    context = {'playlist_contents':playlist_contents,'playlists':playlists,'user_details':user_details,'notification_count':notification_count}
     return render(request, './consumer/PlaylistContents.html',context)
 
 def remove_playlist_content(request,id):
@@ -579,3 +611,28 @@ def consumer_liked_data(request):
     user_details = UserDetails.objects.get(user=request.user)
     context = {'liked_songs':liked_songs,'user_details':user_details,'liked_contents':liked_contents}
     return render(request, './consumer/LikedPlaylists.html',context)
+
+def rating(request,id):
+    if request.method == "POST":
+        rating_value = request.POST['rating']
+        content_id = Contents.objects.get(id=id)
+
+        #user rating
+        if UserRating.objects.filter(user=request.user,content=content_id).exists():
+            UserRating.objects.filter(user=request.user,content=content_id).delete()
+        UserRating.objects.create(user=request.user,content=content_id,rating=rating_value)
+        
+        total_rating = []
+
+        overall_content_rating = UserRating.objects.filter(content=content_id)
+        for i in overall_content_rating:
+            total_rating.append(float(i.rating))
+
+        global_rating = 0
+        for rating in total_rating:
+            global_rating += rating
+
+        rate = Contents.objects.get(id=id)
+        rate.rating = global_rating/5
+        rate.save()
+    return JsonResponse('rated',safe=False)

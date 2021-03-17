@@ -27,8 +27,15 @@ class Playlist(models.Model):
     playlist_name = models.CharField(max_length=200,null=True,blank=True)
 
 class PlaylistContent(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True)
     playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE,null=True,blank=True)
     content = models.ForeignKey(Contents, on_delete=models.CASCADE,null=True,blank=True)
+
+class UserRating(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    content = models.ForeignKey(Contents, on_delete=models.CASCADE,null=True)
+    rating = models.FloatField()
+
 
 class Subscribtions(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True)

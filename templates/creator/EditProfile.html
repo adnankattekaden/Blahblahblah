@@ -12,18 +12,21 @@
 </div>
 <!-- end page title -->
 
+
+
 <div class="col-lg-12">
     <div class="card m-b-30">
         <div class="card-body">
             <h4 class="mt-0 header-title">Fill Details</h4>
             <br>
             <form>
-                <span style="color: red;" id="message"></span><br>
-
-                <div>
-                    <label>Profile</label>
-                    <input type="file" id="profile_image" accept="image/*" name="profile_image">
+                <span style="color: red;" id="message"></span>
+                <div class="mb-3">
+                    <label>Profile</label><br>
+                    <img src="{{creator_details.ImageURL}}" onclick="openImage()" id="frame" style="height: 10rem; width: 10rem;">
+                    <input type="file" style="display: none;" id="profile_image" oninput="frame.src=window.URL.createObjectURL(this.files[0])" accept="image/*" name="profile_image">
                 </div>
+
 
                 <div class="row">
                     <div class="col-lg-6">
@@ -91,9 +94,7 @@
         formData.append("mobile", document.getElementById("mobile").value);
         formData.append("about_me", document.getElementById("about_me").value);
 
-        if (profile_image.value == '') {
-            $('#message').html('Upload User Profile')
-        } else if (first_name.value == '') {
+        if (first_name.value == '') {
             $('#message').html('Enter First Name')
         } else if (last_name.value == '') {
             $('#message').html('Enter Last Name')
@@ -122,6 +123,10 @@
         }
 
     })
+
+    function openImage(){
+        $('#profile_image').click()
+    }
 </script>
 {% endblock content %}
 

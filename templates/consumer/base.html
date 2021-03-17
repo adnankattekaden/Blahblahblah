@@ -134,11 +134,11 @@
                               <div class="iq-card-body p-0">
                                  <div class="bg-primary p-3">
                                     <h5 class="mb-0 text-white">All Notifications<small
-                                          class="badge  badge-light float-right pt-1">4</small></h5>
+                                          class="badge  badge-light float-right pt-1">{{notification_count}}</small></h5>
                                  </div>
 
                                  {% for result in results %}
-                                 <a href="#" class="iq-sub-card">
+                                 <a href="{% url 'single_podcast' result.id %}" class="iq-sub-card">
                                     <div class="media align-items-center">
 
                                        <div class="">
@@ -236,9 +236,11 @@
 
    </div>
    <!-- Wrapper END -->
+
    <!-- Footer -->
-   <footer class="iq-footer">
-      <div class="container-fluid">
+   <footer class="iq-footer podplayer" style="display: none;">
+      <div class="
+      -fluid">
          <div class="row">
             <div class="col-sm-12">
                <div class="player row">
@@ -351,7 +353,7 @@
       let updateTimer;
       let currentId = 12;
       var nowId = "{{consumer_data.id}}"
-      console.log('id', nowId)
+      
       // Create new audio element
       let curr_track = document.createElement('audio');
       console.log(curr_track);
@@ -473,6 +475,10 @@
             url: '/listner-update/'+nowId+'/',
             type: 'GET',
          })
+      }
+
+      function hideUnhidePlayer(){
+         console.log('hide player')
       }
 
       function seekTo() {

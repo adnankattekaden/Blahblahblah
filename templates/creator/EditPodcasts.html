@@ -25,10 +25,12 @@
                 <form>
                     <div class="row">
                         <div class="col-sm-6">
+
                             <div class="mb-3">
                                 <label for="podcastName">Show Name</label>
                                 <input id="podcastName" name="podcastName" type="text" class="form-control" value="{{podcast_show.show_name}}">
                             </div>
+
                             <div class="mb-3">
                                 <label class="control-label">Category</label>
                                 <select class="form-control select2" id="category" name="category">
@@ -49,7 +51,8 @@
                         <div class="col-sm-6">
                             <div class="mb-3">
                                 <label for="thumbnail">Show Art</label><br>
-                                <input type="file" name="thumbnail" id="thumbnail" accept="image/*">
+                                <img src="{{podcast_show.ImageURL}}" onclick="openImage()" onchange="preview()" id="frame" style="height: 10rem; width: 10rem;">
+                                <input style="display: none;" type="file" name="thumbnail" id="thumbnail"  oninput="frame.src=window.URL.createObjectURL(this.files[0])" accept="image/*">
                             </div>
                         </div>
 
@@ -79,14 +82,12 @@
         // restrict other Filetypes
         var ext = thumbnail.value.split(".")
         ext = ext[ext.length - 1].toLowerCase();
-        var arrayExtensions = ["jpg","png","svg","jpeg"];
+        var arrayExtensions = ["jpg","png","svg","jpeg",""];
         // END RESTRRICT FILE TYPE
 
         if (podcastName.value == '') {
             $('#message').html('Enter Podcast Name')
-        } else if (thumbnail.value == '') {
-            $('#message').html('Upload Thumbnail')
-        } else if (arrayExtensions.lastIndexOf(ext) == -1){
+        }else if (arrayExtensions.lastIndexOf(ext) == -1){
             $('#message').html('it is not an Image File')
         } else if (category.value == 'Choose An Category') {
             $('#message').html('Choose An Category')
@@ -112,5 +113,8 @@
         }
     })
 
+    function openImage(){
+        $('#thumbnail').click()
+    }
 </script>
 {% endblock content %}

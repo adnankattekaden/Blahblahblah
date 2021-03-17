@@ -59,6 +59,8 @@ class Contents(models.Model):
     listeners = models.IntegerField(default=0)
     podcast = models.FileField(upload_to='podcasts/')
     thumbnail = models.FileField(upload_to='thumbnail/')
+    rating = models.FloatField(default=0)
+    favorites = models.BooleanField(default=False,null=True,blank=False)
 
 
     @property
@@ -89,7 +91,6 @@ class EpisodeAnalytics(models.Model):
     date = models.DateField(auto_now_add=True,null=True,blank=True)
     time = models.TimeField(auto_now_add=True,null=True,blank=True)
     listners = models.IntegerField(default=0,null=True,blank=True)
-
 
 class Follows(models.Model):
     creators = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True,related_name='follow_follower')
