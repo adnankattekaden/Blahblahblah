@@ -54,6 +54,22 @@
                                 <img src="{{podcast_show.ImageURL}}" onclick="openImage()" onchange="preview()" id="frame" style="height: 10rem; width: 10rem;">
                                 <input style="display: none;" type="file" name="thumbnail" id="thumbnail"  oninput="frame.src=window.URL.createObjectURL(this.files[0])" accept="image/*">
                             </div>
+
+                            <div>
+                                <label class="control-label">Visiblity</label>
+
+                                <select class="form-control select2" id="visiblity" name="visiblity">
+                                    {% if podcast_show.visiblity == "Public" %}
+                                    <option value="{{podcast_show.visiblity}}">{{podcast_show.visiblity}}</option>
+                                    <option value="Private">Private</option>
+                                    {% else %}
+                                    <option value="{{podcast_show.visiblity}}">{{podcast_show.visiblity}}</option>
+                                    <option value="Public">Public</option>
+                                    {% endif %}
+
+                                </select>
+                            </div>
+
                         </div>
 
                     </div>
@@ -75,6 +91,7 @@
         formData.append("podcastName", document.getElementById("podcastName").value);
         formData.append("thumbnail", document.getElementById("thumbnail").files[0]);
         formData.append("category", document.getElementById("category").value);
+        formData.append("visiblity", document.getElementById("visiblity").value);
         formData.append("showdescription", document.getElementById("showdescription").value);
         formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
         

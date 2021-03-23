@@ -30,6 +30,7 @@ class PlaylistContent(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True)
     playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE,null=True,blank=True)
     content = models.ForeignKey(Contents, on_delete=models.CASCADE,null=True,blank=True)
+    types = models.BooleanField(default=False)
 
 class UserRating(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,null=True)

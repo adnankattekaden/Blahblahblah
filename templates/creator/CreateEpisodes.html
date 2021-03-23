@@ -26,9 +26,9 @@
                 <h4 class="card-title mb-4">Create New Episode</h4>
                 <div><span id="message" style="color: red;"></span></div>
                 <form>
-                    
+
                     <div class="row mb-4">
-                        
+
                         <label for="episodeName" class="col-form-label col-lg-2">Episode Name</label>
                         <div class="col-lg-10">
                             <input id="episodeName" name="episodeName" type="text" class="form-control"
@@ -48,7 +48,7 @@
                         <label for="episodeart" class="col-form-label col-lg-2">Episode Art</label>
                         <div class="col-lg-10">
                             <input type="file" accept="image/*" name="episodeart" id="episodeart"
-                            class="form-control" />
+                                class="form-control" />
                         </div>
                     </div>
 
@@ -56,11 +56,47 @@
                     <div class="row mb-4">
                         <label for="episodeaudio" class="col-form-label col-lg-2">Episode Audio</label>
                         <div class="col-lg-10">
-                            <input type="file" accept="audio/*" name="audio" id="audio"
-                            class="form-control" />
+                            <input type="file" accept="audio/*" name="audio" id="audio" class="form-control" />
                         </div>
                     </div>
- 
+
+                    <div class="row mb-4">
+                        <label for="visiblity" class="col-form-label col-lg-2">Visiblity</label>
+                        <div class="col-lg-10">
+                            <select class="form-control select2" id="visiblity" name="visiblity">
+                                <option value="Public">Public</option>
+                                <option value="Private">Private</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <div>
+                        <input type="checkbox" id="scheduleBtn" name="scales" onchange="valueChanged()">
+                        <label for="scales">Schedule</label>
+                    </div>
+
+
+
+
+                    <div class="row mb-4 scheduleBar" style="display: none;">
+
+                        <label class="col-form-label col-lg-2">Schedule Date</label>
+
+                        <div class="col-lg-10">
+                            <div><br>
+                                <input type="date" id="schedule" class="form-control" placeholder="ScheduleDate"
+                                    id="schedule" name="sheduleDate" />
+                            </div>
+
+                            <div>
+                                <input type="time" id="scheduletime" class="form-control" placeholder="ScheduleTime"
+                                    id="scheduletime" name="scheduletime" step="1" />
+                            </div>
+                        </div>
+
+                    </div>
+
                     <div class="row mb-4">
                         <label for="showdescription" class="col-form-label col-lg-2">Show</label>
                         <div class="col-lg-10">
@@ -73,17 +109,6 @@
                         </div>
                     </div>
 
-                    <!-- <div class="row mb-4">
-                        <label class="col-form-label col-lg-2">Project Date</label>
-                        <div class="col-lg-10">
-                            <div class="input-daterange input-group" id="project-date-inputgroup"
-                                data-provide="datepicker" data-date-format="dd M, yyyy"
-                                data-date-container='#project-date-inputgroup' data-date-autoclose="true">
-                                <input type="text" class="form-control" placeholder="Start Date" name="start" />
-                                <input type="text" class="form-control" placeholder="End Date" name="end" />
-                            </div>
-                        </div>
-                    </div> -->
 
 
                     <div class="form-group" style=" display: none;" id="progress_div">
@@ -96,22 +121,23 @@
                     <div class="row form-group">
                         <p id="progress_text"></p>
                     </div>
-                    
-                </form>
 
+                </form>
 
                 <div class="row justify-content-end">
                     <div class="col-lg-10">
-                        <button type="button" id="episodeBtn" class="btn btn-primary">Create Episode</button>
+                        <a type="button" id="episodeBtn" class="btn btn-primary">Create Episode</a>
                     </div>
                 </div>
-
 
             </div>
         </div>
     </div>
 </div>
 <!-- end row -->
+
+
+
 
 <script>
     $('#episodeBtn').click(function () {
@@ -121,18 +147,22 @@
         formData.append("episodeName", document.getElementById("episodeName").value);
         formData.append("episodeart", document.getElementById("episodeart").files[0]);
         formData.append("audio", document.getElementById("audio").files[0]);
+        formData.append("visiblity", document.getElementById("visiblity").value);
         formData.append("description", document.getElementById("description").value);
         formData.append("show", document.getElementById("show").value);
+        formData.append("schedule", document.getElementById("schedule").value);
+        formData.append("scheduletime", document.getElementById("scheduletime").value);
+
         // restrict other Filetypes
         // image
         var ext_art = episodeart.value.split(".")
         ext_art = ext_art[ext_art.length - 1].toLowerCase();
-        console.log(ext_art,'extreaarrrtt')
-        var artExtensions = ["jpg","png","svg","jpeg"];
+        console.log(ext_art, 'extreaarrrtt')
+        var artExtensions = ["jpg", "png", "svg", "jpeg"];
         // audio
         var ext = audio.value.split(".")
         ext = ext[ext.length - 1].toLowerCase();
-        console.log('extt',ext)
+        console.log('extt', ext)
         var arrayExtensions = ["mp3"];
         // END RESTRRICT FILE TYPE
 
@@ -140,13 +170,13 @@
             $('#message').html('Enter Episode Name')
         } else if (episodeart.value == '') {
             $('#message').html('Upload Episode Art')
-        }else if(artExtensions.lastIndexOf(ext_art) == -1){
+        } else if (artExtensions.lastIndexOf(ext_art) == -1) {
             $('#message').html('it is not an Image file')
         }
-         else if (audio.value == '') {
+        else if (audio.value == '') {
             $('#message').html('Upload Episode')
         }
-        else if (arrayExtensions.lastIndexOf(ext) == -1){
+        else if (arrayExtensions.lastIndexOf(ext) == -1) {
             $('#message').html('it is not an audio file')
         }
         else if (description.value == '') {
@@ -168,9 +198,37 @@
             });
 
             xhr.send(formData);
-            xhr.onload = () => location.replace('/creator/manage-episodes/'+id+'/')
+            xhr.onload = () => location.replace('/creator/manage-episodes/' + id + '/')
         }
     })
+
+
+
+    $(function () {
+        var dtToday = new Date();
+
+        var month = dtToday.getMonth() + 1;
+        var day = dtToday.getDate();
+        var year = dtToday.getFullYear();
+        if (month < 10)
+            month = '0' + month.toString();
+        if (day < 10)
+            day = '0' + day.toString();
+
+        var minDate = year + '-' + month + '-' + day;
+
+        $('#schedule').attr('min', minDate);
+    });
+
+
+    function valueChanged() {
+        if ($('#scheduleBtn').is(":checked")) {
+            $(".scheduleBar").show();
+        }
+        else {
+            $(".scheduleBar").hide();
+        }
+    }
 
 </script>
 {% endblock content %}

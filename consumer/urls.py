@@ -34,7 +34,7 @@ urlpatterns = [
     path('next/<int:id>/',views.next_music_data,name='nextsong'),
     path('previous/<int:id>/', views.previous_music_data,name='previousmusic'),
     path('liked-items/', views.consumer_liked_data,name='consumer_playlist_data'),
-    path('add-liked/<int:id>/',views.add_liked,name='add_liked'),
+    path('add-favorite/<int:id>/',views.add_favorite,name='add_favorite'),
     path('add-playlist/<int:id>/',views.add_playlist,name='add_playlist'),
     
     path('playlist/',views.manage_playlist,name='manage_playlist'),

@@ -16,5 +16,8 @@ urlpatterns = [
     path('create-ads/', views.create_ads,name='create_ads'),
     path('sales-report/', views.sales_report,name='sales_report'),
     path('cancelled-report/', views.cancelled_report,name='cancelled_report'),
-
+    path('manage-listners/', views.manage_listners,name='manage_listners'),
+    path('manage-creators/', views.manage_creators,name='manage_creators'),
+    path('block-users/<int:id>/', views.block_users,name='block_users'),
+    path('unblock-users/<int:id>/',views.unblock_users,name='unblock_users'),
 ]

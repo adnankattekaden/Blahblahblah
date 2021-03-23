@@ -74,6 +74,22 @@
                         </div>
                     </div>
 
+                    <div class="row mb-4">
+                        <label for="visiblity" class="col-form-label col-lg-2">Visiblity</label>
+                        <div class="col-lg-10">
+                            <select class="form-control select2" id="visiblity" name="visiblity">
+                                {% if episode.visiblity == "Public" %}
+                                <option value="{{episode.visiblity}}">{{episode.visiblity}}</option>
+                                <option value="Private">Private</option>
+                                {% else %}
+                                <option value="{{episode.visiblity}}">{{episode.visiblity}}</option>
+                                <option value="Public">Public</option>
+                                {% endif %}
+
+                            </select>
+                        </div>
+                    </div>
+
                     <!-- <div class="row mb-4">
                         <label class="col-form-label col-lg-2">Project Date</label>
                         <div class="col-lg-10">
@@ -123,6 +139,7 @@
         formData.append("episodeName", document.getElementById("episodeName").value);
         formData.append("episodeart", document.getElementById("episodeart").files[0]);
         formData.append("audio", document.getElementById("audio").files[0]);
+        formData.append("visiblity", document.getElementById("visiblity").value);
         formData.append("description", document.getElementById("description").value);
         formData.append("show", document.getElementById("show").value);
         

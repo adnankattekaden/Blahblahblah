@@ -156,3 +156,27 @@ def sales_report(request):
 
 def cancelled_report(request):
     return render(request, './owner/subscription_CancelledReport.html')
+
+def manage_listners(request):
+    listners = User.objects.filter(is_staff=False)
+    context = {'listners':listners}
+    return render(request, './owner/ManageListners.html',context)
+
+def manage_creators(request):
+    creators = User.objects.filter(is_staff=True,is_superuser=False)
+    context = {'creators':creators}
+    return render(request, './owner/ManageCreators.html',context)
+
+def block_users(request,id):
+    if request.method == "GET":
+        block_user = User.objects.get(id=id)
+        block_user.is_active = False
+        block_user.save()
+    return JsonResponse('usrblocked',safe=False)
+
+def unblock_users(request,id):
+    if request.method == "GET":
+        unblock_user = User.objects.get(id=id)
+        unblock_user.is_active = True
+        unblock_user.save()
+    return JsonResponse('ublocked',safe=False)

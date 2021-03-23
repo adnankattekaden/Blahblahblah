@@ -1,0 +1,78 @@
+{% extends 'owner/base.html' %}
+{% load static %}
+{% block title %}Manage Listners{% endblock %}
+{% block content %}
+<div class="page-title-box">
+    <div class="row align-items-center">
+        <div class="col-sm-6">
+            <h4 class="page-title">Manage Listners</h4>
+        </div>
+    </div> <!-- end row -->
+</div>
+<!-- end page-title -->
+
+
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card">
+            <div class="card-body">
+                <table id="datatable" class="table table-bordered dt-responsive nowrap"
+                style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                <thead>
+                    <tr>
+                        <th>Users</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for listner in listners %}
+                    <tr>
+                        <td>{{listner.username}}</td>
+                        <td>
+                            {% if listner.is_active == True %}
+                            <a href="#"><input type="button" class="btn btn-danger" onclick="fun('{{listner.id}}')" id="blockBtn" value="Block"></a>
+                                {% else %}
+                            <a href="#"><input type="button" class="btn btn-success"
+                                onclick="fun('{{listner.id}}')" id="unblockBtn" value="UnBlock"></a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end row -->
+
+<script>
+
+    var id;
+    function fun(userid) {
+        console.log(userid)
+        id = userid
+    }
+    $('#blockBtn').click(function () {
+        $.ajax({
+            url: '/owner/block-users/'+id+'/',
+            type: 'GET',
+            dataType: 'JSON',
+            success:function(data){
+                location.reload()
+            }
+        })
+    })
+
+    $('#unblockBtn').click(function () {
+        $.ajax({
+            url: '/owner/unblock-users/'+id+'/',
+            type: 'GET',
+            dataType: 'JSON',
+            success:function(data){
+                location.reload()
+            }
+        })
+    })
+</script>
+{% endblock %}

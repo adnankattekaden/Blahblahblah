@@ -15,7 +15,7 @@ class CreatorDeatails(models.Model):
         try:
             url = self.image.url
         except:
-            url = ''
+            url = '/static/creator/images/users/avatar-1.jpg'
         return url
     
     def delete(self, *args, **kwargs):
@@ -24,7 +24,7 @@ class CreatorDeatails(models.Model):
 
 class Show(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE,null=True,blank=True)
     show_name = models.CharField(max_length=200,null=True,blank=True)
     description = models.CharField(max_length=20000,null=True,blank=True)
     total_episodes = models.IntegerField(default=0,null=True,blank=True)
@@ -32,6 +32,8 @@ class Show(models.Model):
     time_of_published = models.TimeField(auto_now_add=True,null=True,blank=True)
     thumbnail = models.FileField(upload_to='showthumbnail/')
     host = models.CharField(max_length=255,null=True,blank=True)
+    visiblity = models.CharField(max_length=20,null=True,blank=True)
+
 
     @property
     def ImageURL(self):
@@ -54,13 +56,15 @@ class Contents(models.Model):
     show = models.ForeignKey(Show, on_delete=models.CASCADE,null=True)
     episode_name = models.CharField(max_length=255,null=True,blank=True)
     description = models.CharField(max_length=20000,null=True,blank=True)
-    date_of_published = models.DateField(auto_now_add=True,null=True,blank=True)
-    time_of_published = models.TimeField(auto_now_add=True,null=True,blank=True)
+    created_date = models.DateField(auto_now_add=True,null=True,blank=True)
+    created_time = models.TimeField(auto_now_add=True,null=True,blank=True)
+    date_of_published = models.DateField(null=True,blank=True)
+    time_of_published = models.TimeField(null=True,blank=True)
     listeners = models.IntegerField(default=0)
     podcast = models.FileField(upload_to='podcasts/')
     thumbnail = models.FileField(upload_to='thumbnail/')
     rating = models.FloatField(default=0)
-    favorites = models.BooleanField(default=False,null=True,blank=False)
+    visiblity = models.CharField(max_length=20,null=True,blank=True)
 
 
     @property

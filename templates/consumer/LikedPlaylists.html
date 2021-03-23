@@ -6,15 +6,15 @@
     <div class="iq-card iq-realease">
        <div class="iq-card-header d-flex justify-content-between border-0">
           <div class="iq-header-title">
-             <h4 class="card-title">{{liked_songs.playlist_name}}</h4>
+             <h4 class="card-title">{{favorites.playlist_name}}</h4>
           </div>
        </div>
-       {% if playlist_contents %}
+       {% if favorite_contents %}
        <div class="iq-card-body  iq-realeses-back">
           <div class="row iq-card-body  iq-realeses-back">
              <div class="col-lg-12">
                 <ul class="list-unstyled iq-song-slide mb-0 realeases-banner">
-                   {% for i in liked_contents %}
+                   {% for i in favorite_contents %}
                    <li class="row">
                       <div class="d-flex justify-content-between align-items-center">
                          <div class="media align-items-center col-10 col-md-5">

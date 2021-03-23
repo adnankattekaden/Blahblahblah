@@ -9,6 +9,13 @@ import base64
 from django.core.files.base import ContentFile
 from datetime import date
 import datetime 
+from django.utils import timezone
+from datetime import datetime
+
+#parikshanm
+import cv2
+import numpy as np
+
 
 # Create your views here.
 
@@ -145,8 +152,12 @@ def create_podcast(request):
             podcast_name = request.POST['podcastName']
             category_id = request.POST['category']
             thumbnail = request.FILES.get('thumbnail')
+            print(thumbnail,'heyyy')
             show_description = request.POST['showdescription']
-            Show.objects.create(show_name=podcast_name,category_id=category_id,user=request.user,thumbnail=thumbnail,description=show_description,host=request.user)
+            visiblity = request.POST['visiblity']
+            
+
+            # Show.objects.create(show_name=podcast_name,category_id=category_id,user=request.user,thumbnail=thumbnail,description=show_description,host=request.user,visiblity=visiblity)
             return JsonResponse('podcastcreated',safe=False)
         else:
             context = {'categories':categories,'creator_details':creator}
@@ -163,6 +174,7 @@ def edit_podcast(request,id):
             thumbnail = request.FILES.get('thumbnail')
             podcast_show.show_name = request.POST['podcastName']
             podcast_show.category_id = request.POST['category']
+            podcast_show.visiblity = request.POST['visiblity']
 
             if thumbnail is not None:
                 podcast_show.thumbnail = request.FILES.get('thumbnail')
@@ -203,7 +215,25 @@ def create_episode(request):
             episode_description = request.POST['description']
             show_id = request.POST['show']
             podcast_data = request.FILES.get('audio')
-            Contents.objects.create(user=request.user,episode_name=episode_name,description=episode_description,show_id=show_id,podcast=podcast_data,thumbnail=episode_art,artist=request.user)
+            visiblity = request.POST['visiblity']
+            date_of_published = request.POST['schedule']
+            time_of_published = request.POST['scheduletime']
+
+            if time_of_published is not '':
+                #convertimezone
+                newtime = time_of_published.split(':')
+                newtime_modifier = '::'
+                newtime_modifier = newtime_modifier.join(newtime)
+                time_str = newtime_modifier
+                time_object = datetime.strptime(time_str, '%H::%M::%S').time()
+                time_of_published = time_object
+            else:
+                time_of_published = datetime.now()
+                
+            if date_of_published is '':
+                date_of_published = date.today()
+
+            Contents.objects.create(user=request.user,episode_name=episode_name,description=episode_description,show_id=show_id,podcast=podcast_data,thumbnail=episode_art,artist=request.user,visiblity=visiblity,date_of_published=date_of_published,time_of_published=time_of_published)
             return JsonResponse('episode_created',safe=False)
         else:
             context = {'shows':shows,'creator_details':creator}
@@ -221,9 +251,11 @@ def edit_episode(request,id):
             episode_description = request.POST['description']
             show_id = request.POST['show']
             podcast_data = request.FILES.get('audio')
+            visiblity = request.POST['visiblity']
 
             shows = Show.objects.get(id=show_id)
             episode.episode_name = episode_name
+            episode.visiblity = visiblity
 
             if episode_art is not None:
                 episode.thumbnail = episode_art

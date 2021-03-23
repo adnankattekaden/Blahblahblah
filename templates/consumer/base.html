@@ -97,6 +97,7 @@
                         </div>
                      </li>
 
+                     <button id="pod">podcastPlayer</button>
                      {% if not user_details.premium == True %}
                      <li class="nav-item nav-icon">
                         <div class="iq-search-bar">
@@ -121,7 +122,7 @@
 
 
                      {% if user.is_authenticated %}
-                     <li class="nav-item nav-icon">    
+                     <li class="nav-item nav-icon">
 
                         <a href="#" class="search-toggle iq-waves-effect text-black rounded">
                            <i class="ri-notification-line block"></i>
@@ -134,27 +135,34 @@
                               <div class="iq-card-body p-0">
                                  <div class="bg-primary p-3">
                                     <h5 class="mb-0 text-white">All Notifications<small
-                                          class="badge  badge-light float-right pt-1">{{notification_count}}</small></h5>
+                                          class="badge  badge-light float-right pt-1">{{notification_count}}</small>
+                                    </h5>
                                  </div>
+                                 {% if datas %}
+                                 {% for show,Contents in datas.items %}
 
-                                 {% for result in results %}
-                                 <a href="{% url 'single_podcast' result.id %}" class="iq-sub-card">
+                                 {% for episode in Contents %}
+                                 <a href="{% url 'single_episode' episode.id %}" class="iq-sub-card">
                                     <div class="media align-items-center">
 
                                        <div class="">
-                                          <img class="avatar-40 rounded img-fluid"
-                                             src="{{result.ImageURL}}" alt="">
+                                          <img class="avatar-40 rounded img-fluid" src="{{episode.ImageURL}}" alt="">
                                        </div>
 
                                        <div class="media-body ml-3">
-                                          <h6 class="mb-0 ">{{result.show_name}}</h6>
+                                          <h6 class="mb-0 ">{{episode.episode_name}}</h6>
                                           <small class="float-right">Just Now</small>
                                           <p class="mb-0">{{episode.artist}}</p>
                                        </div>
-                                       
+
                                     </div>
                                  </a>
                                  {% endfor %}
+
+                                 {% endfor %}
+                                 {% else %}
+                                 <small> no notification right now</small>
+                                 {% endif %}
                               </div>
                            </div>
                         </div>
@@ -237,10 +245,25 @@
    </div>
    <!-- Wrapper END -->
 
+   <style>
+      .iq-footer {
+         animation: MoveUpDown 1s linear;
+      }
+
+      @keyframes MoveUpDown {
+         0%,100% {
+            bottom: 100;
+         }
+         50% {
+            bottom: 15px;
+         }
+
+      }
+   </style>
+
    <!-- Footer -->
-   <footer class="iq-footer podplayer" style="display: none;">
-      <div class="
-      -fluid">
+   <footer class="iq-footer podcastPlayer" style="display: none;">
+      <div class="-fluid">
          <div class="row">
             <div class="col-sm-12">
                <div class="player row">
@@ -259,9 +282,7 @@
                   </div>
                   <div class="buttons col-6  col-sm-3 col-md-2  col-lg-2">
                      <div class="prev-track" onclick="prevTrack()"><i class="fa fa-step-backward fa-2x"></i></div>
-
                      <div class="playpause-track" onclick="playpauseTrack()"><i class="fa fa-play-circle fa-3x"></i>
-
                      </div>
                      <div class="next-track" onclick="nextTrack()"><i class="fa fa-step-forward fa-2x"></i></div>
                   </div>
@@ -328,10 +349,6 @@
 
 
    <script>
-      
-   </script>
-
-   <script>
 
       var music;
       let now_playing = document.querySelector(".now-playing");
@@ -353,7 +370,8 @@
       let updateTimer;
       let currentId = 12;
       var nowId = "{{consumer_data.id}}"
-      
+      var PodcastPlater = $('.podcastPlayer')
+
       // Create new audio element
       let curr_track = document.createElement('audio');
       console.log(curr_track);
@@ -453,6 +471,7 @@
       }
 
       function currentTrack(nowId) {
+         playerBar()
          $.ajax({
             url: '/current-music/' + nowId,
             type: 'GET',
@@ -469,16 +488,12 @@
          playTrack();
       }
 
-      function listnerUpdate(nowId){
+      function listnerUpdate(nowId) {
          console.log(nowId)
          $.ajax({
-            url: '/listner-update/'+nowId+'/',
+            url: '/listner-update/' + nowId + '/',
             type: 'GET',
          })
-      }
-
-      function hideUnhidePlayer(){
-         console.log('hide player')
       }
 
       function seekTo() {
@@ -512,7 +527,21 @@
             total_duration.textContent = durationMinutes + ":" + durationSeconds;
          }
       }
+
+
+      function playerBar(){
+         PodcastPlater.removeAttr("style")
+      }
+
    </script>
+   
+   <script>
+      $('#pod').click(function(){
+         playerBar()
+      })
+   </script>
+
+
 
 </body>
 

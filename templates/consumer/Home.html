@@ -13,18 +13,18 @@
       </div>
       <div class="iq-card-body">
          <ul class="list-unstyled row  feature-album iq-box-hover mb-0">
-            {% for content in shows %}
+            {% for show in shows %}
             <li class="col-lg-2  iq-music-box">
                <div class="iq-card mb-0">
-                  <a href="{% url 'single_podcast' content.id %}">
+                  <a href="{% url 'single_podcast' show.id %}">
                      <div class="iq-card-body p-0">
                         <div class="iq-thumb">
                            <div class="iq-music-overlay"></div>
-                           <a href="{% url 'single_podcast' content.id %}">
-                              <img src="{{content.ImageURL}}" class="img-border-radius img-fluid w-100" alt="">
+                           <a href="{% url 'current_music' show.id %}">
+                              <img src="{{show.ImageURL}}" class="img-border-radius img-fluid w-100" alt="">
                            </a>
                            <div class="overlay-music-icon">
-                              <a type="button" onclick="currentTrack('{{content.id}}')">
+                              <a type="button" onclick="currentTrack('{{show.id}}')">
                                  <i class="las la-play-circle"></i>
                               </a>
                            </div>
@@ -42,7 +42,8 @@
       </div>
    </div>
 {% else %}
-followed
+
+<h1>followed</h1>
 {% endif %}
 
 </div>
@@ -60,23 +61,19 @@ followed
 
             {% for artist in artists %}
             <li class="col-lg-2  iq-music-box">
+
                <a href="{% url 'single_artist' artist.id %}">
                   <div class="iq-thumb-artist">
-                     <div class="iq-music-overlay"></div>
-                     
                      <a href="{% url 'single_artist' artist.id %}">
                         <img src="{{artist.ImageURL}}" class="w-100 img-fluid" alt="">
                      </a>
-                     <div class="overlay-music-icon">
-                        <a href="{% url 'single_artist' artist.id %}">
-                           <i class="las la-play-circle"></i>
-                        </a>
-                     </div>
                   </div>
                </a>
+
                <div class="feature-list text-center">
                   <h6 class="font-weight-600  mb-0">{{artist.user.username}}</h6>
                </div>
+
             </li>
             {% endfor %}
          </ul>

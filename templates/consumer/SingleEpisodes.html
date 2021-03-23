@@ -137,22 +137,24 @@
                         </div>
                         <div class="music-right">
                            <div class="d-flex align-items-center">
-                              <div class="iq-circle mr-2 share"><a href="javascript:void();"><i
-                                       class="las la-share-alt-square text-primary"></i></a></div>
-                                       
-                              {% if not episode.favorites == True %}
-                              <div class="iq-circle mr-2 like">
-                                 <a type="button" class="likeSong"><i class="fa fa-heart-o text-primary" type="button"
-                                    id="likeSong"></i></a>
+                              
+                              <div class="iq-circle mr-2 share"><a><i
+                                       class="las la-share-alt-square text-primary" onclick="copyToClipboard()"></i></a>
+                              </div>
+
+
+                              {% if not favorites_list.types == True %}
+                              <div class="iq-circle mr-2">
+                                 <a type="button" class="favorites_Song"><i class="fav fa fa-heart-o text-primary" type="button"
+                                    id="favorites_Song"></i></a>
                               </div>
                               {% else %}
-                              <div class="iq-circle mr-2 unlike">
-                                 <a type="button" class="likeSong"><i class="ri-heart-fill  text-primary unlike"  type="button" 
-                                       id="likeSong"></i></a>
+                              <div class="iq-circle mr-2">
+                                 <a type="button" class="favorites_Song"><i class="fav ri-heart-fill  text-primary"  type="button" 
+                                       id="favorites_Song"></i></a>
                               </div>
+
                               {% endif %}
-
-
                               
                               <div class="iq-circle mr-2">
                                  <a type="button"><i class="las la-file-audio text-primary" data-toggle="modal"
@@ -168,13 +170,15 @@
 
                               <br>
                               <div>
+
                                  <div class="iq-circle mr-2">
                                     <a type="button" class="likeSong"><i class="fa fa-thumbs-up "  type="button"></i></a>
                                  </div>
    
                                  <div class="iq-circle mr-2">
-                                    <a type="button"><i class="fa fa-thumbs-down  "  type="button"></i></a>
+                                    <a type="button"><i class="fa fa-thumbs-down"  type="button"></i></a>
                                  </div>
+
                               </div>
 
 
@@ -260,20 +264,27 @@
 </div>
 
 <script>
-   $(".likeSong").click(function () {
+   $(".favorites_Song").click(function () {
       var songId = '{{episode.id}}'
       var SongInfo = {
          csrfmiddlewaretoken: '{{csrf_token}}',
-         playlistName: 'likedsong'
+         playlistName: 'Favorites'
       }
       $.ajax({
-         url: '/add-liked/' + songId + '/',
+         url: '/add-favorite/' + songId + '/',
          type: 'POST',
          dataType: 'json',
          data: SongInfo,
          success: function (data) {
-            if (data == 'addedliked') {
-               console.log('addel')
+            if (data == 'addedfavorites') {
+               console.log('added')
+               $('.fav').removeClass('fa fa-heart-o'); 
+               $('.fav').addClass('ri-heart-fill');
+            }else{
+               console.log('removefavorites')
+               $('.fav').addClass('fa fa-heart-o');
+               $('.fav').removeClass('ri-heart-fill'); 
+                
             }
          }
 
@@ -318,6 +329,7 @@
 
    }
 
+   
 
 </script>
 
@@ -342,6 +354,20 @@
 
    }
 
+
+
 </script>
 
+<script>
+   function copyToClipboard(text) {
+   var inputc = document.body.appendChild(document.createElement("input"));
+   inputc.value = window.location.href;
+   inputc.focus();
+   inputc.select();
+   document.execCommand('copy');
+   inputc.parentNode.removeChild(inputc);
+   alert("URL Copied.");
+   }
+   </script>
+   
 {% endblock content %}
