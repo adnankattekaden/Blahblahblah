@@ -2,8 +2,10 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.models import User,auth
 import json
 from django.http import JsonResponse
-from owner.models import Category,Plans,Advertisement
+from owner.models import Category,Plans,Advertisement,FeaturedShows,TopPodcasters,TrendingShows,PopularShows
 from consumer.models import Subscribtions
+from creator.models import Show,CreatorDeatails
+
 from datetime import date
 
 # Create your views here.
@@ -180,3 +182,113 @@ def unblock_users(request,id):
         unblock_user.is_active = True
         unblock_user.save()
     return JsonResponse('ublocked',safe=False)
+
+#homePageSettings
+
+def manage_featured_shows(request):
+    if request.user.is_authenticated and request.user.is_superuser == True:
+        featured_shows = FeaturedShows.objects.all()
+        context = {'featured_shows':featured_shows}
+        return render(request, './owner/FeaturedShows.html',context)
+    else:
+        return redirect(owner_login)
+
+def add_featured_shows(request):
+    if request.user.is_authenticated and request.user.is_superuser == True:
+        if request.method == "POST":
+            showid = request.POST.getlist('addFeaturedShows')
+            show = Show.objects.get(id=showid[0])
+            FeaturedShows.objects.create(show=show)
+            return redirect(manage_featured_shows)
+        else:
+            shows = Show.objects.all
+            context = {'shows':shows}
+            return render(request, './owner/AddFeaturedShow.html',context)
+    else:
+        return redirect(owner_login)
+
+def remove_featured_show(request,id):
+    if request.method == "GET":
+        show = FeaturedShows.objects.get(show_id=id)
+        show.delete()
+    return JsonResponse('show_removed',safe=False)
+
+def manage_top_podcasters(request):
+    if request.user.is_authenticated and request.user.is_superuser == True:
+        top_podcasters = TopPodcasters.objects.all()
+        for i in top_podcasters:
+            print(i.id)
+        context = {'top_podcasters':top_podcasters}
+        return render(request, './owner/ManageTopPodcasters.html',context)
+    else:
+        return redirect(owner_login)
+
+def add_top_podcasters(request):
+    if request.user.is_authenticated and request.user.is_superuser == True:
+        if request.method == "POST":
+            artist_id = request.POST.get('addPodcasters')
+            creators = CreatorDeatails.objects.get(id=artist_id)
+            TopPodcasters.objects.create(creator=creators)
+            return redirect(manage_top_podcasters)
+        else:
+            creators = CreatorDeatails.objects.all()
+            context = {'creators':creators}
+            return render(request, './owner/AddTopPodcasters.html',context)
+
+def remove_top_podcasters(request,id):
+    if request.method == "GET":
+        artist = TopPodcasters.objects.get(creator=id)
+        artist.delete()
+    return JsonResponse('artist_removed',safe=False)
+
+def manage_trending(request):
+    if request.user.is_authenticated and request.user.is_superuser == True:
+        trending_shows = TrendingShows.objects.all()
+        context = {'trending_shows':trending_shows}
+        return render(request, './owner/TrendingShows.html',context)
+    else:
+        return redirect(owner_login)
+
+def add_trending(request):
+    if request.user.is_authenticated and request.user.is_superuser == True:
+        if request.method == "POST":
+            showid = request.POST.get('addFeaturedShows')
+            show = Show.objects.get(id=showid)
+            TrendingShows.objects.create(show=show)
+            return redirect(manage_trending)
+        else:
+            shows = Show.objects.all
+            context = {'shows':shows}
+            return render(request, './owner/AddTrending.html',context)
+
+def remove_trending(request,id):
+    if request.method == "GET":
+        trending = TrendingShows.objects.get(show_id=id)
+        trending.delete()
+    return JsonResponse('trending_removed',safe=False)
+
+def manage_popular_shows(request):
+    if request.user.is_authenticated and request.user.is_superuser == True:
+        popular_shows = PopularShows.objects.all()
+        context = {'popular_shows':popular_shows}
+        return render(request, './owner/PopuplarShows.html',context)
+    else:
+        return redirect(owner_login)
+
+def add_popular_shows(request):
+    if request.user.is_authenticated and request.user.is_superuser == True:
+        if request.method == "POST":
+            showid = request.POST.get('addpopularshows')
+            show = Show.objects.get(id=showid)
+            PopularShows.objects.create(show=show)
+            return redirect(manage_popular_shows)
+        else:
+            shows = Show.objects.all
+            context = {'shows':shows}
+            return render(request, './owner/AddPopularShows.html',context)
+
+def remove_popular_shows(request,id):
+    if request.method == "GET":
+        show = PopularShows.objects.get(show_id=id)
+        show.delete()
+    return JsonResponse('popular_show_removed',safe=False)

@@ -12,11 +12,6 @@ import datetime
 from django.utils import timezone
 from datetime import datetime
 
-#parikshanm
-import cv2
-import numpy as np
-
-
 # Create your views here.
 
 def creator_signup(request):
@@ -27,7 +22,7 @@ def creator_signup(request):
         verifypassword = request.POST['verifypassword']
         mobile_number = request.POST['mobile_number']
 
-        if password==verifypassword:
+        if password == verifypassword:
             if User.objects.filter(email=email).exists():
                 return JsonResponse('emailtaken', safe=False)
             elif User.objects.filter(username=username).exists():
@@ -86,12 +81,18 @@ def creator_profile(request):
             first_name = request.POST['first_name']
             last_name = request.POST['last_name']
             about_me = request.POST['about_me']
-            image = request.FILES.get('profile_image')
+            image = request.POST['profile_image']
+
+            #imagecroping
+            format, imgstr = image.split(';base64,')
+            ext = format.split('/')[-1]
+            profile_pic_data = ContentFile(base64.b64decode(imgstr), name=first_name + '.' + ext)
+            #corping Ends
 
             user.first_name = first_name
             user.last_name = last_name
             creator.about_me = about_me
-            creator.image = image
+            creator.image = profile_pic_data
             creator.save()
             user.save()
             return JsonResponse('profile_created',safe=False)
@@ -119,7 +120,13 @@ def edit_profiles(request,id):
         email = request.POST['email']
         mobile_number = request.POST['mobile']
         about_me = request.POST['about_me']
-        image = request.FILES.get('profile_image')
+        image = request.POST['profile_image']
+
+        #imagecroping
+        format, imgstr = image.split(';base64,')
+        ext = format.split('/')[-1]
+        profile_pic_data = ContentFile(base64.b64decode(imgstr), name=first_name + '.' + ext)
+        #corping Ends
 
         creator_primary_details.first_name = first_name
         creator_primary_details.last_name = last_name
@@ -128,7 +135,7 @@ def edit_profiles(request,id):
         creator_details.about_me = about_me
 
         if image is not None:
-            creator_details.image = image
+            creator_details.image = profile_pic_data
 
         creator_primary_details.save()
         creator_details.save()
@@ -151,13 +158,17 @@ def create_podcast(request):
         if request.method == 'POST':
             podcast_name = request.POST['podcastName']
             category_id = request.POST['category']
-            thumbnail = request.FILES.get('thumbnail')
-            print(thumbnail,'heyyy')
+            thumbnail = request.POST['thumbnail']
             show_description = request.POST['showdescription']
             visiblity = request.POST['visiblity']
             
+            #imagecroping
+            format, imgstr = thumbnail.split(';base64,')
+            ext = format.split('/')[-1]
+            thumbnail_data = ContentFile(base64.b64decode(imgstr), name=podcast_name + '.' + ext)
+            #corping Ends
 
-            # Show.objects.create(show_name=podcast_name,category_id=category_id,user=request.user,thumbnail=thumbnail,description=show_description,host=request.user,visiblity=visiblity)
+            Show.objects.create(show_name=podcast_name,category_id=category_id,user=request.user,thumbnail=thumbnail_data,description=show_description,host=request.user,visiblity=visiblity)
             return JsonResponse('podcastcreated',safe=False)
         else:
             context = {'categories':categories,'creator_details':creator}

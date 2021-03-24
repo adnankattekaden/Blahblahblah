@@ -50,6 +50,7 @@
                         <textarea required class="form-control" rows="5" id="about_me" name="about_me"></textarea>
                     </div>
                 </div>
+
                 <br>
                 <div class="form-group">
                     <div>
@@ -64,11 +65,91 @@
     </div>
 </div>
 
+<!-- cropping -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Crop Image</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="box-2">
+                    <div class="result"></div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    Close
+                </button>
+                <button type="button" id="load" class="btn save btn-primary">
+                    Save changes
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var imgSrc;
+    let result = document.querySelector(".result"),
+        save = document.querySelector(".save"),
+        cropped = document.querySelector(".cropped"),
+        upload = document.querySelector("#profile_image"),
+        cropper = "";
+
+    upload.addEventListener("change", (e) => {
+        if (e.target.files.length) {
+            // start file reader
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+                if (e.target.result) {
+                    // create new image
+                    $("#exampleModalCenter").modal("show");
+                    let img = document.createElement("img");
+                    img.id = "image";
+                    img.src = e.target.result;
+
+                    // clean result before
+                    result.innerHTML = "";
+                    // append new image
+                    result.appendChild(img);
+                    // init cropper
+                    cropper = new Cropper(img);
+                }
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        }
+    });
+
+    save.addEventListener("click", (e) => {
+        e.preventDefault();
+        // get result to data uri
+        imgSrc = cropper
+            .getCroppedCanvas({
+                width: 300, // img disp value
+            })
+            .toDataURL();
+        $("#exampleModalCenter").modal("hide");
+        cropped.src = imgSrc;
+        console.log(imgSrc,'heyy')
+    });
+
+</script>
+<!-- croping ends -->
+
 <script>
 $('#updateBtn').click(function(){
     var formData = new FormData()
     formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
-    formData.append("profile_image", document.getElementById("profile_image").files[0]);
+    formData.append("profile_image", imgSrc);
     formData.append("first_name", document.getElementById("first_name").value);
     formData.append("last_name", document.getElementById("last_name").value);
     formData.append("about_me", document.getElementById("about_me").value);

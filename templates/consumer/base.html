@@ -97,7 +97,6 @@
                         </div>
                      </li>
 
-                     <button id="pod">podcastPlayer</button>
                      {% if not user_details.premium == True %}
                      <li class="nav-item nav-icon">
                         <div class="iq-search-bar">
@@ -392,6 +391,7 @@
       }
 
       function loadTrack(music) {
+         console.log('function kerriii',music)
          clearInterval(updateTimer);
          resetValues();
          curr_track.src = "/media/" + music.fields.podcast;
@@ -439,18 +439,13 @@
             type: 'GET',
             success: function (data) {
                music = JSON.parse(data.next_songs)[0]
-               console.log('next')
+               console.log('next',music,'heyyyy',music.pk)
                currentId = music.pk
-               console.log(currentId);
-               console.log(music.fields.thumbnail);
-               console.log('hey')
-               console.log(music)
+               loadTrack(music);
+               playTrack();
             }
 
          })
-
-         loadTrack(music);
-         playTrack();
       }
 
       function prevTrack() {
@@ -461,13 +456,12 @@
                music = JSON.parse(data.previous_songs)[0]
                console.log('previous')
                currentId = music.pk
-               console.log(music.fields.podcast)
-               console.log(music.fields.thumbnail);
+               loadTrack(music);
+               playTrack();
             }
 
          })
-         loadTrack(music);
-         playTrack();
+
       }
 
       function currentTrack(nowId) {
@@ -478,14 +472,13 @@
             success: function (data) {
                music = JSON.parse(data.current_song)[0]
                currentId = music.pk
-               console.log(music.fields.podcast)
-               console.log(music.fields.thumbnail);
+               console.log(currentId,'heyy')
                listnerUpdate(nowId)
+               loadTrack(music);
+               playTrack();
             }
 
          })
-         loadTrack(music);
-         playTrack();
       }
 
       function listnerUpdate(nowId) {

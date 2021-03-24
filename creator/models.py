@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User,auth
 from owner.models import Category
+
 # Create your models here.
 
 class CreatorDeatails(models.Model):

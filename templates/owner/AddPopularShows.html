@@ -1,0 +1,50 @@
+{% extends 'owner/base.html' %}
+{% load static %}
+{% block title %}Add Popular Shows{% endblock %}
+{% block content %}
+
+<div class="container-fluid">
+    <!-- start page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <h4 class="mb-sm-0 font-size-18">Add Popular Shows</h4>
+            </div>
+        </div>
+    </div>
+    <!-- end page title -->
+
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="col-xl-6 mt-3">
+                            <label>Show List</label><br>
+                            <select class="js-example-basic-multiple col-xl-6" name="addpopularshows"  >
+                                {% for show in shows %}
+                                <option value="{{show.id}}">{{show.show_name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <br>
+                        <button type="submit" class="btn btn-primary" id="AddTopPodcasters">Add</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end row -->
+
+</div> <!-- container-fluid -->
+
+
+<script>
+$(document).ready(function() {
+    $('.js-example-basic-multiple').select2({
+        theme: "classic"
+    });
+});
+</script>
+{% endblock %}

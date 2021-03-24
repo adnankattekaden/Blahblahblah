@@ -20,4 +20,20 @@ urlpatterns = [
     path('manage-creators/', views.manage_creators,name='manage_creators'),
     path('block-users/<int:id>/', views.block_users,name='block_users'),
     path('unblock-users/<int:id>/',views.unblock_users,name='unblock_users'),
+
+    path('featured-shows/',views.manage_featured_shows,name='featured_shows'),
+    path('add-featured-shows/',views.add_featured_shows,name='add_featured_shows'),
+    path('remove-featured-show/<int:id>/',views.remove_featured_show,name='remove_featured_show'),
+
+    path('manage-top-podcasters/', views.manage_top_podcasters,name='manage_top_podcasters'),
+    path('add-top-podcasters/',views.add_top_podcasters,name='add_top_podcasters'),
+    path('remove-top-podcasters/<int:id>/', views.remove_top_podcasters,name='remove_top_podcasters'),
+
+    path('manage-trending/', views.manage_trending,name='manage_trending'),
+    path('add-trending/', views.add_trending,name='add_trending'),
+    path('remove-trending/<int:id>/', views.remove_trending,name='remove_trending'),
+    
+    path('manage-popular-shows/', views.manage_popular_shows,name='manage_popular_shows'),
+    path('add-popular-shows/', views.add_popular_shows,name='add_popular_shows'),
+    path('remove-popular-shows/<int:id>/',views.remove_popular_shows,name='remove_popular_shows'),
 ]

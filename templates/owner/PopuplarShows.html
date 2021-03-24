@@ -1,0 +1,64 @@
+{% extends 'owner/base.html' %}
+{% load static %}
+{% block title %}Popular Shows{% endblock %}
+{% block content %}
+<div class="page-title-box">
+    <div class="row align-items-center">
+        <div class="col-sm-6">
+            <h4 class="page-title">Popular Shows</h4>
+        </div>
+    </div> <!-- end row -->
+</div>
+<!-- end page-title -->
+
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card">
+
+            <div class="card-body">
+                <div class="mb-2">
+                    <a href="{% url 'add_popular_shows' %}"><input type="button" class="btn btn-success" value="Add"></a> 
+                </div>
+                <table id="datatable" class="table table-bordered dt-responsive nowrap"
+                style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                <thead>
+                    <tr>
+                        <th>Popular SHows</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for show in popular_shows %}
+                    <tr>
+                        <td>{{show.show.show_name}}</td>
+                        <td>
+                            <input type="button" id="removeBtn" onclick="fun('{{show.show.id}}')" class="btn btn-danger" value="Remove">
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end row -->
+
+<script>
+var id;
+function fun(showid){
+    id = showid
+}
+
+$('#removeBtn').click(function(){
+    $.ajax({
+        url: '/owner/remove-popular-shows/'+id+'/',
+        method: 'GET',
+        dataType:'JSON',
+        success:function(data){
+            location.reload()
+        }
+    })
+})
+</script>
+{% endblock %}

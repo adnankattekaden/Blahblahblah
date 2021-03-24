@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.models import User,auth
 from . models import UserDetails,Playlist,PlaylistContent,Subscribtions,UserRating
 from creator.models import Contents,Show,CreatorDeatails,Follows,FollowShows,EpisodeAnalytics
-from owner.models import Category,Plans,Advertisement
+from owner.models import Category,Plans,Advertisement,FeaturedShows,TopPodcasters
 import json
 from django.http import JsonResponse
 from django.core import serializers
@@ -110,7 +110,6 @@ def pricing(request):
 
 def checkout(request):
     if request.method == 'POST':
-        print(request)
         plan_name = request.POST['planName']
         plan_price = request.POST['planPrice']
         plan_validity = request.POST['planValidity']
@@ -175,6 +174,12 @@ def homepage(request):
     shows = Show.objects.filter(visiblity="Public",user__is_active=True)
     artists = CreatorDeatails.objects.filter(user__is_active=True)
     
+
+    top_podcasters = TopPodcasters.objects.all()
+    print('heyy',top_podcasters)
+    fetaured_shows = FeaturedShows.objects.filter(show__visiblity="Public")
+
+    
     #notifcaion starts
     try:
         user_details = UserDetails.objects.get(user=request.user)
@@ -196,7 +201,7 @@ def homepage(request):
         user_details = []
         #notification Ends
     
-    context = {'shows':shows,'artists':artists,'user_details':user_details,'datas':episode_notifications}
+    context = {'fetaured_shows':fetaured_shows,'top_podcasters':top_podcasters,'user_details':user_details,'datas':episode_notifications}
     return render(request, './consumer/Home.html',context)
 
 def latest_feeds(request):

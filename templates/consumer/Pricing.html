@@ -22,6 +22,8 @@
         {% endfor %}
     </div>
 </div>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 
 <script>
     var planName;
@@ -31,10 +33,40 @@
     function getPlanDetails(planname, planprice, planvalidity) {
         planName = planname
         planPrice = planprice
+        console.log('hey',planPrice)
         planValidity = planvalidity
-    }
-
-    $('.subscribtionBtn').click(function () {
+        // raxorpay
+        var options = {
+                "key": "rzp_test_0kYbZpsZhmIMUk", // Enter the Key ID generated from the Dashboard
+                "amount": planPrice, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                "currency": "INR",
+                "name": "Blah Blah Blah",
+                "description": "Subscribtion",
+                "image": "https://www.iconpacks.net/icons/2/free-hotel-icon-1880-thumb.png",
+                "order_id": "{{payment.id}}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                "handler": function (response) {
+                        alert('Transaction completed..!!!');
+                        paymentSuccess()
+                        console.log('poddaa, nayey')
+                    //successrazorpay(tid)
+                        },
+                        "prefill": {
+                            "name": "{{address.name}}",
+                            "email": "{{address.email}}",
+                            "contact": "9999999999"
+                        },
+                        "notes": {
+                            "address": "Razorpay Corporate Office"
+                        },
+                        "theme": {
+                            "color": "#F37254"
+                        }
+                    };
+                    var rzp1 = new Razorpay(options);
+                        rzp1.open();
+        }
+        
+    function paymentSuccess(){
         var checkoutData ={
             csrfmiddlewaretoken: '{{csrf_token}}',
             planName:planName,
@@ -50,6 +82,8 @@
                 location.replace('/thankyou/')
             }
         })
-    })
+    }
+
+
 </script>
 {% endblock content %}

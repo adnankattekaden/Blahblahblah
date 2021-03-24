@@ -39,9 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'social_django', 
-    'consumer',
-    'creator',
-    'owner',
+    'consumer.apps.ConsumerConfig',
+    'creator.apps.CreatorConfig',
+    'owner.apps.OwnerConfig',
     
 ]
 

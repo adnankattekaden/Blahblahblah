@@ -1,10 +1,9 @@
 from django.db import models
-        
+from creator.models import *
 # Create your models here.
 
 class Category(models.Model):
     category_name = models.CharField(max_length=255)
-
 
 class Plans(models.Model):
     plan_name = models.CharField(max_length=255,null=True,blank=True)
@@ -27,4 +26,17 @@ class Advertisement(models.Model):
         self.ad_image.delete()
         super().delete(*args, **kwargs)
 
-    
+
+#homepage
+
+class FeaturedShows(models.Model):
+    show = models.ForeignKey('creator.Show', on_delete=models.CASCADE,null=True,blank=True)
+
+class TopPodcasters(models.Model):
+    creator = models.ForeignKey('creator.CreatorDeatails', on_delete=models.CASCADE,null=True,blank=True)
+
+class TrendingShows(models.Model):
+    show = models.ForeignKey('creator.Show', on_delete=models.CASCADE,null=True,blank=True)
+
+class PopularShows(models.Model):
+    show = models.ForeignKey('creator.Show', on_delete=models.CASCADE,null=True,blank=True)
