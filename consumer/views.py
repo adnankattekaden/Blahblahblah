@@ -1,13 +1,14 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.models import User,auth
 from . models import UserDetails,Playlist,PlaylistContent,Subscribtions,UserRating
-from creator.models import Contents,Show,CreatorDeatails,Follows,FollowShows,EpisodeAnalytics
+from creator.models import Contents,Show,CreatorDeatails,Follows,FollowShows,EpisodeAnalytics,Reaction
 from owner.models import Category,Plans,Advertisement,FeaturedShows,TopPodcasters
 import json
 from django.http import JsonResponse
 from django.core import serializers
 from datetime import date
 import datetime 
+from datetime import datetime
 import uuid
 
 
@@ -231,7 +232,6 @@ def latest_feeds(request):
 
 def category_feed(request):
     if request.user.is_authenticated and request.user.is_staff == False:
-
         #notifcaion starts
         user_details = UserDetails.objects.get(user=request.user)
         latest_notificaions = []
@@ -244,13 +244,13 @@ def category_feed(request):
         
             for show in followed_shows:
                 latest_notificaions.append(show)
-    #main starts here
-    episode_notifications = {}
-    for i in latest_notificaions:
-        episode_notifications[i] = Contents.objects.filter(show=i.id,visiblity="Public")
-    #notification Ends
+        #main starts here
+        episode_notifications = {}
+        for i in latest_notificaions:
+            episode_notifications[i] = Contents.objects.filter(show=i.id,visiblity="Public")
+        #notification Ends
 
-    #categoryStarts
+        #categoryStarts
         category_data = {}
         category = Category.objects.all()
         for i in category:
@@ -277,12 +277,12 @@ def category_view(request,id):
         
             for show in followed_shows:
                 latest_notificaions.append(show)
-    #main starts here
 
-    episode_notifications = {}
-    for i in latest_notificaions:
-        episode_notifications[i] = Contents.objects.filter(show=i.id,visiblity="Public")
-    #notification Ends
+        #main starts here
+        episode_notifications = {}
+        for i in latest_notificaions:
+            episode_notifications[i] = Contents.objects.filter(show=i.id,visiblity="Public")
+        #notification Ends
 
         shows = Show.objects.filter(category=id,visiblity="Public")
         category = Category.objects.get(id=id)
@@ -314,10 +314,12 @@ def single_podcast(request,id):
                 episode_notifications[i] = Contents.objects.filter(show=i.id,visiblity="Public")
         except:
             episode_notifications = 0
-    #notification Ends
+        #notification Ends
 
         shows = Show.objects.get(id=id)
-        episodes = Contents.objects.filter(show=shows,visiblity="Public",date_of_published__lte=date.today(),time_of_published__lte=datetime.datetime.now())
+        episodes = Contents.objects.filter(show=shows,visiblity="Public",date_of_published__lte=date.today())
+
+
         playlists = Playlist.objects.all()
 
         try:
@@ -358,6 +360,15 @@ def single_episode(request,id):
         episode = Contents.objects.get(id=id)
         playlists = Playlist.objects.filter(user=request.user)
         
+
+        #reactions
+        try:
+            reaction_type = Reaction.objects.get(episodes=episode,user=request.user).reaction_type
+        except:
+            reaction_type = 0
+
+
+        #rating
         try:
             user_rating = UserRating.objects.get(user=request.user,content=episode)
         except:
@@ -368,15 +379,17 @@ def single_episode(request,id):
             favorites_id = Playlist.objects.get(user=request.user,playlist_name='Favorites')
         except:
             favorites_id = Playlist.objects.create(user=request.user,playlist_name='Favorites')
+
         if PlaylistContent.objects.filter(playlist=favorites_id.id,user=request.user,content=episode.id,types=True).exists():
             favorites_list = PlaylistContent.objects.get(playlist=favorites_id.id,user=request.user,content=episode.id,types=True)
         else:
             favorites_list = False
             
         ads = Advertisement.objects.all()
+
         context = {'episode':episode,'playlists':playlists,'advertisment':ads,
         'user_details':user_details,'datas':episode_notifications,
-        'user_rating':user_rating,'favorites_list':favorites_list}
+        'user_rating':user_rating,'favorites_list':favorites_list,'reaction_type':reaction_type}
         return render(request, './consumer/SingleEpisodes.html',context)
     else:
         return redirect(signin)
@@ -731,4 +744,26 @@ def rating(request,id):
     return JsonResponse('rated',safe=False)
 
 def reaction(request,id):
-    return JsonResponse('liked', safe=False)
+    if request.method == "POST":
+        reaction_type = request.POST['reaction_type']
+        if reaction_type == "Like":
+            episode_id = Contents.objects.get(id=id)
+            if Reaction.objects.filter(user=request.user,episodes=episode_id,reaction_type=reaction_type).exists():
+                Reaction.objects.filter(user=request.user,episodes=episode_id,reaction_type=reaction_type).delete()
+                return JsonResponse('unlike',safe=False)
+            elif Reaction.objects.filter(user=request.user,episodes=episode_id).exists():
+                Reaction.objects.filter(user=request.user,episodes=episode_id).delete()
+            else:
+                Reaction.objects.create(user=request.user,episodes=episode_id,reaction_type=reaction_type)
+            return JsonResponse('liked', safe=False)
+        else:
+            episode_id = Contents.objects.get(id=id)
+            if Reaction.objects.filter(user=request.user,episodes=episode_id,reaction_type=reaction_type).exists():
+                Reaction.objects.filter(user=request.user,episodes=episode_id,reaction_type=reaction_type).delete()
+                return JsonResponse('undisike',safe=False)
+            elif Reaction.objects.filter(user=request.user,episodes=episode_id).exists():
+                Reaction.objects.filter(user=request.user,episodes=episode_id).delete()
+                Reaction.objects.create(user=request.user,episodes=episode_id,reaction_type=reaction_type)
+            else:
+                Reaction.objects.create(user=request.user,episodes=episode_id,reaction_type=reaction_type)
+            return JsonResponse('dislike', safe=False)

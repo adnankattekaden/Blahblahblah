@@ -38,17 +38,15 @@
         // raxorpay
         var options = {
                 "key": "rzp_test_0kYbZpsZhmIMUk", // Enter the Key ID generated from the Dashboard
-                "amount": planPrice, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                "amount": planPrice * 100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
                 "currency": "INR",
                 "name": "Blah Blah Blah",
-                "description": "Subscribtion",
-                "image": "https://www.iconpacks.net/icons/2/free-hotel-icon-1880-thumb.png",
+                "description": "Premium Subscribtion",
+                "image": "{% static './consumer/images/logo.png' %}",
                 "order_id": "{{payment.id}}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
                 "handler": function (response) {
                         alert('Transaction completed..!!!');
                         paymentSuccess()
-                        console.log('poddaa, nayey')
-                    //successrazorpay(tid)
                         },
                         "prefill": {
                             "name": "{{address.name}}",

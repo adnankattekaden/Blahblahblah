@@ -97,6 +97,13 @@ class EpisodeAnalytics(models.Model):
     time = models.TimeField(auto_now_add=True,null=True,blank=True)
     listners = models.IntegerField(default=0,null=True,blank=True)
 
+class Reaction(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True)
+    episodes = models.ForeignKey(Contents,on_delete=models.CASCADE)
+    reaction_type = models.CharField(max_length=20,null=True,blank=True)
+    date = models.DateField(auto_now_add=True,null=True,blank=True)
+    time = models.TimeField(auto_now_add=True,null=True,blank=True)
+
 class Follows(models.Model):
     creators = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True,related_name='follow_follower')
     followed = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True,related_name='follow_followed')

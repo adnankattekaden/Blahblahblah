@@ -70,8 +70,8 @@
       {
       color: #ffe600;
    }
-
 </style>
+
 
 <div class="container-fluid">
    <div class="row">
@@ -90,7 +90,6 @@
                            <form name="myForm" onchange="starrating()">
 
                               <fieldset class="rate">
-   
                                  <input type="radio" id="rating10" name="rating" value="5" {% if user_rating.rating == 5 %}  checked {% endif %}/>
                                  <label for="rating10" title="5 stars"></label>
                                  
@@ -138,10 +137,11 @@
                         <div class="music-right">
                            <div class="d-flex align-items-center">
                               
-                              <div class="iq-circle mr-2 share"><a><i
-                                       class="las la-share-alt-square text-primary" onclick="copyToClipboard()"></i></a>
+                              <div class="iq-circle mr-2 share">
+                                 <a>
+                                    <i class="las la-share-alt-square text-primary" onclick="copyToClipboard()"></i>
+                                 </a>
                               </div>
-
 
                               {% if not favorites_list.types == True %}
                               <div class="iq-circle mr-2">
@@ -164,22 +164,20 @@
                               {% if user_details.premium == True %}
                               <div class="iq-circle">
                                  <a href="{{episode.PodcastURL}}" download><i
-                                       class="las la-download text-primary text-primary"></i></a>
+                                       class="las la-download text-primary"></i></a>
                               </div>
                               {% endif %}
 
                               <br>
                               <div>
-
                                  <div class="iq-circle mr-2">
-                                    <a type="button" class="likeSong"><i class="fa fa-thumbs-up "  type="button"></i></a>
+                                    <i class="fa fa-thumbs-up {% if reaction_type == "Like" %} text-primary {% endif %} type="button" id="likeBtn"></i>
                                  </div>
    
                                  <div class="iq-circle mr-2">
-                                    <a type="button"><i class="fa fa-thumbs-down"  type="button"></i></a>
+                                    <i class="fa fa-thumbs-down  {% if reaction_type == "Dislike" %} text-primary {% endif %} type="button" id="dislikeBtn"></i>
                                  </div>
-
-                              </div>
+                              </div> 
 
 
                            </div>
@@ -208,13 +206,13 @@
    aria-hidden="true">
    <div class="modal-dialog" role="document">
       <div class="modal-content">
+
          <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">Playlist</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                <span aria-hidden="true">&times;</span>
             </button>
          </div>
-
 
          <div class="modal-body">
             <div class="table-responsive">
@@ -366,8 +364,56 @@
    inputc.select();
    document.execCommand('copy');
    inputc.parentNode.removeChild(inputc);
-   alert("URL Copied.");
+   launch_toast()
    }
-   </script>
+</script>
    
+<!-- like and Dislike -->
+<script>
+   id = '{{episode.id}}'
+
+$('#likeBtn').click(function(){
+   var Reaction = {
+      reaction_type:'Like',
+      csrfmiddlewaretoken:'{{csrf_token}}'
+   }
+   $.ajax({
+      url:'/reaction/'+id+'/',
+      method:'POST',
+      data:Reaction,
+      dataType:'JSON',
+      success:function(data){
+         if (data == 'liked'){
+            console.log('worleed,likedd')
+            $('#likeBtn').addClass("text-primary")
+            $('#dislikeBtn').removeClass("text-primary")
+         }else{
+            $('#likeBtn').removeClass("text-primary")
+
+         }
+      }
+   })
+})
+
+$('#dislikeBtn').click(function(){
+   var Reaction = {
+      reaction_type:'Dislike',
+      csrfmiddlewaretoken:'{{csrf_token}}'
+   }
+   $.ajax({
+      url:'/reaction/'+id+'/',
+      method:'POST',
+      data:Reaction,
+      dataType:'JSON',
+      success:function(data){
+         if (data == 'dislike'){
+            $('#dislikeBtn').addClass("text-primary")
+            $('#likeBtn').removeClass("text-primary")
+         }else{
+            $('#dislikeBtn').removeClass("text-primary")
+         }
+      }
+   })
+})
+</script>
 {% endblock content %}
