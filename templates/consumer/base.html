@@ -602,20 +602,35 @@
       loadTrack(music);
 
       function playpauseTrack() {
-         if (!isPlaying) currentTrack(nowId), playTrack();
-         else pauseTrack();
+         if (!isPlaying){
+            currentTrack(nowId),
+            playTrack();
+         } 
+         else{
+            pauseTrack();
+         } 
       }
-
       function playTrack() {
          curr_track.play();
          isPlaying = true;
          playpause_btn.innerHTML = '<i class="fa fa-pause-circle fa-3x"></i>';
+         // adnan
+         singlePlayBtn.removeClass('las la-play-circle')
+         singlePlayBtn.addClass('fa fa-pause-circle')
+         singlePlayBtn.prop("onclick", null).off("click");
+         singlePlayBtn.attr("onclick", "pauseTrack()");
       }
 
       function pauseTrack() {
          curr_track.pause();
          isPlaying = false
          playpause_btn.innerHTML = '<i class="fa fa-play-circle fa-3x"></i>';
+         // adnan
+         singlePlayBtn.removeClass('fa fa-pause-circle')
+         singlePlayBtn.addClass('las la-play-circle')
+         singlePlayBtn.prop("onclick", 'currentTrack();fun();').off("click");
+         singlePlayBtn.attr("onclick", "playpauseTrack()");
+
       }
 
       function nextTrack() {
@@ -657,7 +672,6 @@
             success: function (data) {
                music = JSON.parse(data.current_song)[0]
                currentId = music.pk
-               console.log(currentId, 'heyy')
                listnerUpdate(nowId)
                loadTrack(music);
                playTrack();
@@ -667,7 +681,6 @@
       }
 
       function listnerUpdate(nowId) {
-         console.log(nowId)
          $.ajax({
             url: '/listner-update/' + nowId + '/',
             type: 'GET',
@@ -712,13 +725,6 @@
       }
 
    </script>
-
-   <script>
-      $('#pod').click(function () {
-         playerBar()
-      })
-   </script>
-
 
 
 </body>

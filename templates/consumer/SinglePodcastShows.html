@@ -17,7 +17,7 @@
                         <div class="music-detail">
                            <h3>{{shows.show_name}}</h3>
                            <span>by {{shows.host}}</span>
-                           <p>Total Episodes: 45 </p>
+                           <p>Total Episodes: {{total_episodes}} </p>
                            <div class="d-flex align-items-center">
                               <button class="btn btn-primary iq-play mr-2">Play</button>
                               {% if follow_status == "follow" %}
@@ -59,12 +59,14 @@
                         <a href="{% url 'single_episode' episode.id %}">
                            <p class="mb-0">{{episode.episode_name}}</p>
                         </a>
-                        <small>Edyta Gorniak</small>
+                        <small>{{episode.artist}}</small>
                      </div>
                   </div>
                   <p class="mb-0 col-md-2 col-md-2 iq-music-time">9:52</p>
-                  <p class="mb-0 col-2 col-md-2 iq-music-play" onclick="currentTrack('{{episode.id}}')"><i
-                        class="las la-play-circle font-size-32" onclick="currentTrack('{{content.id}}')"></i></p>
+                  <p class="mb-0 col-2 col-md-2 iq-music-play">
+                     <i class="las la-play-circle font-size-32 text-primary" id="siglePlayBtn-{{episode.id}}"  onclick="currentTrack('{{episode.id}}');fun('{{episode.id}}')"></i>
+                  </p>
+
                </div>
             </li>
             {% endfor %}
@@ -75,6 +77,16 @@
 
 </div>
 
+<script>
+   var id;
+   var singlePlayBtn
+function fun(trackid){
+   id = trackid
+   singlePlayBtn = $('#siglePlayBtn-'+id)
+}
+// singlePlayBtn.removeClass('las la-play-circle')
+// singlePlayBtn.addClass('fa fa-pause-circle')
+</script>
 
 <script>
    $('#followShowBtn').click(function () {

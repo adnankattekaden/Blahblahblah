@@ -166,14 +166,14 @@
 <script>
     // line chart data
     var buyerData = {
-        labels: ["January", "February", "March", "April", "May", "June","July"],
+        labels: ["January", "February", "March", "April", "May", "June","July","August","September","October","November","December"],
         datasets: [
             {
                 fillColor: "rgba(172,194,132,0.4)",
                 strokeColor: "#ACC26D",
                 pointColor: "#fff",
                 pointStrokeColor: "#9DB86D",
-                data: [1, 156, 99, 251, 305, 247,10]
+                data: JSON.parse('{{followers_data}}'),
             }
         ]
     }

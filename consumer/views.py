@@ -10,6 +10,9 @@ from datetime import date
 import datetime 
 from datetime import datetime
 import uuid
+import wave
+import contextlib
+
 
 
 # Create your views here.
@@ -318,8 +321,9 @@ def single_podcast(request,id):
 
         shows = Show.objects.get(id=id)
         episodes = Contents.objects.filter(show=shows,visiblity="Public",date_of_published__lte=date.today())
-
-
+        total_episodes = 0
+        for episode in episodes:
+            total_episodes =+ 1
         playlists = Playlist.objects.all()
 
         try:
@@ -327,7 +331,7 @@ def single_podcast(request,id):
         except:
             follow_status = []
 
-        context = {'shows':shows,'episodes':episodes,'playlists':playlists,'follow_status':follow_status,'user_details':user_details,'datas':episode_notifications}
+        context = {'shows':shows,'episodes':episodes,'playlists':playlists,'follow_status':follow_status,'user_details':user_details,'datas':episode_notifications,'total_episodes':total_episodes}
         return render(request, './consumer/SinglePodcastShows.html',context)
     else:
         return redirect(signin)
@@ -441,8 +445,7 @@ def single_artist(request,id):
             
                 for show in followed_shows:
                     latest_notificaions.append(show)
-        #main starts here
-
+            #main starts here
             episode_notifications = {}
             for i in latest_notificaions:
                 episode_notifications[i] = Contents.objects.filter(show=i.id,visiblity="Public")
@@ -454,7 +457,7 @@ def single_artist(request,id):
         podcasts = Show.objects.filter(user=artists.user_id,visiblity="Public")
         followers_count = Follows.objects.filter(creators=artists.user_id,follow_type=True).count()
         try:
-            follow_status = Follows.objects.get(creators=artists.user.id).follow_status
+            follow_status = Follows.objects.get(creators=artists.user.id,followed=request.user).follow_status
         except:
             follow_status = []
         context = {'artists':artists,'podcasts':podcasts,'creator_followers_count':followers_count,'follow_status':follow_status,'user_details':user_details,'data':episode_notifications}
@@ -512,18 +515,19 @@ def follow_show(request,id):
         return redirect(signin)
 
 def next_music_data(request,id):
-    print(id)
-    consumer_data = Contents.objects.filter(id__gt=id,visiblity="Public").order_by('id').first()
+    show_id = Contents.objects.get(id=id)
+    consumer_data = Contents.objects.filter(id__gt=id,visiblity="Public",show_id=show_id.show.id).order_by('id').first()
     if consumer_data is None:
-        consumer_data = Contents.objects.filter(visiblity="Public").order_by('id').first()
+        consumer_data = Contents.objects.filter(visiblity="Public",show_id=show_id.show.id).order_by('id').first()
     print(consumer_data)
     data = {'next_songs':serializers.serialize('json',[consumer_data])}
     return JsonResponse(data)
 
 def previous_music_data(request,id):
-    consumer_data = Contents.objects.filter(id__lt=id,visiblity="Public").order_by('id').last()
+    show_id = Contents.objects.get(id=id)
+    consumer_data = Contents.objects.filter(id__lt=id,visiblity="Public",show_id=show_id.show.id).order_by('id').last()
     if consumer_data is None:
-        consumer_data = Contents.objects.filter(visiblity="Public").order_by('id').last()
+        consumer_data = Contents.objects.filter(visiblity="Public",show_id=show_id.show.id).order_by('id').last()
     print(consumer_data)
     data = {'previous_songs':serializers.serialize('json',[consumer_data])}
     return JsonResponse(data)

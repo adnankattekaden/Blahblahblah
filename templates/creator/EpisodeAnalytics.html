@@ -14,50 +14,74 @@
 </div>
 <!-- end page title -->
 
-<div>
-    <form method="post">
-        {% csrf_token %}
-        <h3>From</h3>
-        <input type="date" id="start_date" name="start_date" required><h3>TO</h3>
-        <input type="date" id="end_date" name="end_date" required>
-        <button type="submit">Submit</button>
-    </form>
-</div>
-
 <!-- import plugin script -->
 <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js'></script>
 
 <div class="page-content">
+
     <div class="container-fluid">
         {% if episode_analytics %}
-        <div>
-            <!-- bar chart canvas element -->
-            <canvas id="listners" width="600" height="400"></canvas>
+        <div class="row">
+            <div class="col-xl-6">
+                <h3>Listners Analytics</h3>
+                <!-- bar chart canvas element -->
+                <canvas id="listners" width="600" height="400"></canvas>
+            </div>
+            {% else %}
+            <h1>Currenlty NO data avalable</h1>
+            {% endif %}
+
+            <div class="col-xl-6">
+                <h3>Reaction Analytics</h3>
+                
+                <canvas id="likeanddislike" width="600" height="400"></canvas>
+            </div>
+
         </div>
-        {% else %}
-        <h1>Currenlty NO data avalable</h1>
-        {% endif %}
+
     </div> <!-- container-fluid -->
 
 </div>
 
+<script>
+    // line chart data
+    var buyerData = {
+        labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        datasets: [
+            {
+                fillColor: "rgba(172,194,132,0.4)",
+                strokeColor: "#ACC26D",
+                pointColor: "#fff",
+                pointStrokeColor: "#9DB86D",
+                data: JSON.parse('{{episode_analytics}}')
+            }
+        ]
+    }
+    // get line chart canvas
+    var buyers = document.getElementById('listners').getContext('2d');
+    // draw line chart
+    new Chart(buyers).Line(buyerData);
+</script>
 
 <script>
-    var today = '{{episode_analytics.listners}}'
-    
     // bar chart data
     var barData = {
-        labels: ["January", "February", "March", "April", "May", "June"],
+        labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
         datasets: [
             {
                 fillColor: "#48A497",
                 strokeColor: "#48A4D1",
-                data: [today, 479, 324, 569, 702, 600]
+                data: JSON.parse('{{like_analytics}}')
+            },
+            {
+                fillColor: "rgba(73,188,170,0.4)",
+                strokeColor: "rgba(72,174,209,0.4)",
+                data: JSON.parse('{{dislike_analytics}}')
             }
         ]
     }
     // get bar chart canvas
-    var income = document.getElementById("listners").getContext("2d");
+    var income = document.getElementById("likeanddislike").getContext("2d");
     // draw bar chart
     new Chart(income).Bar(barData);
 </script>

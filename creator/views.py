@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.models import User,auth
 import json
 from django.http import JsonResponse
-from .models import Contents,CreatorDeatails,Show,Follows,EpisodeAnalytics
+from .models import Contents,CreatorDeatails,Show,Follows,EpisodeAnalytics,Reaction
 from owner.models import Category
 from django.views.decorators.csrf import csrf_exempt
 import base64
@@ -11,6 +11,7 @@ from datetime import date
 import datetime 
 from django.utils import timezone
 from datetime import datetime
+from datetime import timedelta
 
 # Create your views here.
 
@@ -66,7 +67,12 @@ def creator_dashboard(request):
         creator = CreatorDeatails.objects.get(user=request.user)
         followers_count = Follows.objects.filter(creators=request.user,follow_type=True).count()
         shows_count = Show.objects.filter(user=request.user).count()
-        context = {'creator_details':creator,'shows_count':shows_count,'followers_count':followers_count}
+
+        #datas
+        followers_data = [0,0,0,0,0,0,0,0,0,0,0,0]
+        for i in Follows.objects.filter(creators=request.user,follow_type=True):
+            followers_data[i.date.month-1] += 1
+        context = {'creator_details':creator,'shows_count':shows_count,'followers_count':followers_count,'followers_data':followers_data}
         return render(request, './creator/Dashboard.html',context)
     else:
         return redirect(creator_login)
@@ -146,7 +152,10 @@ def manage_podcasts(request):
     if request.user.is_authenticated and request.user.is_staff == True:
         creator = CreatorDeatails.objects.get(user=request.user)
         shows = Show.objects.filter(user=request.user)
-        context = {'shows':shows,'creator_details':creator}
+        total_episodes_count = 0
+        for show in shows:
+            total_episodes_count =+ Contents.objects.filter(user=request.user,show=show).count()
+        context = {'shows':shows,'creator_details':creator,'total_episodes_count':total_episodes_count}
         return render(request, './creator/ManagePodcasts.html',context)
     else:
         return redirect(creator_login)
@@ -182,13 +191,18 @@ def edit_podcast(request,id):
         podcast_show = Show.objects.get(id=id)
         creator = CreatorDeatails.objects.get(user=request.user)
         if request.method == 'POST':
-            thumbnail = request.FILES.get('thumbnail')
+            thumbnail = request.POST['thumbnail']
             podcast_show.show_name = request.POST['podcastName']
             podcast_show.category_id = request.POST['category']
             podcast_show.visiblity = request.POST['visiblity']
 
             if thumbnail is not None:
-                podcast_show.thumbnail = request.FILES.get('thumbnail')
+                #imagecroping
+                format, imgstr = thumbnail.split(';base64,')
+                ext = format.split('/')[-1]
+                thumbnail_data = ContentFile(base64.b64decode(imgstr), name=request.POST['podcastName'] + '.' + ext)
+                #corping Ends
+                podcast_show.thumbnail = thumbnail_data
 
             podcast_show.save()
             return JsonResponse('podcast_edited',safe=False)
@@ -222,13 +236,20 @@ def create_episode(request):
         shows = Show.objects.filter(user=request.user)
         if request.method == 'POST':
             episode_name = request.POST['episodeName']
-            episode_art = request.FILES.get('episodeart')
+            episode_art = request.POST['episodeart']
             episode_description = request.POST['description']
             show_id = request.POST['show']
             podcast_data = request.FILES.get('audio')
             visiblity = request.POST['visiblity']
             date_of_published = request.POST['schedule']
             time_of_published = request.POST['scheduletime']
+
+                        
+            #imagecroping
+            format, imgstr = episode_art.split(';base64,')
+            ext = format.split('/')[-1]
+            episode_art = ContentFile(base64.b64decode(imgstr), name=episode_name + '.' + ext)
+            #corping Ends
 
             if time_of_published is not '':
                 #convertimezone
@@ -258,7 +279,7 @@ def edit_episode(request,id):
         episode = Contents.objects.get(id=id)
         if request.method == 'POST':            
             episode_name = request.POST['episodeName']
-            episode_art = request.FILES.get('episodeart')
+            episode_art = request.POST['episodeart']
             episode_description = request.POST['description']
             show_id = request.POST['show']
             podcast_data = request.FILES.get('audio')
@@ -269,6 +290,11 @@ def edit_episode(request,id):
             episode.visiblity = visiblity
 
             if episode_art is not None:
+                #imagecroping
+                format, imgstr = episode_art.split(';base64,')
+                ext = format.split('/')[-1]
+                episode_art = ContentFile(base64.b64decode(imgstr), name=request.POST['episodeName'] + '.' + ext)
+                #corping Ends
                 episode.thumbnail = episode_art
     
             episode.description = episode_description
@@ -296,20 +322,23 @@ def delete_episode(request,id):
 def episode_analytics(request,id):
     creator = CreatorDeatails.objects.get(user=request.user)
     episode = Contents.objects.get(id=id)
-    if request.method == "POST":
-        start_date = request.POST['start_date']
-        end_date = request.POST['end_date']
-    else:
-        days = []
-        current_date = date.today()
-        yesterday = current_date - datetime.timedelta(days = 1)
-
-        try:
-            episode_analytics = EpisodeAnalytics.objects.get(episodes=episode.id,date=current_date)   
-        except:
-            episode_analytics = []
     #analytics data
-    context = {'episode_analytics':episode_analytics,'creator_details':creator}
+    episode_analytics = [0,0,0,0,0,0,0,0,0,0,0,0]
+    listners = []
+    for i in EpisodeAnalytics.objects.filter(episodes=episode.id):
+        episode_analytics[i.date.month-1] += i.listners
+
+    #reaction analytics 
+    like_analytics = [0,0,0,0,0,0,0,0,0,0,0,0]
+    dislike_analytics = [0,0,0,0,0,0,0,0,0,0,0,0]
+
+    for reactions in Reaction.objects.filter(episodes=episode.id):
+        like_analytics[reactions.date.month-1] += reactions.reaction_type.count('Like')
+        dislike_analytics[reactions.date.month-1] += reactions.reaction_type.count('Dislike')
+
+    print(like_analytics)
+    print(dislike_analytics)
+    context = {'episode_analytics':episode_analytics,'creator_details':creator,'like_analytics':like_analytics,'dislike_analytics':dislike_analytics}
     return render(request, './creator/EpisodeAnalytics.html',context)
 
 

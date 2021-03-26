@@ -146,7 +146,16 @@
 
                     result.appendChild(img);
                     // init cropper
-                    cropper = new Cropper(img);
+                    cropper = new Cropper(img, {
+                        viewMode: 2,
+                        aspectRatio: 5 / 5,
+                        autoCropArea: 1,
+                        crop: function (e) {
+                            console.log(e.detail.x);
+                            console.log(e.detail.y);
+                        }
+                    });
+
                 }
             };
             reader.readAsDataURL(e.target.files[0]);
@@ -163,9 +172,8 @@
             .toDataURL();
         $("#exampleModalCenter").modal("hide");
         cropped.src = imgSrc;
-        console.log(imgSrc,'heyy')
-    });
 
+    });
 </script>
 <!-- croping ends -->
 

@@ -28,31 +28,36 @@
 
                             <div class="mb-3">
                                 <label for="podcastName">Show Name</label>
-                                <input id="podcastName" name="podcastName" type="text" class="form-control" value="{{podcast_show.show_name}}">
+                                <input id="podcastName" name="podcastName" type="text" class="form-control"
+                                    value="{{podcast_show.show_name}}">
                             </div>
 
                             <div class="mb-3">
                                 <label class="control-label">Category</label>
                                 <select class="form-control select2" id="category" name="category">
-                                    <option value="{{podcast_show.category.id}}">{{podcast_show.category.category_name}}</option>
+                                    <option value="{{podcast_show.category.id}}">{{podcast_show.category.category_name}}
+                                    </option>
 
                                     {% for category in categories %}
                                     <option value="{{category.id}}">{{category.category_name}}</option>
                                     {% endfor %}
-                                    
+
                                 </select>
                             </div>
                             <div class="mb-3">
                                 <label for="productdesc">Show Description</label>
-                                <textarea class="form-control" id="showdescription" rows="5">{{podcast_show.description}}</textarea>
+                                <textarea class="form-control" id="showdescription"
+                                    rows="5">{{podcast_show.description}}</textarea>
                             </div>
                         </div>
 
                         <div class="col-sm-6">
                             <div class="mb-3">
                                 <label for="thumbnail">Show Art</label><br>
-                                <img src="{{podcast_show.ImageURL}}" onclick="openImage()" onchange="preview()" id="frame" style="height: 10rem; width: 10rem;">
-                                <input style="display: none;" type="file" name="thumbnail" id="thumbnail"  oninput="frame.src=window.URL.createObjectURL(this.files[0])" accept="image/*">
+                                <img src="{{podcast_show.ImageURL}}" onclick="openImage()" onchange="preview()"
+                                    id="frame" style="height: 10rem; width: 10rem;">
+                                <input style="display: none;" type="file" name="thumbnail" id="thumbnail"
+                                    oninput="frame.src=window.URL.createObjectURL(this.files[0])" accept="image/*">
                             </div>
 
                             <div>
@@ -84,35 +89,125 @@
     </div>
 </div>
 
+
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Crop Image</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="box-2">
+                    <div class="result"></div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    Close
+                </button>
+
+                <button type="button" id="load" class="btn save btn-primary">
+                    Save changes
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var imgSrc;
+    let result = document.querySelector(".result"),
+        save = document.querySelector(".save"),
+        cropped = document.querySelector(".cropped"),
+        upload = document.querySelector("#thumbnail"),
+        cropper = "";
+
+    upload.addEventListener("change", (e) => {
+        if (e.target.files.length) {
+            // start file reader
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+                if (e.target.result) {
+                    // create new image
+                    $("#exampleModalCenter").modal("show");
+                    let img = document.createElement("img");
+                    img.id = "image";
+                    img.src = e.target.result;
+
+                    // clean result before
+                    result.innerHTML = "";
+                    // append new image
+
+                    result.appendChild(img);
+                    // init cropper
+                    cropper = new Cropper(img, {
+                        viewMode: 2,
+                        aspectRatio: 5 / 5,
+                        autoCropArea: 1,
+                        crop: function (e) {
+                            console.log(e.detail.x);
+                            console.log(e.detail.y);
+                        }
+                    });
+
+                }
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        }
+    });
+
+    save.addEventListener("click", (e) => {
+        e.preventDefault();
+        // get result to data uri
+        imgSrc = cropper
+            .getCroppedCanvas({
+                width: 300, // img disp value
+            })
+            .toDataURL();
+        $("#exampleModalCenter").modal("hide");
+        cropped.src = imgSrc;
+
+    });
+</script>
+
 <script>
     $('#createBtn').click(function () {
         var id = '{{podcast_show.id}}'
         var formData = new FormData();
         formData.append("podcastName", document.getElementById("podcastName").value);
-        formData.append("thumbnail", document.getElementById("thumbnail").files[0]);
+        formData.append("thumbnail", imgSrc);
         formData.append("category", document.getElementById("category").value);
         formData.append("visiblity", document.getElementById("visiblity").value);
         formData.append("showdescription", document.getElementById("showdescription").value);
         formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
-        
+
 
         // restrict other Filetypes
         var ext = thumbnail.value.split(".")
         ext = ext[ext.length - 1].toLowerCase();
-        var arrayExtensions = ["jpg","png","svg","jpeg",""];
+        var arrayExtensions = ["jpg", "png", "svg", "jpeg", ""];
         // END RESTRRICT FILE TYPE
 
         if (podcastName.value == '') {
             $('#message').html('Enter Podcast Name')
-        }else if (arrayExtensions.lastIndexOf(ext) == -1){
+        } else if (arrayExtensions.lastIndexOf(ext) == -1) {
             $('#message').html('it is not an Image File')
         } else if (category.value == 'Choose An Category') {
             $('#message').html('Choose An Category')
-        } else if(showdescription.value == ''){
+        } else if (showdescription.value == '') {
             $('#message').html('Enter An Description')
-        }else {
+        } else {
             $.ajax({
-                url: '/creator/edit-podcast/'+id+'/',
+                url: '/creator/edit-podcast/' + id + '/',
                 type: 'POST',
                 data: formData,
                 cache: false,
@@ -130,7 +225,7 @@
         }
     })
 
-    function openImage(){
+    function openImage() {
         $('#thumbnail').click()
     }
 </script>

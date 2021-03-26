@@ -28,7 +28,6 @@
                 <form>
 
                     <div class="row mb-4">
-
                         <label for="episodeName" class="col-form-label col-lg-2">Episode Name</label>
                         <div class="col-lg-10">
                             <input id="episodeName" name="episodeName" type="text" class="form-control"
@@ -68,7 +67,6 @@
                                 <option value="Private">Private</option>
                             </select>
                         </div>
-
                     </div>
 
                     <div>
@@ -76,14 +74,12 @@
                         <label for="scales">Schedule</label>
                     </div>
 
-
-
-
                     <div class="row mb-4 scheduleBar" style="display: none;">
 
                         <label class="col-form-label col-lg-2">Schedule Date</label>
 
                         <div class="col-lg-10">
+
                             <div><br>
                                 <input type="date" id="schedule" class="form-control" placeholder="ScheduleDate"
                                     id="schedule" name="sheduleDate" />
@@ -93,6 +89,7 @@
                                 <input type="time" id="scheduletime" class="form-control" placeholder="ScheduleTime"
                                     id="scheduletime" name="scheduletime" step="1" />
                             </div>
+
                         </div>
 
                     </div>
@@ -121,7 +118,6 @@
                     <div class="row form-group">
                         <p id="progress_text"></p>
                     </div>
-
                 </form>
 
                 <div class="row justify-content-end">
@@ -129,13 +125,102 @@
                         <a type="button" id="episodeBtn" class="btn btn-primary">Create Episode</a>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
 </div>
 <!-- end row -->
 
+
+
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Crop Image</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="box-2">
+                    <div class="result"></div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    Close
+                </button>
+
+                <button type="button" id="load" class="btn save btn-primary">
+                    Save changes
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var imgSrc;
+    let result = document.querySelector(".result"),
+        save = document.querySelector(".save"),
+        cropped = document.querySelector(".cropped"),
+        upload = document.querySelector("#episodeart"),
+        cropper = "";
+
+    upload.addEventListener("change", (e) => {
+        if (e.target.files.length) {
+            // start file reader
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+                if (e.target.result) {
+                    // create new image
+                    $("#exampleModalCenter").modal("show");
+                    let img = document.createElement("img");
+                    img.id = "image";
+                    img.src = e.target.result;
+
+                    // clean result before
+                    result.innerHTML = "";
+                    // append new image
+
+                    result.appendChild(img);
+                    // init cropper
+                    cropper = new Cropper(img, {
+                        viewMode: 2,
+                        aspectRatio: 5 / 5,
+                        autoCropArea: 1,
+                        crop: function (e) {
+                            console.log(e.detail.x);
+                            console.log(e.detail.y);
+                        }
+                    });
+
+                }
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        }
+    });
+
+    save.addEventListener("click", (e) => {
+        e.preventDefault();
+        // get result to data uri
+        imgSrc = cropper
+            .getCroppedCanvas({
+                width: 300, // img disp value
+            })
+            .toDataURL();
+        $("#exampleModalCenter").modal("hide");
+        cropped.src = imgSrc;
+
+    });
+</script>
 
 
 
@@ -145,7 +230,7 @@
         var formData = new FormData();
         formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
         formData.append("episodeName", document.getElementById("episodeName").value);
-        formData.append("episodeart", document.getElementById("episodeart").files[0]);
+        formData.append("episodeart", imgSrc);
         formData.append("audio", document.getElementById("audio").files[0]);
         formData.append("visiblity", document.getElementById("visiblity").value);
         formData.append("description", document.getElementById("description").value);
@@ -165,7 +250,6 @@
         console.log('extt', ext)
         var arrayExtensions = ["mp3"];
         // END RESTRRICT FILE TYPE
-
         if (episodeName.value == '') {
             $('#message').html('Enter Episode Name')
         } else if (episodeart.value == '') {

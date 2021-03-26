@@ -38,8 +38,14 @@
                             <p class="text-muted mb-0">{{podcast.description}}</p>
                         </td>
                         <td>{{podcast.category.category_name}}</td>
-                        <td>{{podcast.total_episodes}}</td>
-                        <td><span class="badge bg-danger">Sheduled</span></td>
+                        <td>{{total_episodes_count}}</td>
+                        {% if podcast.visiblity == "Public" %}
+                        <td><span class="badge bg-success">Public</span></td>
+                        {% else %}
+                        <td><span class="badge bg-danger">Private</span></td>
+                        {% endif %}
+                        
+                        
                         <td>
                             <div class="dropdown">
                                 <a href="#" class="dropdown-toggle card-drop" data-bs-toggle="dropdown"

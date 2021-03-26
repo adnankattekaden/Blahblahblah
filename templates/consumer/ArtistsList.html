@@ -22,15 +22,11 @@
                                <img src="{{artist.ImageURL}}" class="img-border-radius img-fluid w-100" alt="">
                             </a>
                             <div class="overlay-music-icon">
-                               <a type="button" onclick="currentTrack('{{content.id}}')">
-                                  <i class="las la-play-circle"></i>
-                               </a>
                             </div>
                          </div>
                       </a>
                       <div class="feature-list text-center">
-                         <h6 class="font-weight-600  mb-0">Followers 10</h6>
-                         <p class="mb-0">{{artist.user.username}}</p>
+                         <h6 class="font-weight-600  mb-0">{{artist.user.first_name}} {{artist.user.last_name}}</h6>
                       </div>
                    </div>
                 </div>
