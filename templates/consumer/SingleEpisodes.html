@@ -72,7 +72,6 @@
    }
 </style>
 
-
 <div class="container-fluid">
    <div class="row">
       <div class="col-lg-12">
@@ -169,6 +168,7 @@
                               {% endif %}
 
                               <br>
+
                               <div>
                                  <div class="iq-circle mr-2">
                                     <i class="fa fa-thumbs-up {% if reaction_type == "Like" %} text-primary {% endif %} type="button" id="likeBtn"></i>
@@ -178,7 +178,6 @@
                                     <i class="fa fa-thumbs-down  {% if reaction_type == "Dislike" %} text-primary {% endif %} type="button" id="dislikeBtn"></i>
                                  </div>
                               </div> 
-
 
                            </div>
                         </div>
@@ -190,6 +189,7 @@
       </div>
    </div>
 
+
    {% if not user_details.premium == True %}
    {% for ad in advertisment %}
    <div class="row iq-card">
@@ -197,8 +197,9 @@
    </div>
    {% endfor %}
    {% endif %}
-
+   
 </div>
+
 
 
 <!-- PlayList Modal -->
@@ -208,7 +209,7 @@
       <div class="modal-content">
 
          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Playlist</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Select Playlist</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                <span aria-hidden="true">&times;</span>
             </button>
@@ -229,7 +230,6 @@
                      <tr>
                         <td>
                            <div>
-                              <!-- <h5 class="text-truncate font-size-14">Wireless Headphone (Black)</h5> -->
                               <button class="btn btn-primary" data-dismiss="modal"
                                  onclick="playlistname('{{playlist.id}}')">{{playlist.playlist_name}}</button>
                            </div>
@@ -261,6 +261,7 @@
    </div>
 </div>
 
+<!-- favorites -->
 <script>
    $(".favorites_Song").click(function () {
       var songId = '{{episode.id}}'
@@ -301,7 +302,7 @@
          success: function (data) {
             data = JSON.parse(data.playlistcreated)
             console.log(data[0].pk)
-            var html_content = '<tr><td><button data-dismiss="modal" onclick="playlistname(' + data[0].pk + ')">' + data[0].fields.playlist_name + '</button></td></tr>'
+            var html_content = '<tr><td><button class="btn btn-primary" data-dismiss="modal" onclick="playlistname(' + data[0].pk + ')">' + data[0].fields.playlist_name + '</button></td></tr>'
             $('.updatedplaylist').append(html_content)
          }
 
@@ -327,10 +328,7 @@
 
    }
 
-   
-
 </script>
-
 
 <!-- rating -->
 <script>
@@ -356,6 +354,7 @@
 
 </script>
 
+<!-- sharebutton -->
 <script>
    function copyToClipboard(text) {
    var inputc = document.body.appendChild(document.createElement("input"));
@@ -367,7 +366,7 @@
    launch_toast()
    }
 </script>
-   
+
 <!-- like and Dislike -->
 <script>
    id = '{{episode.id}}'

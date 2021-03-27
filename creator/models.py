@@ -48,9 +48,6 @@ class Show(models.Model):
         self.thumbnail.delete()
         super().delete(*args, **kwargs)
 
-
-
-
 class Contents(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     artist = models.CharField(max_length=255,null=True,blank=True)
@@ -90,7 +87,7 @@ class Contents(models.Model):
         self.thumbnail.delete()
         super().delete(*args, **kwargs)
 
-
+    
 class EpisodeAnalytics(models.Model):
     episodes = models.ForeignKey(Contents,on_delete=models.CASCADE)
     date = models.DateField(auto_now_add=True,null=True,blank=True)
@@ -111,7 +108,6 @@ class Follows(models.Model):
     time = models.TimeField(auto_now_add=True,null=True,blank=True)
     follow_type = models.BooleanField(null=True,blank=True)
     follow_status = models.CharField(null=True,blank=True,max_length=40)
-
 
 class FollowShows(models.Model):
     creators = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True,related_name='follow_shows')

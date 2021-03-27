@@ -341,4 +341,14 @@ def episode_analytics(request,id):
     context = {'episode_analytics':episode_analytics,'creator_details':creator,'like_analytics':like_analytics,'dislike_analytics':dislike_analytics}
     return render(request, './creator/EpisodeAnalytics.html',context)
 
+def manage_teams(request):
+    cretors = CreatorDeatails.objects.all().exclude(user=request.user)
+    context = {'cretors':cretors}
+    return render(request, './creator/ManageTeams.html',context)
 
+def add_member(request):
+    if request.method == "POST":
+        peoples = request.POST['peoples']
+        roles = request.POST['roles']
+        print(peoples,'heyy',roles,'heyyy')
+        return JsonResponse('memberadded',safe=False)

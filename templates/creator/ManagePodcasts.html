@@ -24,6 +24,7 @@
                         <th scope="col">Category</th>
                         <th scope="col">Total Episodes</th>
                         <th scope="col">Status</th>
+                        <th scope="col">Team</th>
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
@@ -45,6 +46,20 @@
                         <td><span class="badge bg-danger">Private</span></td>
                         {% endif %}
                         
+                        <td>
+                            <div class="avatar-group">
+                                <div class="avatar-group-item">
+                                    <a href="javascript: void(0);" class="d-inline-block">
+                                        <img src="{% static 'creator/images/users/avatar-4.jpg' %}" alt="" class="rounded-circle avatar-xs">
+                                    </a>
+                                </div>
+                                <div class="avatar-group-item">
+                                    <a href="javascript: void(0);" class="d-inline-block">
+                                        <img src="{% static 'creator/images/users/avatar-5.jpg' %}" alt="" class="rounded-circle avatar-xs">
+                                    </a>
+                                </div>
+                            </div>
+                        </td>
                         
                         <td>
                             <div class="dropdown">
@@ -56,15 +71,24 @@
                                     <li><a href="{% url 'manage_episodes' podcast.id %}" class="dropdown-item"><i
                                                 class="mdi dripicons-preview font-size-16 text-primary me-1"></i> View
                                             Episodes</a></li>
+
                                     <li><a href="{% url 'edit_podcast' podcast.id %}" class="dropdown-item"><i
                                                 class="mdi mdi-pencil font-size-16 text-success me-1"></i> Edit</a></li>
+                                                
                                     <li><a href="{% url 'delete_podcast' podcast.id %}" class="dropdown-item"><i
                                                 class="mdi mdi-trash-can font-size-16 text-danger me-1"></i> Delete</a>
                                                 
                                     </li>
+
+                                    <li><a href="{% url 'manage_teams' %}" class="dropdown-item"><i
+                                        class="mdi mdi-account-group font-size-16 text-primary  me-1"></i>Manage Team</a>
+                                        
+                                    </li>
                                 </ul>
                             </div>
                         </td>
+
+
                     </tr>
                     {% endfor %}
                 </tbody>

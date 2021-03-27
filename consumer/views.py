@@ -771,3 +771,6 @@ def reaction(request,id):
             else:
                 Reaction.objects.create(user=request.user,episodes=episode_id,reaction_type=reaction_type)
             return JsonResponse('dislike', safe=False)
+
+def advertisment(request):
+    return JsonResponse('ehyy',safe=False)

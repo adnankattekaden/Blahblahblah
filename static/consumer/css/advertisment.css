@@ -1,0 +1,47 @@
+
+.popup{
+    position: relative;
+    width: 500px;
+    height: 500px;
+    background-color: rgb(27, 27, 27);
+    margin: 100px auto;
+}
+.popup-timer{
+    width: auto;
+    height: 25px;
+    color: #fff;
+    position: absolute;
+    right: 10px;
+    line-height: 25px;
+    padding: 0px 10px;
+}
+.btn-close{
+    background-color: #fff;
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    line-height: 22px;
+    position: absolute;
+    right: -10px;
+    top: -10px;
+    cursor: pointer;
+    transition: all 0.5s ease;
+    border-radius: 50%;
+}
+.btn-close:hover{
+    transform: rotate(360deg);
+}
+
+#adds{
+    position: absolute;
+    z-index: 999;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+
+}
+
+.addImg img {
+    width: 500px;
+    height: 500px;
+}

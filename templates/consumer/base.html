@@ -18,6 +18,9 @@
    <!-- Responsive CSS -->
    <link rel="stylesheet" href="{% static 'consumer/css/responsive.css' %}">
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+   <!-- advertisment -->
+   <link rel="stylesheet" href="{% static 'consumer/css/advertisment.css' %}">
+   <script src="{% static 'consumer/js/advertisement.js' %}"></script>
 </head>
 
 <body class="sidebar-main-active right-column-fixed">
@@ -232,10 +235,25 @@
       </div>
       <!-- TOP Nav Bar END -->
 
+
       <!-- Page Content  -->
       <div id="content-page" class="content-page">
          <div class="container-fluid">
             <div class="row">
+
+               <!-- advertisment_starts -->
+               
+               <div class="popup popup-wrap" id="adds" >
+                  <div class="popup-timer"><span class="seconds"></span> second(s) left</div>
+                  <div class="btn-close">x</div>
+                  <div class="addImg" id="addPicker" >
+                     <!-- imagetagg append cheyyanam -->
+                     <img src="https://previews.123rf.com/images/artshock/artshock1209/artshock120900045/15221647-imag-of-heart-in-the-blue-sky-against-a-background-of-white-clouds-.jpg" alt="" srcset="">
+                  </div>
+               </div>
+
+               <!-- advertisment_ends -->
+               
                {% block content %} {% endblock %}
             </div>
          </div>
@@ -602,13 +620,13 @@
       loadTrack(music);
 
       function playpauseTrack() {
-         if (!isPlaying){
+         if (!isPlaying) {
             currentTrack(nowId),
-            playTrack();
-         } 
-         else{
+               playTrack();
+         }
+         else {
             pauseTrack();
-         } 
+         }
       }
       function playTrack() {
          curr_track.play();
@@ -641,8 +659,12 @@
                music = JSON.parse(data.next_songs)[0]
                console.log('next', music, 'heyyyy', music.pk)
                currentId = music.pk
+
+               // adstartshere
+               
                loadTrack(music);
                playTrack();
+
             }
 
          })
@@ -720,6 +742,9 @@
       }
 
 
+
+
+      
       function playerBar() {
          PodcastPlater.removeAttr("style")
       }
