@@ -43,16 +43,15 @@
                                     {% if user_details.ImageURL == "" %}
                                     <img class="profile-pic" src="{% static './consumer/images/user/11.png' %}"
                                        alt="profile-pic">
-                                       {% else %}
-                                    <img class="profile-pic" src="{{user_details.ImageURL}}"
-                                       alt="profile-pic">
+                                    {% else %}
+                                    <img class="profile-pic" src="{{user_details.ImageURL}}" alt="profile-pic">
                                     {% endif %}
                                     <div class="p-image">
                                        <i class="ri-pencil-line upload-button"></i>
                                        <input class="file-upload" id="profile_image" type="file" accept="image/*" />
                                     </div>
                                  </div>
-                                 
+
                               </div>
                            </div>
 
@@ -94,19 +93,19 @@
                      <div class="iq-card-body">
                         <form>
                            <div class="form-group">
+                              <span id="notification_message" style="color: red;"></span><br>
                               <label for="cpass">Current Password:</label>
-                              <a href="javascripe:void();" class="float-right">Forgot Password</a>
-                              <input type="Password" class="form-control" id="cpass" value="">
+                              <input type="Password" class="form-control" id="current_password" value="">
                            </div>
                            <div class="form-group">
                               <label for="npass">New Password:</label>
-                              <input type="Password" class="form-control" id="npass" value="">
+                              <input type="Password" class="form-control" id="new_password" value="">
                            </div>
                            <div class="form-group">
                               <label for="vpass">Verify Password:</label>
-                              <input type="Password" class="form-control" id="vpass" value="">
+                              <input type="Password" class="form-control" id="verify_password" value="">
                            </div>
-                           <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                           <button type="button" id="chgpwd" class="btn btn-primary mr-2">Change Password</button>
                         </form>
                      </div>
                   </div>
@@ -119,43 +118,173 @@
 </div>
 
 
+<!-- changePassword -->
+<script>
+   $('#chgpwd').click(function () {
+      var passwordData = {
+         csrfmiddlewaretoken:'{{csrf_token}}',
+         current_password: $('#current_password').val(),
+         new_password: $('#new_password').val(),
+         verify_password: $('#verify_password').val(),
+      }
+      if (passwordData.current_password === '') {
+         $('#notification_message').html('Enter Current Password')
+      } else if (passwordData.new_password === '') {
+         $('#notification_message').html('Enter New Password')
+      } else if (passwordData.verify_password === '') {
+         $('#notification_message').html('Enter Verify Password')
+      } else {
+         $.ajax({
+            url: '/change_password/{{request.user.id}}/',
+            type: 'POST',
+            dataType: 'JSON',
+            data:passwordData,
+            success:function(data){
+               if(data == 'current_password_notmatching'){
+                  $('#notification_message').html('Current Password Not Matching')
+               }else if(data == 'newpassword_not_matching'){
+                  $('#notification_message').html('New Password Not Matching')
+               }else if(data == 'password_updated'){
+                  location.reload()
+               }
+            }
+         })
+      }
+   })
+</script>
+
+
+
+
+<!-- cropping -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+   aria-hidden="true">
+   <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Crop Image</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+
+         <div class="modal-body">
+            <div class="box-2">
+               <div class="result"></div>
+            </div>
+         </div>
+
+         <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+               Close
+            </button>
+
+            <button type="button" id="load" class="btn save btn-primary">
+               Save changes
+            </button>
+         </div>
+      </div>
+   </div>
+</div>
+
+
+<script>
+   var imgSrc;
+   let result = document.querySelector(".result"),
+      save = document.querySelector(".save"),
+      cropped = document.querySelector(".cropped"),
+      upload = document.querySelector("#profile_image"),
+      cropper = "";
+
+   upload.addEventListener("change", (e) => {
+      if (e.target.files.length) {
+
+         // start file reader
+         const reader = new FileReader();
+
+         reader.onload = (e) => {
+            if (e.target.result) {
+               // create new image
+               $("#exampleModalCenter").modal("show");
+               let img = document.createElement("img");
+               img.id = "image";
+               img.src = e.target.result;
+
+               // clean result before
+               result.innerHTML = "";
+               // append new image
+
+               result.appendChild(img);
+               // init cropper
+               cropper = new Cropper(img, {
+                  viewMode: 2,
+                  aspectRatio: 5 / 5,
+                  autoCropArea: 1,
+                  crop: function (e) {
+                     console.log(e.detail.x);
+                     console.log(e.detail.y);
+                  }
+               });
+
+            }
+         };
+         reader.readAsDataURL(e.target.files[0]);
+      }
+   });
+
+   save.addEventListener("click", (e) => {
+      e.preventDefault();
+      // get result to data uri
+      imgSrc = cropper
+         .getCroppedCanvas({
+            width: 300, // img disp value
+         })
+         .toDataURL();
+      $("#exampleModalCenter").modal("hide");
+      cropped.src = imgSrc;
+
+   });
+</script>
+<!-- croping ends -->
+
+
 <script>
    $('#profileUpdateBtn').click(function () {
       var formData = new FormData()
       formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
-      formData.append("profile_image", document.getElementById("profile_image").files[0]);
+      formData.append("profile_image", imgSrc);
       formData.append("first_name", document.getElementById("first_name").value);
       formData.append("last_name", document.getElementById("last_name").value);
       formData.append("email", document.getElementById("email").value);
       formData.append("mobile_number", document.getElementById("mobile_number").value);
 
-      if (profile_image.value == ''){
+      if (profile_image.value == '') {
          $('#message').html('Upload Profile Picture')
-      }else if(first_name.value == ''){
+      } else if (first_name.value == '') {
          $('#message').html('Enter First Name')
-      }else if (last_name.value == ''){
+      } else if (last_name.value == '') {
          $('#message').html('Enter Last Name')
-      }else if(email.value == ''){
+      } else if (email.value == '') {
          $('#message').html('Enter Email Address')
-      }else if(mobile_number.value == ''){
+      } else if (mobile_number.value == '') {
          $('#message').html('Enter Mobile Number')
       }
-      else{
+      else {
          var id = '{{request.user.id}}'
          $.ajax({
-                url: '/edit-profile/'+id+'/',
-                type: 'POST',
-                data: formData,
-                cache: false,
-                contentType: false,
-                processData: false,
-                dataType: 'JSON',
-                success: function (data) {
-                    if (data == 'profileupdated') {
-                        window.location.reload()
-                    }
-                }
-            })
+            url: '/edit-profile/' + id + '/',
+            type: 'POST',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            dataType: 'JSON',
+            success: function (data) {
+               if (data == 'profileupdated') {
+                  window.location.reload()
+               }
+            }
+         })
       }
    })
 </script>

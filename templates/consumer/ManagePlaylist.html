@@ -28,14 +28,13 @@
                      <div class="iq-realese-song">
                         <a href="javascript:void(0);">
                            <i class="ri-heart-fill  text-primary"></i>
-                           <!-- <img src="{% static './consumer/images/dashboard/realease-song/01.png' %}" class="img-border-radius avatar-60 img-fluid" alt=""> -->
                         </a>
                      </div>
                      <div class="media-body ml-3">
                         <a href="{% url 'consumer_playlist_data' %}">
                            <p class="mb-0 ">Liked Podcasts</p>
                         </a>
-                        <small>{{liked_count}} Songs</small>
+                        <small>{{liked_count}}</small>
                      </div>
                   </div>
                </div>
@@ -47,7 +46,7 @@
 
 
 <div class="col-lg-12">
-   {% for playlist in playlists %}
+   {% for playlist,count in playlist_data.items %}
    <div class="iq-card">
       <div class="iq-card-body">
          <ul class="list-unstyled iq-music-slide mb-0">
@@ -64,25 +63,29 @@
                         <a href="{% url 'manage_playlist_content' playlist.id %}">
                            <p class="mb-0">{{playlist.playlist_name}}</p>
                         </a>
-                        <small>{{count_of_playlist_items}} Songs</small>
+                        <small>{{count}}</small>
                      </div>
                   </div>
+
                   <div class="iq-card-header-toolbar iq-music-drop d-flex align-items-center col-2 col-md-1">
                      <div class="dropdown">
+
                         <span class="dropdown-toggle text-primary" id="dropdownMenuButton2" data-toggle="dropdown"
                            aria-expanded="false" role="button">
                            <i class="ri-more-2-fill text-primary"></i>
                         </span>
+
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton2">
-                           <a class="dropdown-item" type="button"><i class="ri-eye-fill mr-2"></i>View</a>
-                           <a class="dropdown-item" type="button" id="deletePlaylist"
-                              onclick="fun('{{playlist.id}}')"><i class="ri-delete-bin-6-fill mr-2"></i>Delete</a>
-                           <a class="dropdown-item" type="button"><i class="ri-file-download-fill mr-2"></i>Download</a>
+
+                           <a type="button" class="dropdown-item deletePlaylistBtn" type="button" onclick="fun('{{playlist.id}}')">
+                              <i type="button" class="ri-delete-bin-6-fill mr-2"></i>Delete</a>
+
                         </div>
                      </div>
                   </div>
                </div>
             </li>
+
          </ul>
       </div>
    </div>
@@ -96,13 +99,14 @@
       id = playlistid
    }
 
-   $('#deletePlaylist').click(function () {
+   $('.deletePlaylistBtn').click(function () {
       $.ajax({
          url: '/delete-playlist/' + id + '/',
          type: 'GET',
          dataType: 'JSON',
          success:function(data){
             if (data == 'playlistdeleted'){
+               console.log('heyy')
                location.reload()
             }
          }
@@ -110,4 +114,5 @@
       })
    })
 </script>
+
 {% endblock content %}

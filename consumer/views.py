@@ -12,7 +12,9 @@ from datetime import datetime
 import uuid
 import wave
 import contextlib
-
+import base64
+from django.core.files.base import ContentFile
+from django.contrib.auth.hashers import check_password, make_password
 
 
 # Create your views here.
@@ -86,15 +88,21 @@ def consumer_profile_edit(request,id):
         if request.method == 'POST':
             first_name = request.POST['first_name']
             last_name = request.POST['last_name']
-            image = request.FILES['profile_image']
+            image = request.POST['profile_image']
             email = request.POST['email']
             mobile_number = request.POST['mobile_number']
+
+            #imagecroping
+            format, imgstr = image.split(';base64,')
+            ext = format.split('/')[-1]
+            profile_picture = ContentFile(base64.b64decode(imgstr), name=first_name + '.' + ext)
+            #corping Ends
 
             user_primarydetails.first_name = first_name
             user_primarydetails.last_name = last_name
             user_primarydetails.email = email
             user_details.mobile_number = mobile_number
-            user_details.image = image
+            user_details.image = profile_picture
             user_primarydetails.save()
             user_details.save()
             return JsonResponse('profileupdated', safe=False)
@@ -103,6 +111,22 @@ def consumer_profile_edit(request,id):
             return render(request, './consumer/EditProfile.html',context)
     else:
         return redirect(signin)
+
+def change_password(request,id):
+    user_details = User.objects.get(id=id)
+    if request.method == "POST":
+        check_user_password = check_password(request.POST['current_password'],request.user.password)
+        new_password = request.POST['new_password']
+        verify_password = request.POST['verify_password']
+        if check_user_password:
+            if new_password == verify_password:
+                user_details.password = make_password(new_password)
+                user_details.save()
+                return JsonResponse('password_updated',safe=False)
+            else:
+                return JsonResponse('newpassword_not_matching')
+        else:
+            return JsonResponse('current_password_notmatching',safe=False)
 
 def faq(request):
     return render(request, './consumer/faq.html')
@@ -323,7 +347,8 @@ def single_podcast(request,id):
         episodes = Contents.objects.filter(show=shows,visiblity="Public",date_of_published__lte=date.today())
         total_episodes = 0
         for episode in episodes:
-            total_episodes =+ 1
+            total_episodes += 1
+            
         playlists = Playlist.objects.all()
 
         try:
@@ -451,16 +476,26 @@ def single_artist(request,id):
                 episode_notifications[i] = Contents.objects.filter(show=i.id,visiblity="Public")
         except:
             episode_notifications = 0
-    #notification Ends
+        #notification Ends
         
         artists = CreatorDeatails.objects.get(id=id)
         podcasts = Show.objects.filter(user=artists.user_id,visiblity="Public")
+
+        shows_data = {}
+        for show in podcasts:
+            shows_data[show] = Contents.objects.filter(user=request.user,show=show).count()
+
+        print(shows_data,'heyy')
+
         followers_count = Follows.objects.filter(creators=artists.user_id,follow_type=True).count()
+        shows_count = podcasts.count()
+
         try:
             follow_status = Follows.objects.get(creators=artists.user.id,followed=request.user).follow_status
         except:
             follow_status = []
-        context = {'artists':artists,'podcasts':podcasts,'creator_followers_count':followers_count,'follow_status':follow_status,'user_details':user_details,'data':episode_notifications}
+
+        context = {'artists':artists,'shows_data':shows_data,'creator_followers_count':followers_count,'follow_status':follow_status,'user_details':user_details,'data':episode_notifications,'shows_count':shows_count}
         return render(request, './consumer/SingleArtistView.html',context)
     else:
         return redirect(signin)
@@ -536,6 +571,12 @@ def current_music_data(request,id):
     consumer_data = Contents.objects.get(id=id,visiblity="Public")
     data = {'current_song':serializers.serialize('json',[consumer_data])}
     return JsonResponse(data)
+
+def playfirst_show_music(request,id):
+    show_id = Show.objects.get(id=id)
+    consumer_data = Contents.objects.filter(visiblity="Public",show_id=show_id.id).first()
+    data = {'playfirstshow_music':serializers.serialize('json',[consumer_data])}
+    return JsonResponse(data,safe=False)
 
 def music_listen_update(request,id):
     consumer_data = Contents.objects.get(id=id,visiblity="Public")
@@ -640,20 +681,24 @@ def manage_playlist(request):
                 episode_notifications[i] = Contents.objects.filter(show=i.id,visiblity="Public")
         except:
             episode_notifications = 0
-    #notification Ends
+        #notification Ends
 
         if Playlist.objects.filter(user=request.user).exists():
             playlists = Playlist.objects.filter(user=request.user).exclude(playlist_name='Favorites')
+            playlist_data = {}
             for playlist in playlists:
                 playlist_contents = PlaylistContent.objects.filter(playlist=playlist.id)
-            try:
-                count_of_playlist_items = playlist_contents.count()
-            except:
-                count_of_playlist_items = 0
+                playlist_data[playlist] = playlist_contents.count()
+            favorites = Playlist.objects.filter(user=request.user,playlist_name='Favorites')
+            for fav_id in favorites:
+                liked_count = PlaylistContent.objects.filter(playlist=fav_id).count()
+
         else:
-            count_of_playlist_items = 0
             playlists = []
-        context = {'playlists':playlists,'count_of_playlist_items':count_of_playlist_items,'user_details':user_details,'datas':episode_notifications}
+            liked_count = 0
+            playlist_data = 0
+
+        context = {'playlists':playlists,'user_details':user_details,'datas':episode_notifications,'playlist_data':playlist_data,'liked_count':liked_count}
         return render(request, './consumer/ManagePlaylist.html',context)
     else:
         return redirect(signin)
@@ -716,7 +761,7 @@ def consumer_liked_data(request):
         episode_notifications = 0
     #notification Ends
 
-    favorites = Playlist.objects.get(user=request.user,playlist_name='Favorites')
+    favorites,create = Playlist.objects.get_or_create(user=request.user,playlist_name='Favorites')
     favorite_contents = PlaylistContent.objects.filter(playlist=favorites)
     user_details = UserDetails.objects.get(user=request.user)
     context = {'user_details':user_details,'favorite_contents':favorite_contents,'datas':episode_notifications,'favorites':favorites}

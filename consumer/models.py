@@ -14,7 +14,7 @@ class UserDetails(models.Model):
         try:
             url = self.image.url
         except:
-            url = ''
+            url = '/static/consumer/images/user/11.png'
         return url
     
     def delete(self, *args, **kwargs):

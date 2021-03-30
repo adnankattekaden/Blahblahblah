@@ -24,7 +24,6 @@
                     <tr>
                         <th scope="col" style="width: 100px">Episode Art</th>
                         <th scope="col">Episode Name</th>
-                        <th scope="col">Duration </th>
                         <th scope="col">Status</th>
                         <th scope="col">Action</th>
                     </tr>
@@ -37,10 +36,9 @@
                         <td>
                             <h5 class="text-truncate font-size-14"><a href="#"
                                     class="text-dark">{{episode.episode_name}}</a></h5>
-                            <p class="text-muted mb-0">{{episode.description}}</p>
+                            <p class="text-muted mb-0">{{episode.description|linebreaks}}</p>
                         </td>
-                        <td>5:00</td>
-                        <td><span class="badge bg-danger">Sheduled</span></td>
+                        <td><span class="badge bg-danger">{{episode.visiblity}}</span></td>
                         <td>
                             <div class="dropdown">
                                 <a href="#" class="dropdown-toggle card-drop" data-bs-toggle="dropdown"
@@ -50,8 +48,9 @@
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li><a href="{% url 'edit_episode' episode.id %}" class="dropdown-item"><i
                                                 class="mdi mdi-pencil font-size-16 text-success me-1"></i> Edit</a></li>
-                                    <li><a type="button" class="dropdown-item"><i
-                                                class="mdi mdi-trash-can font-size-16 text-danger me-1" onclick="return confirm('Are You Sure Want To Delete')"></i> Delete</a>
+
+                                    <li><a type="button" class="dropdown-item" href="{% url 'delete_episode' episode.id %}"><i
+                                                class="mdi mdi-trash-can font-size-16 text-danger me-1"  onclick="return confirm('Are You Sure Want To Delete')"></i> Delete</a>
                                     </li>
                                     <li><a href="{% url 'episode_analytics' episode.id %}" class="dropdown-item"><i
                                         class="mdi mdi-google-analytics font-size-16 text-success me-1"></i>Analytics</a>
@@ -68,13 +67,4 @@
 </div>
 <!-- end row -->
 
-<div class="row">
-    <div class="col-12">
-        <div class="text-center my-3">
-            <a href="javascript:void(0);" class="text-success"><i
-                    class="bx bx-loader bx-spin font-size-18 align-middle mr-2"></i> Load more </a>
-        </div>
-    </div> <!-- end col-->
-</div>
-<!-- end row -->
 {% endblock content %}

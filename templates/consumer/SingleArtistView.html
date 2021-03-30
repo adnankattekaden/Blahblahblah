@@ -23,7 +23,7 @@
                            <h3>{{artists.user.username}}</h3>
                            <p>Followers:<span> {{creator_followers_count}}</span></p>
                            <span>{{artists.about_me}}</span>
-                           <p>Total Shows : <span> 10 </span> </p>
+                           <p>Total Shows : <span> {{shows_count}} </span> </p>
 
                            <div class="d-flex align-items-center">
                               {% if follow_status == "follow" %}
@@ -54,8 +54,8 @@
    <div class="iq-card">
       <div class="iq-card-body">
          <h4 class="text-primary">SHOWS</h4>
-         <ul class="list-unstyled iq-music-slide mb-0">
-            {% for show in podcasts %}
+         <ul class="list-unstyled iq-music-slide mt-1">
+            {% for show,count in shows_data.items %}
             <li class="mb-3">
                <div class="d-flex justify-content-between align-items-center row">
                   <div class="media align-items-center col-10 col-md-5">
@@ -65,12 +65,12 @@
                      </div>
                      <div class="media-body ml-3">
                         <a href="{% url 'single_podcast' show.id %}">
-                           <p class="mb-0">{{episode.episode_name}}</p>
+                           <p class="mb-0">{{show.show_name}}</p>
                         </a>
-                        <small>Edyta Gorniak</small>
+                        <small>{{show.host}}</small>
                      </div>
                   </div>
-                  <p class="mb-0 col-md-2 col-md-2 iq-music-time">Total Episodes <span>4</span></p>
+                  <p class="mb-0 col-md-2 col-md-2 iq-music-time">Total Episodes: <span>{{count}}</span></p>
                </div>
             </li>
             {% endfor %}

@@ -128,8 +128,10 @@
                            <span><h4>Description:</h4> <br>{{episode.description}}</span>
                            <p class="mb-0">{{episode.listeners}} Views</p>
                            <div class="d-flex align-items-center">
-                              <button class="btn btn-primary iq-play mr-2" onclick="currentTrack('{{episode.id}}')">Play
+
+                              <button class="btn btn-primary iq-play mr-2 playBtn" onclick="currentTrack('{{episode.id}}')">Play
                                  music</button>
+
                            </div>
 
                         </div>
@@ -260,6 +262,29 @@
       </div>
    </div>
 </div>
+
+<!-- playbtn -->
+
+
+<script>
+   var singleEpisodePlayBtn;
+   var flag = 0
+   $('.playBtn').click(function(){
+      if (flag==1){
+         console.log('ON',flag)
+         flag = 0
+         singleEpisodePlayBtn.text('Play')
+      }else
+      {
+         console.log('OFF',flag)
+         flag = 1
+         singleEpisodePlayBtn = $('.playBtn')
+         singleEpisodePlayBtn.text('Pause')
+         singleEpisodePlayBtn.attr("onclick", "playpauseTrack()");
+      }
+   })
+
+</script> 
 
 <!-- favorites -->
 <script>
@@ -415,4 +440,5 @@ $('#dislikeBtn').click(function(){
    })
 })
 </script>
+
 {% endblock content %}

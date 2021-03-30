@@ -152,10 +152,12 @@ def manage_podcasts(request):
     if request.user.is_authenticated and request.user.is_staff == True:
         creator = CreatorDeatails.objects.get(user=request.user)
         shows = Show.objects.filter(user=request.user)
-        total_episodes_count = 0
+        
+        shows_data = {}
         for show in shows:
-            total_episodes_count =+ Contents.objects.filter(user=request.user,show=show).count()
-        context = {'shows':shows,'creator_details':creator,'total_episodes_count':total_episodes_count}
+            shows_data[show] = Contents.objects.filter(user=request.user,show=show).count()
+
+        context = {'shows':shows,'creator_details':creator,'shows_data':shows_data}
         return render(request, './creator/ManagePodcasts.html',context)
     else:
         return redirect(creator_login)
@@ -195,15 +197,16 @@ def edit_podcast(request,id):
             podcast_show.show_name = request.POST['podcastName']
             podcast_show.category_id = request.POST['category']
             podcast_show.visiblity = request.POST['visiblity']
+            podcast_show.description = request.POST['showdescription']
 
-            if thumbnail is not None:
+            if not thumbnail == 'undefined':
                 #imagecroping
                 format, imgstr = thumbnail.split(';base64,')
                 ext = format.split('/')[-1]
                 thumbnail_data = ContentFile(base64.b64decode(imgstr), name=request.POST['podcastName'] + '.' + ext)
                 #corping Ends
                 podcast_show.thumbnail = thumbnail_data
-
+            print('heyy')
             podcast_show.save()
             return JsonResponse('podcast_edited',safe=False)
         else:
@@ -289,7 +292,7 @@ def edit_episode(request,id):
             episode.episode_name = episode_name
             episode.visiblity = visiblity
 
-            if episode_art is not None:
+            if not episode_art == 'undefined':
                 #imagecroping
                 format, imgstr = episode_art.split(';base64,')
                 ext = format.split('/')[-1]
@@ -341,14 +344,3 @@ def episode_analytics(request,id):
     context = {'episode_analytics':episode_analytics,'creator_details':creator,'like_analytics':like_analytics,'dislike_analytics':dislike_analytics}
     return render(request, './creator/EpisodeAnalytics.html',context)
 
-def manage_teams(request):
-    cretors = CreatorDeatails.objects.all().exclude(user=request.user)
-    context = {'cretors':cretors}
-    return render(request, './creator/ManageTeams.html',context)
-
-def add_member(request):
-    if request.method == "POST":
-        peoples = request.POST['peoples']
-        roles = request.POST['roles']
-        print(peoples,'heyy',roles,'heyyy')
-        return JsonResponse('memberadded',safe=False)

@@ -24,42 +24,28 @@
                         <th scope="col">Category</th>
                         <th scope="col">Total Episodes</th>
                         <th scope="col">Status</th>
-                        <th scope="col">Team</th>
+
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for podcast in shows %}
+                    {% for podcast,count in shows_data.items %}
                     <tr>
                         <td><img src="{{podcast.ImageURL}}" style="width: 90px; height: 90px;" alt="" class="avatar-sm">
                         </td>
                         <td>
                             <h5 class="text-truncate font-size-14"><a href="{% url 'manage_episodes' podcast.id %}"
                                     class="text-dark">{{podcast.show_name}}</a></h5>
-                            <p class="text-muted mb-0">{{podcast.description}}</p>
+                            <p class="text-muted mb-0">{{podcast.description|linebreaks}}</p>
                         </td>
                         <td>{{podcast.category.category_name}}</td>
-                        <td>{{total_episodes_count}}</td>
+                        <td>{{count}}</td>
                         {% if podcast.visiblity == "Public" %}
                         <td><span class="badge bg-success">Public</span></td>
                         {% else %}
                         <td><span class="badge bg-danger">Private</span></td>
                         {% endif %}
                         
-                        <td>
-                            <div class="avatar-group">
-                                <div class="avatar-group-item">
-                                    <a href="javascript: void(0);" class="d-inline-block">
-                                        <img src="{% static 'creator/images/users/avatar-4.jpg' %}" alt="" class="rounded-circle avatar-xs">
-                                    </a>
-                                </div>
-                                <div class="avatar-group-item">
-                                    <a href="javascript: void(0);" class="d-inline-block">
-                                        <img src="{% static 'creator/images/users/avatar-5.jpg' %}" alt="" class="rounded-circle avatar-xs">
-                                    </a>
-                                </div>
-                            </div>
-                        </td>
                         
                         <td>
                             <div class="dropdown">
@@ -80,10 +66,6 @@
                                                 
                                     </li>
 
-                                    <li><a href="{% url 'manage_teams' %}" class="dropdown-item"><i
-                                        class="mdi mdi-account-group font-size-16 text-primary  me-1"></i>Manage Team</a>
-                                        
-                                    </li>
                                 </ul>
                             </div>
                         </td>
@@ -98,15 +80,7 @@
 </div>
 <!-- end row -->
 
-<div class="row">
-    <div class="col-12">
-        <div class="text-center my-3">
-            <a href="javascript:void(0);" class="text-success"><i
-                    class="bx bx-loader bx-spin font-size-18 align-middle mr-2"></i> Load more </a>
-        </div>
-    </div> <!-- end col-->
-</div>
-<!-- end row -->
+
 
 
 

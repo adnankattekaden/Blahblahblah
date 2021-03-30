@@ -28,7 +28,6 @@
                               <small>{{playlist.content.artist}}</small>
                            </div>
                         </div>
-                        <p class="mb-0 col-md-2  iq-m-time">9:52</p>
                         <p class="mb-0 col-2 col-md-2"><i class="las la-play-circle font-size-32"
                               onclick="currentTrack('{{playlist.content.id}}')"></i></p>
 
@@ -43,7 +42,6 @@
                                        class="ri-eye-fill mr-2"></i>View</a>
                                  <a class="dropdown-item" type="button" onclick="fuc('{{playlist.id}}')"
                                     id="removeItem"><i class="ri-delete-bin-6-fill mr-2"></i>Remove</a>
-                                 <a class="dropdown-item" href="#"><i class="ri-share-fill mr-2"></i>Share</a>
                                  <a class="dropdown-item" href="{{playlist.content.PodcastURL}}" download><i
                                        class="ri-file-download-fill mr-2"></i>Download</a>
                               </div>
@@ -81,11 +79,12 @@
          type: 'GET',
          dataType: 'JSON',
          success: function (data) {
-            console.log('item removed')
+            location.reload()
          }
 
       })
    })
 </script>
+
 
 {% endblock content %}

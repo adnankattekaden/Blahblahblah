@@ -35,7 +35,6 @@ class Show(models.Model):
     host = models.CharField(max_length=255,null=True,blank=True)
     visiblity = models.CharField(max_length=20,null=True,blank=True)
 
-
     @property
     def ImageURL(self):
         try:
@@ -87,7 +86,6 @@ class Contents(models.Model):
         self.thumbnail.delete()
         super().delete(*args, **kwargs)
 
-    
 class EpisodeAnalytics(models.Model):
     episodes = models.ForeignKey(Contents,on_delete=models.CASCADE)
     date = models.DateField(auto_now_add=True,null=True,blank=True)

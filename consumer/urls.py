@@ -16,6 +16,7 @@ urlpatterns = [
 
     path('profile/', views.consumer_profile,name='consumer_profile'),
     path('edit-profile/<int:id>/',views.consumer_profile_edit,name='consumer_profile_edit'),
+    path('change_password/<int:id>/', views.change_password,name='change_password'),
     path('faq/', views.faq,name='faq'),
     path('pricing/', views.pricing,name='upgrade'),
     path('checkout/',views.checkout,name='checkout'),
@@ -31,6 +32,7 @@ urlpatterns = [
     path('single-podcast/<int:id>/',views.single_podcast,name='single_podcast'),
     path('single-episode/<int:id>/', views.single_episode,name='single_episode'),
     path('current-music/<int:id>/',views.current_music_data,name='current_music'),
+    path('play-first-music/<int:id>/',views.playfirst_show_music,name='playfirst_music'),
     path('next/<int:id>/',views.next_music_data,name='nextsong'),
     path('previous/<int:id>/', views.previous_music_data,name='previousmusic'),
     path('liked-items/', views.consumer_liked_data,name='consumer_playlist_data'),

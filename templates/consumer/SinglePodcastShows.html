@@ -16,10 +16,11 @@
                      <div class="d-flex align-items-top justify-content-between iq-music-play-detail">
                         <div class="music-detail">
                            <h3>{{shows.show_name}}</h3>
+                           <small>{{shows.description}}</small><br>
                            <span>by {{shows.host}}</span>
                            <p>Total Episodes: {{total_episodes}} </p>
                            <div class="d-flex align-items-center">
-                              <button class="btn btn-primary iq-play mr-2">Play</button>
+                              <button class="btn btn-primary iq-play mr-2" onclick="showFirstEpisode('{{shows.id}}')">Play</button>
                               {% if follow_status == "follow" %}
                               <button class="btn btn-primary iq-play mr-2 follows" id="followShowBtn">UnFollow</button>
                               {%else%}
@@ -62,7 +63,7 @@
                         <small>{{episode.artist}}</small>
                      </div>
                   </div>
-                  <p class="mb-0 col-md-2 col-md-2 iq-music-time">9:52</p>
+
                   <p class="mb-0 col-2 col-md-2 iq-music-play">
                      <i class="las la-play-circle font-size-32 text-primary" id="siglePlayBtn-{{episode.id}}"  onclick="currentTrack('{{episode.id}}');fun('{{episode.id}}')"></i>
                   </p>
@@ -76,6 +77,8 @@
 </div>
 
 </div>
+
+
 
 <script>
    var id;
