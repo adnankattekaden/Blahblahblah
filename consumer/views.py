@@ -424,7 +424,6 @@ def single_episode(request,id):
             random_ad = random.choice(ad_list)
 
         #advertisment_ends
-        print('heyy',random_ad.ImageURL)
         context = {'episode':episode,'playlists':playlists,'advertisment':random_ad,
         'user_details':user_details,'datas':episode_notifications,
         'user_rating':user_rating,'favorites_list':favorites_list,'reaction_type':reaction_type}
@@ -595,7 +594,6 @@ def music_listen_update(request,id):
         user_listen_data.listners = update_listners
         user_listen_data.save()
     else:
-        print('heyyy')
         EpisodeAnalytics.objects.create(episodes=consumer_data,listners=update_listners)
     return JsonResponse('listner_updated', safe=False)
 

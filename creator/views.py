@@ -207,7 +207,7 @@ def edit_podcast(request,id):
                 thumbnail_data = ContentFile(base64.b64decode(imgstr), name=request.POST['podcastName'] + '.' + ext)
                 #corping Ends
                 podcast_show.thumbnail = thumbnail_data
-            print('heyy')
+
             podcast_show.save()
             return JsonResponse('podcast_edited',safe=False)
         else:
@@ -340,8 +340,6 @@ def episode_analytics(request,id):
         like_analytics[reactions.date.month-1] += reactions.reaction_type.count('Like')
         dislike_analytics[reactions.date.month-1] += reactions.reaction_type.count('Dislike')
 
-    print(like_analytics)
-    print(dislike_analytics)
     context = {'episode_analytics':episode_analytics,'creator_details':creator,'like_analytics':like_analytics,'dislike_analytics':dislike_analytics}
     return render(request, './creator/EpisodeAnalytics.html',context)
 
