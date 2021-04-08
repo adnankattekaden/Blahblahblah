@@ -15,6 +15,8 @@ import contextlib
 import base64
 from django.core.files.base import ContentFile
 from django.contrib.auth.hashers import check_password, make_password
+import random
+
 
 
 # Create your views here.
@@ -184,6 +186,7 @@ def followed_artists_list(request):
         artists = Follows.objects.filter(followed=request.user,follow_type=True)
         followed_artists = []
         followed_creator_details = []
+
         for i in artists:
             followed_artists.append(i)
 
@@ -201,13 +204,9 @@ def followed_artists_list(request):
 def homepage(request):
     shows = Show.objects.filter(visiblity="Public",user__is_active=True)
     artists = CreatorDeatails.objects.filter(user__is_active=True)
-    
-
     top_podcasters = TopPodcasters.objects.all()
-    print('heyy',top_podcasters)
     fetaured_shows = FeaturedShows.objects.filter(show__visiblity="Public")
 
-    
     #notifcaion starts
     try:
         user_details = UserDetails.objects.get(user=request.user)
@@ -220,10 +219,12 @@ def homepage(request):
             
             for show in followed_shows:
                 latest_notificaions.append(show)
+
         #main starts here
         episode_notifications = {}
         for i in latest_notificaions:
             episode_notifications[i] = Contents.objects.filter(show=i.id,visiblity="Public")
+            
     except:
         episode_notifications = 0
         user_details = []
@@ -283,7 +284,7 @@ def category_feed(request):
         for i in category:
             category_data[i] = Show.objects.filter(category=i,visiblity="Public")
         
-        context = {'category_data':category_data,'datas':episode_notifications}
+        context = {'category_data':category_data,'datas':episode_notifications,'user_details':user_details}
         return render(request, './consumer/CategoryFeeds.html',context)
     else:
         return redirect(signin)
@@ -413,10 +414,18 @@ def single_episode(request,id):
             favorites_list = PlaylistContent.objects.get(playlist=favorites_id.id,user=request.user,content=episode.id,types=True)
         else:
             favorites_list = False
-            
-        ads = Advertisement.objects.all()
+        
+        #advertisment
+        ad_list = []
+        if Advertisement.objects.filter(types="banner").exists():
+            ads = Advertisement.objects.filter(types="banner")
+            for i in ads:
+                ad_list.append(i)
+            random_ad = random.choice(ad_list)
 
-        context = {'episode':episode,'playlists':playlists,'advertisment':ads,
+        #advertisment_ends
+        print('heyy',random_ad.ImageURL)
+        context = {'episode':episode,'playlists':playlists,'advertisment':random_ad,
         'user_details':user_details,'datas':episode_notifications,
         'user_rating':user_rating,'favorites_list':favorites_list,'reaction_type':reaction_type}
         return render(request, './consumer/SingleEpisodes.html',context)
@@ -483,9 +492,7 @@ def single_artist(request,id):
 
         shows_data = {}
         for show in podcasts:
-            shows_data[show] = Contents.objects.filter(user=request.user,show=show).count()
-
-        print(shows_data,'heyy')
+            shows_data[show] = Contents.objects.filter(show=show).count()
 
         followers_count = Follows.objects.filter(creators=artists.user_id,follow_type=True).count()
         shows_count = podcasts.count()
@@ -554,7 +561,6 @@ def next_music_data(request,id):
     consumer_data = Contents.objects.filter(id__gt=id,visiblity="Public",show_id=show_id.show.id).order_by('id').first()
     if consumer_data is None:
         consumer_data = Contents.objects.filter(visiblity="Public",show_id=show_id.show.id).order_by('id').first()
-    print(consumer_data)
     data = {'next_songs':serializers.serialize('json',[consumer_data])}
     return JsonResponse(data)
 
@@ -563,7 +569,6 @@ def previous_music_data(request,id):
     consumer_data = Contents.objects.filter(id__lt=id,visiblity="Public",show_id=show_id.show.id).order_by('id').last()
     if consumer_data is None:
         consumer_data = Contents.objects.filter(visiblity="Public",show_id=show_id.show.id).order_by('id').last()
-    print(consumer_data)
     data = {'previous_songs':serializers.serialize('json',[consumer_data])}
     return JsonResponse(data)
 
@@ -622,7 +627,7 @@ def add_playlist(request,id):
 
 def create_playlist(request):
     if request.method == 'POST':
-        playlist_name = request.POST['playlistName']
+        playlist_name = request.POST['playlist_name']
         playlist = Playlist.objects.create(user=request.user,playlist_name=playlist_name)
         data = {'playlistcreated':serializers.serialize('json',[playlist])}
         return JsonResponse(data)
@@ -817,5 +822,75 @@ def reaction(request,id):
                 Reaction.objects.create(user=request.user,episodes=episode_id,reaction_type=reaction_type)
             return JsonResponse('dislike', safe=False)
 
+def search_box(request):
+    serach_results = 0
+    if request.method == "GET":
+        showname = request.GET['showname']
+        if Show.objects.filter(show_name__icontains=showname,visiblity="Public",user__is_active=True).exists():
+            serach_results = 'nothing found'
+        else:
+            serach_results = Show.objects.filter(show_name__icontains=showname,visiblity="Public",user__is_active=True)
+
+    context = {'serach_results':serach_results}
+    return render(request, './consumer/search.html',context)
+
+def your_library(request):
+    if request.user.is_authenticated and request.user.is_staff == False:
+        user_details = UserDetails.objects.get(user=request.user)
+        #following shows
+        for followed_show in FollowShows.objects.filter(followed=request.user,follow_type=True):
+            shows = Show.objects.filter(user_id=followed_show.show.user.id,visiblity="Public")
+            followed_shows = []
+            for i in shows:
+                followed_shows.append(i)
+
+        #following Artistts
+        followed_artists = []
+        for j in Follows.objects.filter(followed=request.user,follow_type=True):
+            followed_artists.append(j)
+        
+        followed_creators = []
+        for k in followed_artists:
+            creator_detatils = CreatorDeatails.objects.filter(user=k.creators.id)
+            for m in creator_detatils:
+                followed_creators.append(m)
+        context = {'user_details':user_details,'followed_shows':followed_shows,'followed_creators':followed_creators}
+        return render(request, './consumer/YourLibrary.html',context)
+    else:
+        return redirect(signin)
+
+
 def advertisment(request):
-    return JsonResponse('ehyy',safe=False)
+    ad_list = []
+    if Advertisement.objects.filter(types="popup").exists():
+        ads = Advertisement.objects.filter(types="popup")
+        for i in ads:
+            ad_list.append(i)
+        random_ad = random.choice(ad_list)
+        random_ad_data = {'random_ad':serializers.serialize('json',[random_ad])}
+        return JsonResponse(random_ad_data)
+    else:
+        return JsonResponse('hey',safe=False)
+
+def notifications(request):
+    #notifcaion starts
+        user_details = UserDetails.objects.get(user=request.user)
+        latest_notificaions = []
+
+        for feed_show in FollowShows.objects.filter(followed=request.user,follow_type=True):
+            feeds = Show.objects.filter(user_id=feed_show.show.user.id,visiblity="Public")
+            followed_shows = []
+
+            for j in feeds:
+                followed_shows.append(j)
+        
+            for show in followed_shows:
+                latest_notificaions.append(show)
+    #main starts here
+
+        episode_notifications = {}
+        for i in latest_notificaions:
+            episode_notifications[i] = Contents.objects.filter(show=i.id,visiblity="Public")
+        notification_alerts = {'episode_notifications':serializers.serialize('json',episode_notifications)}
+        return JsonResponse(notification_alerts)
+    #notification Ends

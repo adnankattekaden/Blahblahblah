@@ -30,10 +30,9 @@
       <div class="iq-sidebar">
          <div class="iq-sidebar-logo d-flex justify-content-between">
             <a href="{% url 'homepage' %}" class="header-logo">
-               <img src="{% static 'consumer/images/logo.png' %}" class="img-fluid rounded-normal" alt="">
-               <div class="logo-title">
-                  <span class="text-primary">Blah Blah
-                     <span class="text-primary text-center">Bler</span>
+               <img src="{% static 'consumer/images/logo.png' %}" class="img-fluid rounded-normal">
+               <div class="logo-title mt-3">
+                  <span class="text-primary">Blah Blah Blah
                   </span>
                </div>
             </a>
@@ -41,7 +40,7 @@
             <div class="iq-menu-bt-sidebar">
                <div class="iq-menu-bt align-self-center">
                   <div class="wrapper-menu">
-                     <div class="main-circle"><i class="las la-bars"></i></div>
+                     <div class="main-circle"><i class="las la-bars mt-2"></i></div>
                   </div>
                </div>
             </div>
@@ -54,7 +53,7 @@
                   <li>
                   <li><a href="{% url 'homepage' %}"><i class="las la-house-damage"></i>Home</a></li>
                   <li><a href="{% url 'latest_feeds' %}"><i class="las la-headphones"></i>Latest</a></li>
-                  <li><a href="#"><i class="las la-headphones"></i>Your Library</a></li>
+                  <li><a href="{% url 'your_library' %}"><i class="las la-headphones"></i>Your Library</a></li>
                   <li><a href="{% url 'manage_playlist' %}"><i class="lar la-file-audio"></i>PlayList</a></li>
                   </li>
                </ul>
@@ -72,9 +71,8 @@
                   </div>
                   <div class="iq-navbar-logo d-flex justify-content-between">
                      <a href="{% url 'homepage' %}" class="header-logo">
-                        <img src="images/logo.png" class="img-fluid rounded-normal" alt="">
                         <div class="pt-2 pl-2 logo-title">
-                           <span class="text-primary text-uppercase">Muzik</span>
+                           <span class="text-primary text-uppercase">Blah Blah Blah</span>
                         </div>
                      </a>
                   </div>
@@ -83,20 +81,26 @@
                   aria-controls="navbarSupportedContent" aria-label="Toggle navigation">
                   <i class="ri-menu-3-line"></i>
                </button>
+
                <div class="collapse navbar-collapse" id="navbarSupportedContent">
                   <ul class="list-unstyled iq-menu-top d-flex justify-content-between mb-0 p-0">
+
                      <li><a href="{% url 'homepage' %}">Home</a></li>
                      <li><a href="{% url 'artists_list' %}">Artists</a></li>
                      <li><a href="{% url 'category_feed' %}">Category</a></li>
+
                   </ul>
+
                   <ul class="navbar-nav ml-auto navbar-list">
                      <li class="nav-item nav-icon">
                         <div class="iq-search-bar">
-                           <form action="#" class="searchbox">
-                              <input type="text" class="text search-input" placeholder="Search Here..">
-                              <a class="search-link" href="#"><i class="ri-search-line text-black"></i></a>
-                              <a class="search-audio" href="#"><i class="las la-microphone text-black"></i></a>
+
+                           <form class="searchbox" action="{% url 'search_box' %}" method="POST">
+                              {% csrf_token %}
+                              <input type="text" class="text search-input" name="showname" placeholder="Search Shows Here..">
+                              <a class="search-link" type="submit"><i class="ri-search-line text-black"></i></a>
                            </form>
+
                         </div>
                      </li>
 
@@ -114,10 +118,10 @@
                            <i class="ri-search-line text-black"></i>
                         </a>
 
-                        <form action="#" class="search-box p-0">
-                           <input type="text" class="text search-input" placeholder="Type here to search...">
-                           <a class="search-link" href="#"><i class="ri-search-line text-black"></i></a>
-                           <a class="search-audio" href="#"><i class="las la-microphone text-black"></i></a>
+                        <form class="searchbox" action="{% url 'search_box' %}" method="GET">
+                           {% csrf_token %}
+                           <input type="text" class="text search-input" name="searchvalue" placeholder="Search Shows Here..">
+                           <a class="search-link" type="button"><i class="ri-search-line text-black searchBtn"></i></a>
                         </form>
                      </li>
 
@@ -127,7 +131,7 @@
                      <li class="nav-item nav-icon">
 
                         <a href="#" class="search-toggle iq-waves-effect text-black rounded">
-                           <i class="ri-notification-line block"></i>
+                           <i class="ri-notification-line block" onclick="latest_notifications()"></i>
                            <span class="notice-icon dots badge badge-primary">+</span>
                         </a>
 
@@ -239,29 +243,56 @@
       <div id="content-page" class="content-page">
          <div class="container-fluid">
             <div class="row">
-
                <!-- advertisment_starts -->
-
-               <!-- <div class="popup popup-wrap" id="adds">
+               <div class="popup popup-wrap" id="adds" style="display: none;">
                   <div class="popup-timer"><span class="seconds"></span> second(s) left</div>
-                  <div class="btn-close">x</div>
-                  <div class="addImg" id="addPicker"> -->
-                     <!-- imagetagg append cheyyanam -->
-                     <!-- <img
-                        src="https://previews.123rf.com/images/artshock/artshock1209/artshock120900045/15221647-imag-of-heart-in-the-blue-sky-against-a-background-of-white-clouds-.jpg"
-                        alt="" srcset="">
+                     <div class="btn-close" id="skipAd" style="visibility: hidden;">x</div>
+                     <div class="addImg" id="addPicker"></div>
                   </div>
-               </div> -->
-
+               </div>
                <!-- advertisment_ends -->
-
                {% block content %} {% endblock %}
             </div>
          </div>
       </div>
-
    </div>
    <!-- Wrapper END -->
+
+   <!-- notifications -->
+   <script>
+      var episode_notifications;
+      function latest_notifications(){
+         $.ajax({
+            url: '/notifications/',
+            type: 'GET',
+            success:function(data){
+               episode_notifications = JSON.parse(data.episode_notifications)
+               console.log(episode_notifications)
+            }
+         })
+      }
+   </script>
+
+   <script>
+      var skipAd = document.getElementById("skipAd")
+      var singleadData;
+      let addPicker = document.getElementById("addPicker");
+      var advertisement_context = document.createElement('img');
+
+      function adContent(){
+         $.ajax({
+            url:'/advertisment/',
+            type: 'GET',
+            success:function(data){
+               singleadData = JSON.parse(data.random_ad)[0]
+               advertisement_context.src = '/media/' + singleadData.fields.ad_image
+            }
+         })
+         document.getElementById("addPicker").appendChild(advertisement_context)
+         
+      }
+   </script>
+
 
    <style>
       .iq-footer {
@@ -281,8 +312,6 @@
 
       }
    </style>
-
-
 
    <!-- toast -->
    <style>
@@ -600,7 +629,6 @@
       }
 
       function loadTrack(music) {
-         console.log('function kerriii', music)
          clearInterval(updateTimer);
          resetValues();
          curr_track.src = "/media/" + music.fields.podcast;
@@ -634,31 +662,17 @@
             pauseTrack();
          }
       }
+      
       function playTrack() {
          curr_track.play();
          isPlaying = true;
          playpause_btn.innerHTML = '<i class="fa fa-pause-circle fa-3x"></i>';
-         // adnan
-         singlePlayBtn.removeClass('las la-play-circle')
-         singlePlayBtn.addClass('fa fa-pause-circle')
-         singlePlayBtn.prop("onclick", null).off("click");
-         singlePlayBtn.attr("onclick", "pauseTrack()");
-
       }
 
       function pauseTrack() {
          curr_track.pause();
          isPlaying = false
          playpause_btn.innerHTML = '<i class="fa fa-play-circle fa-3x"></i>';
-         // adnan
-         singlePlayBtn.removeClass('fa fa-pause-circle')
-         singlePlayBtn.addClass('las la-play-circle')
-         singlePlayBtn.prop("onclick", 'currentTrack();fun();').off("click");
-         singlePlayBtn.attr("onclick", "playpauseTrack()");
-
-         //singlePlayBtn
-
-
       }
 
       function nextTrack() {
@@ -667,14 +681,11 @@
             type: 'GET',
             success: function (data) {
                music = JSON.parse(data.next_songs)[0]
-               console.log('next', music, 'heyyyy', music.pk)
                currentId = music.pk
-
-               // adstartshere
-
                loadTrack(music);
-               playTrack();
-
+               // adstartshere
+               triggerAd()
+               setTimeout(function(){ playTrack(); }, 30000);
             }
 
          })
@@ -686,10 +697,12 @@
             type: 'GET',
             success: function (data) {
                music = JSON.parse(data.previous_songs)[0]
-               console.log('previous')
                currentId = music.pk
+
                loadTrack(music);
-               playTrack();
+               // adstartshere
+               triggerAd()
+               setTimeout(function(){ playTrack(); }, 30000);
             }
 
          })
@@ -736,40 +749,90 @@
 
 
       function seekTo() {
-               seekto = curr_track.duration * (seek_slider.value / 100);
-               curr_track.currentTime = seekto;
-            }
+         seekto = curr_track.duration * (seek_slider.value / 100);
+         curr_track.currentTime = seekto;
+      }
 
       function setVolume() {
-               curr_track.volume = volume_slider.value / 100;
-            }
+         curr_track.volume = volume_slider.value / 100;
+      }
 
       function seekUpdate() {
-               let seekPosition = 0;
+         let seekPosition = 0;
 
-               if (!isNaN(curr_track.duration)) {
-                  seekPosition = curr_track.currentTime * (100 / curr_track.duration);
+         if (!isNaN(curr_track.duration)) {
+            seekPosition = curr_track.currentTime * (100 / curr_track.duration);
 
-                  seek_slider.value = seekPosition;
+            seek_slider.value = seekPosition;
 
-                  let currentMinutes = Math.floor(curr_track.currentTime / 60);
-                  let currentSeconds = Math.floor(curr_track.currentTime - currentMinutes * 60);
-                  let durationMinutes = Math.floor(curr_track.duration / 60);
-                  let durationSeconds = Math.floor(curr_track.duration - durationMinutes * 60);
+            let currentMinutes = Math.floor(curr_track.currentTime / 60);
+            let currentSeconds = Math.floor(curr_track.currentTime - currentMinutes * 60);
+            let durationMinutes = Math.floor(curr_track.duration / 60);
+            let durationSeconds = Math.floor(curr_track.duration - durationMinutes * 60);
 
-                  if (currentSeconds < 10) { currentSeconds = "0" + currentSeconds; }
-                  if (durationSeconds < 10) { durationSeconds = "0" + durationSeconds; }
-                  if (currentMinutes < 10) { currentMinutes = "0" + currentMinutes; }
-                  if (durationMinutes < 10) { durationMinutes = "0" + durationMinutes; }
+            if (currentSeconds < 10) { currentSeconds = "0" + currentSeconds; }
+            if (durationSeconds < 10) { durationSeconds = "0" + durationSeconds; }
+            if (currentMinutes < 10) { currentMinutes = "0" + currentMinutes; }
+            if (durationMinutes < 10) { durationMinutes = "0" + durationMinutes; }
 
-                  curr_time.textContent = currentMinutes + ":" + currentSeconds;
-                  total_duration.textContent = durationMinutes + ":" + durationSeconds;
-               }
-            }
-      
+            curr_time.textContent = currentMinutes + ":" + currentSeconds;
+            total_duration.textContent = durationMinutes + ":" + durationSeconds;
+         }
+      }
+
       function playerBar() {
-               PodcastPlater.removeAttr("style")
+         PodcastPlater.removeAttr("style")
+      }
+
+      // singleEpisodeBtns
+
+      function currentEpisodeTrack(nowId) {
+         playerBar()
+         $.ajax({
+            url: '/current-music/' + nowId,
+            type: 'GET',
+            success: function (data) {
+               music = JSON.parse(data.current_song)[0]
+               currentId = music.pk
+               listnerUpdate(nowId)
+               loadTrack(music);
+               playTrack();
             }
+
+         })
+      }
+
+      function singleEpisodeplaypauseTrack(episodeId) {
+         console.log('heyy',episodeId)
+         if (!isPlaying) {
+            currentEpisodeTrack(episodeId),
+            singleEpisodeplayTrack();
+         }
+         else {
+            singleEpisodepauseTrack();
+         }
+      }
+
+      function singleEpisodeplayTrack() {
+         curr_track.play();
+         isPlaying = true;
+         playpause_btn.innerHTML = '<i class="fa fa-pause-circle fa-3x"></i>';
+
+         // adnan
+         singlePlayBtn.removeClass('las la-play-circle')
+         singlePlayBtn.addClass('fa fa-pause-circle')
+
+      }
+
+      function singleEpisodepauseTrack() {
+         curr_track.pause();
+         isPlaying = false
+         playpause_btn.innerHTML = '<i class="fa fa-play-circle fa-3x"></i>';
+         
+         // adnan
+         singlePlayBtn.removeClass('fa fa-pause-circle')
+         singlePlayBtn.addClass('las la-play-circle')
+      }
 
    </script>
 

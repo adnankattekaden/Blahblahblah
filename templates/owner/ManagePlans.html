@@ -30,16 +30,12 @@
                 </thead>
                 <tbody>
                     {% for plan in plans %}
-                    
                     <tr>
                         <td>{{plan.plan_name}}</td>
                         <td>{{plan.price}}</td>
                         <td>{{plan.validity}} Month</td>
-                        <td><a href="#"><input type="button" class="btn btn-info"
-                            value="edit"></a>&nbsp;&nbsp;<a href="{% url 'delete_plan' plan.id %}"><input type="button"
-                            class="btn btn-primary" onclick="return confirm('Are You Sure Want To Delete')" value="Delete"></a></td>
+                        <td><input type="button" class="btn btn-primary deleteBtn" onclick="fun('{{plan.id}}');return confirm('Are You Sure Want To Delete')" value="Delete"></td>
                     </tr>
-
                     {% endfor %}
                 </tbody>
             </table>
@@ -49,4 +45,21 @@
 </div>
 <!-- end row -->
 
+<script>
+    var id;
+    function fun(planID){
+        id = planID
+    }
+    $('.deleteBtn').click(function(){
+        $.ajax({
+            url: '/owner/delete-plan/'+id+'/',
+            type: 'GET',
+            success:function(data){
+                if (data == 'plan_deleted'){
+                    location.reload()
+                }
+            }
+        })
+    })
+</script>
 {% endblock %}

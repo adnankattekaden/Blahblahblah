@@ -13,6 +13,7 @@ class Plans(models.Model):
 class Advertisement(models.Model):
     ad_name = models.CharField(max_length=200,null=True,blank=True)
     ad_image = models.FileField(upload_to='Advertisements/')
+    types = models.CharField(max_length=20,null=True,blank=True)
 
     @property
     def ImageURL(self):

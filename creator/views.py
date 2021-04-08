@@ -67,6 +67,7 @@ def creator_dashboard(request):
         creator = CreatorDeatails.objects.get(user=request.user)
         followers_count = Follows.objects.filter(creators=request.user,follow_type=True).count()
         shows_count = Show.objects.filter(user=request.user).count()
+        
 
         #datas
         followers_data = [0,0,0,0,0,0,0,0,0,0,0,0]

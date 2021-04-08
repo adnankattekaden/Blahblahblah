@@ -22,6 +22,7 @@
                     
                     <tr>
                         <th>AD Name</th>
+                        <th>Type</th>
                         <th>Action</th>
                     </tr>
 
@@ -31,9 +32,9 @@
                     {% for ad in advertisements %}
                     <tr>
                         <td>{{ad.ad_name}}</td>
-                        <td><a href="#"><input type="button" class="btn btn-info"
-                            value="edit"></a>&nbsp;&nbsp;<a href="#"><input type="button"
-                            class="btn btn-primary" onclick="return confirm('Are You Sure Want To Delete')" value="Delete"></a></td>
+                        <td>{{ad.types}}</td>
+                        <td><input type="button"
+                            class="btn btn-primary deleteBtn" onclick="fun('{{ad.id}}');return confirm('Are You Sure Want To Delete')" value="Delete"></td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -44,4 +45,24 @@
 </div>
 <!-- end row -->
 
+
+<script>
+    var id
+    function fun(adId){
+        id = adId
+    }
+    
+    $('.deleteBtn').click(function(){
+        $.ajax({
+            url: '/owner/delete_ads/'+id+'/',
+            type: 'GET',
+            success:function(data){
+                if(data == 'ad_delete'){
+                    location.reload()
+                }
+            }
+
+        })
+    })
+</script>
 {% endblock %}

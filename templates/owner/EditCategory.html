@@ -25,7 +25,7 @@
                             <input type="text" class="form-control" id="category" value="{{category.category_name}}">
                         </div>
                         <br>
-                        <button type="button" class="btn btn-primary" id="createCategory">Create</button>
+                        <button type="button" class="btn btn-primary" id="createCategory">Save Changes</button>
                     </form>
                 </div>
             </div>
@@ -34,4 +34,25 @@
     <!-- end row -->
 
 </div> <!-- container-fluid -->
+
+
+<script>
+    var id ='{{category.id}}'
+    $('#createCategory').click(function(){
+        var category_data = {
+            csrfmiddlewaretoken: '{{csrf_token}}',
+            category_name: $('#category').val(),
+        }
+        $.ajax({
+            url : '/owner/edit-category/'+id+'/',
+            type: 'POST',
+            data:category_data,
+            success:function(data){
+                if(data == 'edited_category'){
+                    location.replace('/owner/manage-category/')
+                }
+            }
+        })
+    })
+</script>
 {% endblock %}

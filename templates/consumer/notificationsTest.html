@@ -1,0 +1,39 @@
+
+                        <div class="iq-sub-dropdown">
+                            <div class="iq-card shadow-none m-0">
+                               <div class="iq-card-body p-0">
+                                  <div class="bg-primary p-3">
+                                     <h5 class="mb-0 text-white">All Notifications<small
+                                           class="badge  badge-light float-right pt-1">{{notification_count}}</small>
+                                     </h5>
+                                  </div>
+                                  {% if datas %}
+                                  {% for show,Contents in datas.items %}
+ 
+                                  {% for episode in Contents %}
+                                  <a href="{% url 'single_episode' episode.id %}" class="iq-sub-card">
+                                     <div class="media align-items-center">
+ 
+                                        <div class="">
+                                           <img class="avatar-40 rounded img-fluid" src="{{episode.ImageURL}}" alt="">
+                                        </div>
+ 
+                                        <div class="media-body ml-3">
+                                           <h6 class="mb-0 ">{{episode.episode_name}}</h6>
+                                           <small class="float-right">Just Now</small>
+                                           <p class="mb-0">{{episode.artist}}</p>
+                                        </div>
+ 
+                                     </div>
+                                  </a>
+                                  {% endfor %}
+ 
+                                  {% endfor %}
+                                  {% else %}
+                                  <small> no notification right now</small>
+                                  {% endif %}
+                               </div>
+                            </div>
+                         </div>
+                         {% endif %}
+ 

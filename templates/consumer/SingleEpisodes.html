@@ -76,6 +76,7 @@
    <div class="row">
       <div class="col-lg-12">
          <div class="iq-card">
+
             <div class="iq-card-body">
                <div class="row">
                   <div class="col-lg-4">
@@ -169,7 +170,10 @@
                               </div>
                               {% endif %}
 
+
                               <br>
+                              
+
 
                               <div>
                                  <div class="iq-circle mr-2">
@@ -178,6 +182,10 @@
    
                                  <div class="iq-circle mr-2">
                                     <i class="fa fa-thumbs-down  {% if reaction_type == "Dislike" %} text-primary {% endif %} type="button" id="dislikeBtn"></i>
+                                 </div>
+
+                                 <div class="iq-circle mt-2 mr-4">
+                                    <i class="fa fa-comment-o text-primary" id="commentBtn"></i>
                                  </div>
                               </div> 
 
@@ -193,16 +201,15 @@
 
 
    {% if not user_details.premium == True %}
-   {% for ad in advertisment %}
-   <div class="row iq-card">
-      <img src="{{ad.ImageURL}}">
+   <!-- banner Ads -->
+   <h1>heyy</h1>
+   <h1>{{advertisment.ImageURL}}</h1>
+   <div class="d-flex justify-content-center" width="100">
+      <img class="d-flex justify-content-center" src="{{advertisment.ImageURL}}">
    </div>
-   {% endfor %}
    {% endif %}
    
 </div>
-
-
 
 <!-- PlayList Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -263,9 +270,14 @@
    </div>
 </div>
 
+<!-- commentBtn -->
+<script>
+   $('#commentBtn').click(function(){
+      console.log('heyy')
+   })
+</script>
+
 <!-- playbtn -->
-
-
 <script>
    var singleEpisodePlayBtn;
    var flag = 0

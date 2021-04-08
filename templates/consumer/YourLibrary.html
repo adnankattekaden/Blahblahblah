@@ -1,0 +1,115 @@
+{% extends 'consumer/base.html' %}
+{% load static %}
+{% block content %}
+<div class="row">
+   <div class="col-lg-12">
+      <div class="iq-card">
+         <div class="iq-card-body p-0">
+            <div class="iq-edit-list">
+               <ul class="iq-edit-profile d-flex nav nav-pills">
+                  <li class="col-md-3 col-lg-6 p-0">
+                     <a class="nav-link active" data-toggle="pill" href="#followed_shows">
+                        Followed Shows
+                     </a>
+                  </li>
+                  <li class="col-md-3 col-lg-6 p-0">
+                     <a class="nav-link" data-toggle="pill" href="#followed_podcasters">
+                        Followed Podcasters
+                     </a>
+                  </li>
+               </ul>
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <div class="col-lg-12">
+      <div class="iq-edit-list-data">
+         <div class="tab-content">
+            <div class="tab-pane fade active show" id="followed_shows" role="tabpanel">
+               <div class="iq-card">
+                  <div class="iq-card-header d-flex justify-content-between">
+                     <div class="iq-header-title">
+                        <h4 class="card-title">Following Shows</h4>
+                     </div>
+                  </div>
+
+                  <div class="iq-card-body">
+                     <ul class="list-unstyled row  iq-box-hover mb-0">
+                        {% for show in followed_shows %}
+                        <li class="col-xl-2 col-lg-3 col-md-4 iq-music-box">
+                           <a href="{% url 'single_podcast' show.id %}">
+                              <div class="iq-card ">
+                                 <div class="iq-card-body p-0">
+                                    <div class="iq-thumb">
+                                       <div class="iq-music-overlay"></div>
+                                       
+                                       <a href="music-player.html">
+                                          <img src="{{show.ImageURL}}"
+                                             class="img-border-radius img-fluid w-100" alt="">
+                                       </a>
+      
+                                       <div class="overlay-music-icon">
+                                          <a type="button" onclick="showFirstEpisode('{{show.id}}')">
+                                             <i class="las la-play-circle"></i>
+                                          </a>
+                                       </div>
+                                    </div>
+                                    <div class="feature-list text-center">
+                                       <h6 class="font-weight-600  mb-0">{{show.user.first_name}}</h6>
+                                       <p class="mb-0">{{show.show_name}}</p>
+                                    </div>
+                                 </div>
+                              </div>
+                           </a>
+
+                        </li>
+                        {% endfor %}
+                     </ul>
+                  </div>
+
+                  <!-- ends -->
+               </div>
+            </div>
+
+            <div class="tab-pane fade" id="followed_podcasters" role="tabpanel">
+               <div class="iq-card">
+                  <div class="iq-card-header d-flex justify-content-between">
+                     <div class="iq-header-title">
+                        <h4 class="card-title">Following Podcasters</h4>
+                     </div>
+                  </div>
+                  <div class="iq-card-body">
+                     <ul class="list-unstyled row  iq-box-hover mb-0">
+                        {% for artist in followed_creators %}
+                        <li class="col-xl-2 col-lg-3 col-md-4 iq-music-box">
+                           <div class="iq-card ">
+                              <div class="iq-card-body p-0">
+                                 <a href="{% url 'single_artist' artist.id %}">
+                                    <div class="iq-thumb">
+                                       <div class="iq-music-overlay"></div>
+                                       <a href="{% url 'single_artist' artist.id %}">
+                                          <img src="{{artist.ImageURL}}" class="img-border-radius img-fluid w-100" alt="">
+                                       </a>
+                                       <div class="overlay-music-icon">
+                                       </div>
+                                    </div>
+                                 </a>
+                                 <div class="feature-list text-center">
+                                    <h6 class="font-weight-600  mb-0">{{artist.user.first_name}} {{artist.user.last_name}}</h6>
+                                 </div>
+                              </div>
+                           </div>
+                        </li>
+                        {% endfor %}
+                     </ul>
+                  </div>
+               </div>
+            </div>
+
+         </div>
+      </div>
+   </div>
+
+</div>
+{% endblock content %}

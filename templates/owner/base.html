@@ -11,11 +11,19 @@
     <meta content="Themesdesign" name="author" />
     <link rel="shortcut icon" href="{% static './owner/images/favicon.ico' %}">
 
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
         integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
         crossorigin="anonymous"></script>
 
+
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    
+
+    <!-- croperjs -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropper/2.3.4/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/0.8.1/cropper.min.js"></script>
 
     <link href="{% static './owner/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static './owner/css/metismenu.min.css' %}" rel="stylesheet" type="text/css">
@@ -87,8 +95,7 @@
                         <li class="menu-title">Menu</li>
                         <li>
                             <a href="{% url 'owner_dashboard' %}" class="waves-effect">
-                                <i class="icon-accelerator"></i><span
-                                    class="badge badge-success badge-pill float-right">9+</span> <span> Dashboard
+                                <i class="icon-accelerator"></i> <span> Dashboard
                                 </span>
                             </a>
                         </li>
@@ -103,14 +110,6 @@
                             </ul>
                         </li>
 
-                        <li>
-                            <a href="javascript:void(0);" class="waves-effect"><i class="fas fa-database"></i><span>
-                                    Manage Contents <span class="float-right menu-arrow"><i
-                                            class="mdi mdi-chevron-right"></i></span> </span></a>
-                            <ul class="submenu">
-                                <li><a href="#">Manage Shows</a></li>
-                            </ul>
-                        </li>
 
                         <li>
                             <a href="javascript:void(0);" class="waves-effect"><i class="fas fa-list"></i><span>
@@ -165,7 +164,7 @@
                                             class="mdi mdi-chevron-right"></i></span> </span></a>
                             <ul class="submenu">
                                 <li><a href="{% url 'sales_report' %}">Subscribtion</a></li>
-                                <li><a href="{% url 'cancelled_report' %}">Cancelled</a></li>
+                                <!-- <li><a href="{% url 'cancelled_report' %}">Cancelled</a></li> -->
                             </ul>
                         </li>
 

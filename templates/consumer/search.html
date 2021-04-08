@@ -1,0 +1,51 @@
+{% extends 'consumer/base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="col-lg-12">
+   {% if not results %}
+   <div class="iq-card">
+      <div class="iq-card-header d-flex justify-content-between align-items-center">
+         <div class="iq-header-title">
+            <h4 class="card-title">Featured Shows</h4>
+         </div>
+         <div id="feature-album-slick-arrow" class="slick-aerrow-block"></div>
+      </div>
+      <div class="iq-card-body">
+         <ul class="list-unstyled row  feature-album iq-box-hover mb-0">
+            {% for featured in fetaured_shows %}
+            <li class="col-lg-2  iq-music-box">
+               <div class="iq-card mb-0">
+                  <a href="{% url 'single_podcast' featured.show.id %}">
+                     <div class="iq-card-body p-0">
+                        <div class="iq-thumb">
+                           <div class="iq-music-overlay"></div>
+                           <a href="{% url 'single_podcast' featured.show.id %}">
+                              <img src="{{featured.show.ImageURL}}" class="img-border-radius img-fluid w-100" alt="">
+                           </a>
+                           <div class="overlay-music-icon">
+                              <a type="button" onclick="showFirstEpisode('{{featured.show.id}}')">
+                                 <i class="las la-play-circle"></i>
+                              </a>
+                           </div>
+                        </div>
+                        <div class="feature-list text-center">
+                           <h6 class="font-weight-600 mb-0">{{featured.show.show_name}}</h6>
+                           <p class="mb-0">{{featured.show.host}}</p>
+                        </div>
+                     </div>
+                  </a>
+               </div>
+            </li>
+            {% endfor %}
+         </ul>
+      </div>
+   </div>
+   {% else %}
+   <h1>followed</h1>
+   {% endif %}
+
+</div>
+   
+
+{% endblock content %}

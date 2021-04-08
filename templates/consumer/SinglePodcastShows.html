@@ -65,7 +65,7 @@
                   </div>
 
                   <p class="mb-0 col-2 col-md-2 iq-music-play">
-                     <i class="las la-play-circle font-size-32 text-primary" id="siglePlayBtn-{{episode.id}}"  onclick="currentTrack('{{episode.id}}');fun('{{episode.id}}')"></i>
+                     <i class="las la-play-circle font-size-32 text-primary" id="siglePlayBtn-{{episode.id}}"  onclick="fun('{{episode.id}}');singleEpisodeplaypauseTrack('{{episode.id}}')"></i>
                   </p>
 
                </div>
@@ -87,8 +87,8 @@ function fun(trackid){
    id = trackid
    singlePlayBtn = $('#siglePlayBtn-'+id)
 }
-// singlePlayBtn.removeClass('las la-play-circle')
-// singlePlayBtn.addClass('fa fa-pause-circle')
+
+
 </script>
 
 <script>

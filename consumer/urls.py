@@ -38,6 +38,8 @@ urlpatterns = [
     path('liked-items/', views.consumer_liked_data,name='consumer_playlist_data'),
     path('add-favorite/<int:id>/',views.add_favorite,name='add_favorite'),
     path('add-playlist/<int:id>/',views.add_playlist,name='add_playlist'),
+
+    path('your-library/',views.your_library,name='your_library'),
     
     path('playlist/',views.manage_playlist,name='manage_playlist'),
     path('create-playlist/', views.create_playlist,name='create_playlist'),
@@ -51,5 +53,8 @@ urlpatterns = [
     path('listner-update/<int:id>/',views.music_listen_update,name='music_listen_update'),
     path('rating/<int:id>/', views.rating,name='rating'),
     path('reaction/<int:id>/', views.reaction,name='reaction'),
+    path('search/',views.search_box,name='search_box'),
+    path('advertisment/', views.advertisment,name='advertisment'),
+    path('notifications/',views.notifications,name='notifications'),
     
 ]

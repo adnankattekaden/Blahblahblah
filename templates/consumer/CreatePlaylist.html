@@ -15,21 +15,20 @@
             </div>
             <span id="message"></span>
             <div class="card-body">
-              <form method="POST">
-                {% csrf_token %}
+              <form>
                 <span id="message" style="color: red"></span>
                 <div class="pl-lg-4">
                   <div class="row">
                     <div class="col-lg-6">
                       <div class="form-group">
                         <label class="form-control-label">Playlist Name</label>
-                        <input type="text" id="episode_name" name="playlistName" class="form-control"
-                          placeholder="Playlist name" value="" required />
+                        <input type="text" id="playlist_name" name="playlistName" class="form-control"
+                          placeholder="Playlist name"/>
                       </div>
                     </div>
                   </div>  
                   <div class="row">
-                    <button id="publishBtn" type="submit">Create</button>
+                    <button id="playlistBtn" type="button">Create</button>
                   </div>
                 </div>
               </form>
@@ -38,5 +37,29 @@
         </div>
       </div>
     </div>
+
+    <script>
+      $('#playlistBtn').click(function(){
+        var Playlist = {
+          csrfmiddlewaretoken: '{{csrf_token}}',
+          playlist_name: $('#playlist_name').val(),
+        }
+        if (Playlist.playlist_name == ''){
+          console.log(Playlist)
+        }else{
+          $.ajax({
+          url: '/create-playlist/',
+          type : 'POST',
+          data:Playlist,
+          dataType: 'JSON',
+          success:function(data){
+            location.replace('/playlist/')
+          }
+
+        })
+        }
+
+      })
+    </script>
   
 {% endblock content %}

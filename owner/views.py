@@ -3,9 +3,10 @@ from django.contrib.auth.models import User,auth
 import json
 from django.http import JsonResponse
 from owner.models import Category,Plans,Advertisement,FeaturedShows,TopPodcasters,TrendingShows,PopularShows
-from consumer.models import Subscribtions
+from consumer.models import Subscribtions,UserDetails
 from creator.models import Show,CreatorDeatails
-
+import base64
+from django.core.files.base import ContentFile
 from datetime import date
 
 # Create your views here.
@@ -32,7 +33,7 @@ def owner_logout(request):
 
 def owner_dashboard(request):
     #total_counts 
-    total_creators_count = User.objects.filter(is_staff=True).count()
+    total_creators_count = User.objects.filter(is_staff=True).exclude(is_superuser=True).count()
     total_listners_count = User.objects.filter(is_staff=False).count()
     #sales 
     current_date = date.today()
@@ -46,9 +47,19 @@ def owner_dashboard(request):
             dict[report.date].totalsubs = sub_count
         else:
             dict[report.date].totalsubs = sub_count
-
     total_sales = sub_count
-    context = {'total_creators_count':total_creators_count,'total_listners_count':total_listners_count,'total_sales':total_sales}
+
+    #salesChart
+    sales_data = [0,0,0,0,0,0,0,0,0,0,0,0]
+    subscribtions_datas = Subscribtions.objects.all()
+    for i in subscribtions_datas:
+        sales_data[i.date.month-1] += 1
+
+    #usersChart
+    consumers_data = UserDetails.objects.all().count()
+    creators_data = CreatorDeatails.objects.all().count()
+
+    context = {'total_creators_count':total_creators_count,'total_listners_count':total_listners_count,'total_sales':total_sales,'sales_data':sales_data,'consumers_data':consumers_data,'creators_data':creators_data}
     return render(request, './owner/Dashboard.html',context)
 
 def manage_category(request):
@@ -74,6 +85,7 @@ def edit_category(request,id):
             category_name = request.POST['category_name']
             category.category_name = category_name
             category.save()
+            return JsonResponse('edited_category',safe=False)
         else:
             context = {'category':category}
             return render(request, './owner/EditCategory.html',context)
@@ -129,11 +141,24 @@ def create_ads(request):
     if request.user.is_authenticated and request.user.is_superuser == True:
         if request.method == "POST":
             ad_name = request.POST['advertisement_name']
-            ad_image = request.FILES.get('advertisement_image')
-            Advertisement.objects.create(ad_name=ad_name,ad_image=ad_image)
+            ad_image = request.POST['advertisement_image']
+            #imagecroping
+            format, imgstr = ad_image.split(';base64,')
+            ext = format.split('/')[-1]
+            ad_image = ContentFile(base64.b64decode(imgstr), name=ad_name + '.' + ext)
+            #corping Ends
+            advertisementType = request.POST['AdvertisementType']
+            Advertisement.objects.create(ad_name=ad_name,ad_image=ad_image,types=advertisementType)
             return JsonResponse('ad_created', safe=False)
         else:
             return render(request, './owner/CreateAds.html')
+    else:
+        return redirect(owner_login)
+
+def delete_ads(request,id):
+    if request.user.is_authenticated and request.user.is_superuser == True:
+        ad = Advertisement.objects.get(id=id).delete()
+        return JsonResponse('ad_delete',safe=False)
     else:
         return redirect(owner_login)
 
