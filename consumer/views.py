@@ -134,8 +134,9 @@ def faq(request):
     return render(request, './consumer/faq.html')
 
 def pricing(request):
+    user_details = UserDetails.objects.get(user=request.user)
     plans = Plans.objects.all()
-    context = {'plans':plans}
+    context = {'plans':plan,'user_details':user_details}
     return render(request, './consumer/Pricing.html',context)
 
 def checkout(request):
@@ -166,7 +167,9 @@ def invoice(request,id):
     return render(request, './consumer/Invoice.html',context)
 
 def thankyou_note(request):
-    return render(request, './consumer/upgrade.html')
+    user_details = UserDetails.objects.get(user=request.user)
+    context = {'user_details':user_details}
+    return render(request, './consumer/upgrade.html',context)
     
 def followed_podcast_list(request):
     if request.user.is_authenticated and request.user.is_staff == False:
@@ -840,30 +843,35 @@ def search_box(request):
 def your_library(request):
     if request.user.is_authenticated and request.user.is_staff == False:
         user_details = UserDetails.objects.get(user=request.user)
-        context = {}
-        #following shows
-        for followed_show in FollowShows.objects.filter(followed=request.user,follow_type=True):
-            shows = Show.objects.filter(user_id=followed_show.show.user.id,visiblity="Public")
-            followed_shows = []
-            for i in shows:
-                followed_shows.append(i)
 
-        #following Artistts
-        followed_artists = []
-        for j in Follows.objects.filter(followed=request.user,follow_type=True):
-            followed_artists.append(j)
-        
-        followed_creators = []
-        for k in followed_artists:
-            creator_detatils = CreatorDeatails.objects.filter(user=k.creators.id)
-            for m in creator_detatils:
-                followed_creators.append(m)
-            context += {'followed_creators':followed_creators}
-        context = {'user_details':user_details}
+        if FollowShows.objects.filter(followed=request.user,follow_type=True).exists():
+            #following shows
+            for followed_show in FollowShows.objects.filter(followed=request.user,follow_type=True):
+                shows = Show.objects.filter(user_id=followed_show.show.user.id,visiblity="Public")
+                followed_shows = []
+                for i in shows:
+                    followed_shows.append(i)
+        else:
+            followed_shows = []
+
+        if Follows.objects.filter(followed=request.user,follow_type=True).exists():
+            #following Artistts
+            followed_artists = []
+            for j in Follows.objects.filter(followed=request.user,follow_type=True):
+                followed_artists.append(j)
+            
+            followed_creators = []
+            for k in followed_artists:
+                creator_detatils = CreatorDeatails.objects.filter(user=k.creators.id)
+                for m in creator_detatils:
+                    followed_creators.append(m)
+        else:
+            followed_creators = []
+
+        context = {'user_details':user_details,'followed_creators':followed_creators,'followed_shows':followed_shows}
         return render(request, './consumer/YourLibrary.html',context)
     else:
         return redirect(signin)
-
 
 def advertisment(request):
     ad_list = []
