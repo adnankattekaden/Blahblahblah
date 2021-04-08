@@ -30,10 +30,10 @@
                         <td>{{listner.username}}</td>
                         <td>
                             {% if listner.is_active == True %}
-                            <a href="#"><input type="button" class="btn btn-danger" onclick="fun('{{listner.id}}')" id="blockBtn" value="Block"></a>
+                            <input type="button" class="btn btn-danger" onclick="fun('{{listner.id}}')" id="blockBtn" value="Block">
                                 {% else %}
-                            <a href="#"><input type="button" class="btn btn-success"
-                                onclick="fun('{{listner.id}}')" id="unblockBtn" value="UnBlock"></a>
+                            <input type="button" class="btn btn-success"
+                                onclick="fun('{{listner.id}}')" id="unblockBtn" value="UnBlock">
                             {% endif %}
                         </td>
                     </tr>
@@ -47,12 +47,11 @@
 <!-- end row -->
 
 <script>
-
     var id;
     function fun(userid) {
-        console.log(userid)
         id = userid
     }
+
     $('#blockBtn').click(function () {
         $.ajax({
             url: '/owner/block-users/'+id+'/',

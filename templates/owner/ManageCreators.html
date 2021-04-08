@@ -31,10 +31,10 @@
 
                             <td>
                                 {% if creator.is_active == True %}
-                                <a href="#"><input type="button" class="btn btn-danger" onclick="fun('{{creator.id}}')" id="blockBtn" value="Block"></a>
+                                <input type="button" class="btn btn-danger" onclick="fun('{{creator.id}}')" id="blockBtn" value="Block">
                                     {% else %}
-                                <a href="#"><input type="button" class="btn btn-success"
-                                    onclick="fun('{{creator.id}}')" id="unblockBtn" value="UnBlock"></a>
+                                <input type="button" class="btn btn-success"
+                                    onclick="fun('{{creator.id}}')" id="unblockBtn" value="UnBlock">
                                 {% endif %}
                             </td>
 
