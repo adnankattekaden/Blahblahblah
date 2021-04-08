@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.models import User,auth
 from . models import UserDetails,Playlist,PlaylistContent,Subscribtions,UserRating
 from creator.models import Contents,Show,CreatorDeatails,Follows,FollowShows,EpisodeAnalytics,Reaction
-from owner.models import Category,Plans,Advertisement,FeaturedShows,TopPodcasters
+from owner.models import Category,Plans,Advertisement,FeaturedShows,TopPodcasters,TrendingShows,PopularShows
 import json
 from django.http import JsonResponse
 from django.core import serializers
@@ -204,8 +204,12 @@ def followed_artists_list(request):
 def homepage(request):
     shows = Show.objects.filter(visiblity="Public",user__is_active=True)
     artists = CreatorDeatails.objects.filter(user__is_active=True)
+
     top_podcasters = TopPodcasters.objects.all()
     fetaured_shows = FeaturedShows.objects.filter(show__visiblity="Public")
+    trending_shows = TrendingShows.objects.filter(show__visiblity="Public")
+    popular_shows = PopularShows.objects.filter(show__visiblity="Public")
+
 
     #notifcaion starts
     try:
@@ -230,7 +234,8 @@ def homepage(request):
         user_details = []
         #notification Ends
     
-    context = {'fetaured_shows':fetaured_shows,'top_podcasters':top_podcasters,'user_details':user_details,'datas':episode_notifications}
+    context = {'fetaured_shows':fetaured_shows,'top_podcasters':top_podcasters,'trending_shows':trending_shows,
+    'popular_shows':popular_shows,'user_details':user_details,'datas':episode_notifications}
     return render(request, './consumer/Home.html',context)
 
 def latest_feeds(request):
@@ -835,6 +840,7 @@ def search_box(request):
 def your_library(request):
     if request.user.is_authenticated and request.user.is_staff == False:
         user_details = UserDetails.objects.get(user=request.user)
+        context = {}
         #following shows
         for followed_show in FollowShows.objects.filter(followed=request.user,follow_type=True):
             shows = Show.objects.filter(user_id=followed_show.show.user.id,visiblity="Public")
@@ -852,7 +858,8 @@ def your_library(request):
             creator_detatils = CreatorDeatails.objects.filter(user=k.creators.id)
             for m in creator_detatils:
                 followed_creators.append(m)
-        context = {'user_details':user_details,'followed_shows':followed_shows,'followed_creators':followed_creators}
+            context += {'followed_creators':followed_creators}
+        context = {'user_details':user_details}
         return render(request, './consumer/YourLibrary.html',context)
     else:
         return redirect(signin)

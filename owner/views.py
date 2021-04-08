@@ -241,7 +241,6 @@ def remove_featured_show(request,id):
 def manage_top_podcasters(request):
     if request.user.is_authenticated and request.user.is_superuser == True:
         top_podcasters = TopPodcasters.objects.all()
-        for i in top_podcasters:
         context = {'top_podcasters':top_podcasters}
         return render(request, './owner/ManageTopPodcasters.html',context)
     else:

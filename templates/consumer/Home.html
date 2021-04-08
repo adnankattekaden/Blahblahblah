@@ -91,7 +91,7 @@
       </div>
       <div class="iq-card-body">
          <ul class="list-unstyled row iq-box-hover mb-0">
-            {% for content in shows %}
+            {% for content in trending_shows %}
             <li class="col-xl-2 col-lg-3 col-md-4 iq-music-box">
                <div class="iq-card">
                   <a href="{% url 'single_podcast' content.id %}">
@@ -130,7 +130,7 @@
       </div>
       <div class="iq-card-body">
          <ul class="list-unstyled row  iq-box-hover mb-0">
-            {% for show in shows %}
+            {% for show in popular_shows %}
             <li class="col-xl-2 col-lg-3 col-md-4 iq-music-box">
                <div class="iq-card ">
                   <div class="iq-card-body p-0">
