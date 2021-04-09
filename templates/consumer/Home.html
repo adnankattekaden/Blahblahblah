@@ -94,22 +94,22 @@
             {% for content in trending_shows %}
             <li class="col-xl-2 col-lg-3 col-md-4 iq-music-box">
                <div class="iq-card">
-                  <a href="{% url 'single_podcast' content.id %}">
+                  <a href="{% url 'single_podcast' content.show.id %}">
                      <div class="iq-card-body p-0">
                         <div class="iq-thumb">
                            <div class="iq-music-overlay"></div>
-                           <a href="{% url 'single_podcast' content.id %}">
-                              <img src="{{content.ImageURL}}" class="img-border-radius img-fluid w-100" alt="">
+                           <a href="{% url 'single_podcast' content.show.id %}">
+                              <img src="{{content.show.ImageURL}}" class="img-border-radius img-fluid w-100" alt="">
                            </a>
                            <div class="overlay-music-icon">
-                              <a type="button" onclick="currentTrack('{{content.id}}')">
+                              <a type="button" onclick="currentTrack('{{content.show.id}}')">
                                  <i class="las la-play-circle"></i>
                               </a>
                            </div>
                         </div>
                         <div class="feature-list text-center">
-                           <h6 class="font-weight-600  mb-0">{{content.episode_name}}</h6>
-                           <p class="mb-0">{{content.show_name}}</p>
+                           <h6 class="font-weight-600  mb-0">{{content.show.host}}</h6>
+                           <p class="mb-0">{{content.show.show_name}}</p>
                         </div>
                      </div>
                   </a>
@@ -130,26 +130,26 @@
       </div>
       <div class="iq-card-body">
          <ul class="list-unstyled row  iq-box-hover mb-0">
-            {% for show in popular_shows %}
+            {% for content in popular_shows %}
             <li class="col-xl-2 col-lg-3 col-md-4 iq-music-box">
                <div class="iq-card ">
                   <div class="iq-card-body p-0">
-                     <a href="{% url 'single_podcast' show.id %}">
+                     <a href="{% url 'single_podcast' content.show.id %}">
                         <div class="iq-thumb">
                            <div class="iq-music-overlay"></div>
-                           <a href="{% url 'single_podcast' show.id %}">
-                              <img src="{{show.ImageURL}}" class="img-border-radius img-fluid w-100" alt="">
+                           <a href="{% url 'single_podcast' content.show.id %}">
+                              <img src="{{content.show.ImageURL}}" class="img-border-radius img-fluid w-100" alt="">
                            </a>
                            <div class="overlay-music-icon">
-                              <a type="button" onclick="currentTrack('{{show.id}}')">
+                              <a type="button" onclick="currentTrack('{{content.show.id}}')">
                                  <i class="las la-play-circle"></i>
                               </a>
                            </div>
                         </div>
                      </a>
                      <div class="feature-list text-center">
-                        <h6 class="font-weight-600  mb-0">{{show.episode_name}}</h6>
-                        <p class="mb-0">{{show.show_name}} </p>
+                        <h6 class="font-weight-600  mb-0">{{content.show.host}}</h6>
+                        <p class="mb-0">{{content.show.show_name}} </p>
                      </div>
                   </div>
                </div>
