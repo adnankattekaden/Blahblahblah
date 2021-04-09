@@ -829,15 +829,16 @@ def reaction(request,id):
             return JsonResponse('dislike', safe=False)
 
 def search_box(request):
-    serach_results = 0
+    user_details = UserDetails.objects.get(user=request.user)
+    serach_results = []
     if request.method == "GET":
         showname = request.GET['showname']
         if Show.objects.filter(show_name__icontains=showname,visiblity="Public",user__is_active=True).exists():
-            serach_results = 'nothing found'
-        else:
             serach_results = Show.objects.filter(show_name__icontains=showname,visiblity="Public",user__is_active=True)
+        else:
+            serach_results = 'nothing found'
 
-    context = {'serach_results':serach_results}
+    context = {'serach_results':serach_results,'user_details':user_details}
     return render(request, './consumer/search.html',context)
 
 def your_library(request):

@@ -95,7 +95,7 @@
                      <li class="nav-item nav-icon">
                         <div class="iq-search-bar">
 
-                           <form class="searchbox" action="{% url 'search_box' %}" method="POST">
+                           <form class="searchbox" action="{% url 'search_box' %}" method="GET">
                               {% csrf_token %}
                               <input type="text" class="text search-input" name="showname"
                                  placeholder="Search Shows Here..">
