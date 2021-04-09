@@ -32,7 +32,7 @@
                     <tr>
                         <td>{{show.show.show_name}}</td>
                         <td>
-                            <input type="button" id="removeBtn" onclick="fun('{{show.show.id}}')" class="btn btn-danger" value="Remove">
+                            <input type="button" id="removeBtn" onclick="fun('{{show.show.id}}')" class="btn btn-danger removeBtn" value="Remove">
                         </td>
                     </tr>
                     {% endfor %}
@@ -50,7 +50,7 @@ function fun(showid){
     id = showid
 }
 
-$('#removeBtn').click(function(){
+$('.removeBtn').click(function(){
     $.ajax({
         url: '/owner/remove-popular-shows/'+id+'/',
         method: 'GET',

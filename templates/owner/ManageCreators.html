@@ -49,12 +49,12 @@
 <!-- end row -->
 
 <script>
-
     var id;
     function fun(userid) {
         console.log(userid)
         id = userid
     }
+
     $('#blockBtn').click(function () {
         $.ajax({
             url: '/owner/block-users/'+id+'/',

@@ -33,7 +33,7 @@
                         <td>{{artist.creator.user}}</td>
 
                         <td>
-                            <input type="button" id="removeBtn" onclick="fun('{{artist.creator.id}}')" class="btn btn-danger" value="Remove">
+                            <input type="button" id="removeBtn" onclick="fun('{{artist.creator.id}}')" class="btn btn-danger removeBtn" value="Remove">
                         </td>
                     </tr>
                     {% endfor %}
@@ -51,7 +51,7 @@ function fun(artistId){
     id = artistId
 }
 
-$('#removeBtn').click(function(){
+$('.removeBtn').click(function(){
     $.ajax({
         url: '/owner/remove-top-podcasters/'+id+'/',
         method: 'GET',
