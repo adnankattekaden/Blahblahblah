@@ -97,7 +97,8 @@
 
                            <form class="searchbox" action="{% url 'search_box' %}" method="POST">
                               {% csrf_token %}
-                              <input type="text" class="text search-input" name="showname" placeholder="Search Shows Here..">
+                              <input type="text" class="text search-input" name="showname"
+                                 placeholder="Search Shows Here..">
                               <a class="search-link" type="submit"><i class="ri-search-line text-black"></i></a>
                            </form>
 
@@ -121,7 +122,8 @@
 
                         <form class="searchbox" action="{% url 'search_box' %}" method="GET">
                            {% csrf_token %}
-                           <input type="text" class="text search-input" name="searchvalue" placeholder="Search Shows Here..">
+                           <input type="text" class="text search-input" name="searchvalue"
+                              placeholder="Search Shows Here..">
                            <a class="search-link" type="button"><i class="ri-search-line text-black searchBtn"></i></a>
                         </form>
                      </li>
@@ -247,26 +249,26 @@
                <!-- advertisment_starts -->
                <div class="popup popup-wrap" id="adds" style="display: none;">
                   <div class="popup-timer"><span class="seconds"></span> second(s) left</div>
-                     <div class="btn-close" id="skipAd" style="visibility: hidden;">x</div>
-                     <div class="addImg" id="addPicker"></div>
-                  </div>
+                  <div class="btn-close" id="skipAd" style="visibility: hidden;">x</div>
+                  <div class="addImg" id="addPicker"></div>
                </div>
-               <!-- advertisment_ends -->
-               {% block content %} {% endblock %}
             </div>
+            <!-- advertisment_ends -->
+            {% block content %} {% endblock %}
          </div>
       </div>
+   </div>
    </div>
    <!-- Wrapper END -->
 
    <!-- notifications -->
    <script>
       var episode_notifications;
-      function latest_notifications(){
+      function latest_notifications() {
          $.ajax({
             url: '/notifications/',
             type: 'GET',
-            success:function(data){
+            success: function (data) {
                episode_notifications = JSON.parse(data.episode_notifications)
                console.log(episode_notifications)
             }
@@ -280,17 +282,17 @@
       let addPicker = document.getElementById("addPicker");
       var advertisement_context = document.createElement('img');
 
-      function adContent(){
+      function adContent() {
          $.ajax({
-            url:'/advertisment/',
+            url: '/advertisment/',
             type: 'GET',
-            success:function(data){
+            success: function (data) {
                singleadData = JSON.parse(data.random_ad)[0]
                advertisement_context.src = '/media/' + singleadData.fields.ad_image
             }
          })
          document.getElementById("addPicker").appendChild(advertisement_context)
-         
+
       }
    </script>
 
@@ -665,13 +667,13 @@
       function playpauseTrack() {
          if (!isPlaying) {
             currentTrack(nowId),
-               playTrack();
+            playTrack();
          }
          else {
             pauseTrack();
          }
       }
-      
+
       function playTrack() {
          curr_track.play();
          isPlaying = true;
@@ -693,12 +695,12 @@
                currentId = music.pk
                loadTrack(music);
                // adstartshere
-               console.log('heyy',premium)
-               if (premium == true){
+               console.log('heyy', premium)
+               if (premium == true) {
                   playTrack()
-               }else{
-               triggerAd()
-               setTimeout(function(){ playTrack(); }, 30000);
+               } else {
+                  triggerAd()
+                  setTimeout(function () { playTrack(); }, 30000);
                }
             }
 
@@ -715,11 +717,11 @@
 
                loadTrack(music);
                // adstartshere
-               if (premium == true){
+               if (premium == true) {
                   playTrack()
-               }else{
-               triggerAd()
-               setTimeout(function(){ playTrack(); }, 30000);
+               } else {
+                  triggerAd()
+                  setTimeout(function () { playTrack(); }, 30000);
                }
             }
 
@@ -821,9 +823,9 @@
       }
 
       function singleEpisodeplaypauseTrack(episodeId) {
-         console.log('heyy',episodeId)
          if (!isPlaying) {
             currentEpisodeTrack(episodeId),
+            resetBtn(),
             singleEpisodeplayTrack();
          }
          else {
@@ -835,7 +837,7 @@
          curr_track.play();
          isPlaying = true;
          playpause_btn.innerHTML = '<i class="fa fa-pause-circle fa-3x"></i>';
-
+         resetBtn()
          // adnan
          singlePlayBtn.removeClass('las la-play-circle')
          singlePlayBtn.addClass('fa fa-pause-circle')
@@ -846,12 +848,23 @@
          curr_track.pause();
          isPlaying = false
          playpause_btn.innerHTML = '<i class="fa fa-play-circle fa-3x"></i>';
-         
+         resetBtn()
          // adnan
          singlePlayBtn.removeClass('fa fa-pause-circle')
          singlePlayBtn.addClass('las la-play-circle')
       }
 
+      function resetBtn() {
+         if(isPlaying = true){
+            console.log('ISPLAYING','PODDAANAYYEE')
+            $('.singlesPlaybtn').removeClass('fa fa-pause-circle')
+            $('.singlesPlaybtn').addClass('las la-play-circle')
+            isPlaying = false
+         }else{
+            console.log('nOTT pLAYING')
+
+         }
+      }
    </script>
 
 
