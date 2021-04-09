@@ -136,7 +136,7 @@ def faq(request):
 def pricing(request):
     user_details = UserDetails.objects.get(user=request.user)
     plans = Plans.objects.all()
-    context = {'plans':plan,'user_details':user_details}
+    context = {'plans':plans,'user_details':user_details}
     return render(request, './consumer/Pricing.html',context)
 
 def checkout(request):

@@ -21,7 +21,7 @@ from django.conf import settings
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    # path('admin/', admin.site.urls),
     path('', include('consumer.urls')),
     path('creator/', include('creator.urls')),
     path('owner/', include('owner.urls')),

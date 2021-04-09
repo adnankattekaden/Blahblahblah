@@ -103,13 +103,14 @@
 
                         </div>
                      </li>
-
+                     {% if user.is_authenticated %}
                      {% if not user_details.premium == True %}
                      <li class="nav-item nav-icon">
                         <div class="iq-search-bar">
                            <a href="{% url 'upgrade' %}" class="btn btn-secondary">Upgrade</a>
                         </div>
                      </li>
+                     {% endif %}
                      {% endif %}
 
                      <li class="nav-item nav-icon search-content">
@@ -586,7 +587,15 @@
 
 
    <script>
+      var premium;
+      {% if not user_details.premium == True %}
+      premium = false;
+      {% else %}
+      premium = true;
+      {% endif %}
+   </script>
 
+   <script>
       var music;
       let now_playing = document.querySelector(".now-playing");
       let track_art = document.querySelector(".track-art");
@@ -684,8 +693,13 @@
                currentId = music.pk
                loadTrack(music);
                // adstartshere
+               console.log('heyy',premium)
+               if (premium == true){
+                  playTrack()
+               }else{
                triggerAd()
                setTimeout(function(){ playTrack(); }, 30000);
+               }
             }
 
          })
@@ -701,8 +715,12 @@
 
                loadTrack(music);
                // adstartshere
+               if (premium == true){
+                  playTrack()
+               }else{
                triggerAd()
                setTimeout(function(){ playTrack(); }, 30000);
+               }
             }
 
          })
