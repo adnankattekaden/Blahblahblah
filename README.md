@@ -15,6 +15,28 @@ Technologies Used
 3) CSS
 4) JAVASCRIPT
 
+Features
+----------------
+User Side:
+- Listen Podcasts
+- Premium Membership
+- Change Password
+- Playlist Management
+- Add To Favorites
+- Like & Dislike
+
+Creator Side:
+-Create & Manage Shows
+-Create & Manage Episodes
+- Schedule Episodes
+-Episode Visiblity  (public & private)
+- Episode Analytics
+
+Admin Side:
+- Manage Creator & Listener
+- Manage Home Page Sections
+- Sales Report
+
 Credentials Of Live Project
 -------------------------------
 
