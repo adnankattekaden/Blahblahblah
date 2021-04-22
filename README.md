@@ -1,4 +1,4 @@
-# Blahblahbler
+# Blahblahblah
 This Is An Awesome Podcast Listening Platform Where Common Users Can Share Their Voice Through Creating Awesome Audio Contents Freely
 
 Blah Blah Blah is a Podcast listening and having creator freedom web app.
@@ -26,10 +26,10 @@ User Side:
 - Like & Dislike
 
 Creator Side:
--Create & Manage Shows
--Create & Manage Episodes
+- Create & Manage Shows
+- Create & Manage Episodes
 - Schedule Episodes
--Episode Visiblity  (public & private)
+- Episode Visiblity  (public & private)
 - Episode Analytics
 
 Admin Side:
